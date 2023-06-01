@@ -4,6 +4,8 @@ using WebApiTutorialHE.Database;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebApiTutorialHE.Database.SharingModels;
 using Microsoft.AspNetCore.Mvc;
+using WebApiTutorialHE.Models.UtilsProject;
+using WebApiTutorialHE.Models.UtilsProject;
 
 namespace WebApiTutorialHE.Action
 {
@@ -36,8 +38,8 @@ namespace WebApiTutorialHE.Action
             var createAccout = new Account()
             {
                 AccountId = model.account_id,
-                Email = model.email,
-                Password = model.password,
+                Email = model.email.Trim(),
+                Password = Encryptor.MD5Hash(model.password.Trim()),
                 Type = model.type,
             };
             _sharingContext.Add(createAccout);
