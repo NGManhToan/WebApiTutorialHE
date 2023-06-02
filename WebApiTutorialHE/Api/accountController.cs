@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
@@ -18,9 +19,9 @@ namespace WebApiTutorialHE.Api
             _accountService = accountService;
         }
 
-        public static  List<Account> accounts = new List<Account>();
+        public static List<Account> accounts = new List<Account>();
         [HttpGet]
-        public async Task<IActionResult>GetAll()
+        public async Task<IActionResult> GetAll()
         {
             var accountList = await _accountService.GetAccountListModels();
             return Ok(accountList);
@@ -33,10 +34,23 @@ namespace WebApiTutorialHE.Api
             return Ok(updateAccount);
         }
         [HttpPost]
-        public async Task<IActionResult>CreateAccount(AccountListModel model)
+        public async Task<IActionResult> CreateAccount(AccountListModel model)
         {
-            var createAccount=await _accountService.PostAccountModel(model);
+            var createAccount = await _accountService.PostAccountModel(model);
             return Ok(createAccount);
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult>DeleteAccount( int id)
+        {
+            var deleteAccount = await _accountService.DeleteAccountModel(id);
+            return Ok(deleteAccount);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> FillterAccount(int id/*,string email*/)
+        {
+
+            var fillterAccount = await _accountService.FillterAccountModel(id/*,email*/);
+            return Ok(fillterAccount);
         }
         //[HttpPost]
         //public IActionResult Create(AccountListModel model)

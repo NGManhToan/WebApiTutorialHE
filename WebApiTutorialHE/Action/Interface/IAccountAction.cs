@@ -7,6 +7,7 @@ namespace WebApiTutorialHE.Action.Interface
     {
         Task<Account> AccountUpdateModels(AccountUpdateModel model);
         Task<Account> ActionCreateAccount(AccountListModel model);
-        Task<string> ActionDeleteAccount(AccountListModel model);
+        Task<string> ActionDeleteAccount(int id);
+        Task<Account> ActionFillterAccount(int id/*, string email*/);
     }
 }

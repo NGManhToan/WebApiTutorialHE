@@ -27,5 +27,13 @@ namespace WebApiTutorialHE.Service
         {
             return await _accountAction.ActionCreateAccount(model);
         }
+        public async Task<string>DeleteAccountModel(int id)
+        {
+            return await _accountAction.ActionDeleteAccount(id);
+        }
+        public async Task<Account> FillterAccountModel(int id/*,string email*/)
+        {
+            return await _accountAction.ActionFillterAccount(id/*,email*/);
+        }
     }
 }

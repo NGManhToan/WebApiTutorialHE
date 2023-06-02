@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebApiTutorialHE.Database.SharingModels;
 using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Models.UtilsProject;
-
+using Microsoft.EntityFrameworkCore;
 
 namespace WebApiTutorialHE.Action
 {
@@ -46,13 +46,28 @@ namespace WebApiTutorialHE.Action
             await _sharingContext.SaveChangesAsync();
             return createAccout;
         }
-        public async Task<string> ActionDeleteAccount(AccountListModel model)
+        public async Task<string> ActionDeleteAccount(int id)
         {
-            var deleteAccount = await _sharingContext.Accounts.FindAsync(model.account_id);
+            var deleteAccount = await _sharingContext.Accounts.SingleOrDefaultAsync(x => x.AccountId == id);
             _sharingContext.Remove(deleteAccount);
             await _sharingContext.SaveChangesAsync();
             return "Đã xóa";
         }
+
+        public async Task<Account> ActionFillterAccount(int id/*, string email*/)
+        {
+            var fillterAccount = await _sharingContext.Accounts.SingleOrDefaultAsync(x => x.AccountId.Equals(id));
+            if (fillterAccount == null)
+            {
+                // Xử lý khi không tìm thấy tài khoản
+                // Ví dụ: throw một ngoại lệ hoặc trả về giá trị mặc định
+                throw new Exception("Không tìm thấy tài khoản."); // Ví dụ sử dụng ngoại lệ
+                                                                  // return null; // Ví dụ trả về giá trị mặc định
+            }
+
+            return fillterAccount;
+        }
+
 
 
     }
