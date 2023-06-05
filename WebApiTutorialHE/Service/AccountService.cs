@@ -35,5 +35,15 @@ namespace WebApiTutorialHE.Service
         {
             return await _accountAction.ActionFillterAccount(id/*,email*/);
         }
+        public async Task<List<AccountListModel>> FindAccountModel(string search)
+        {
+            return await _accountQuery.QueryFindAccount(search);
+        }
+
+        //Lấy thông tin admin hiện tại
+        public async Task<List<AccountListModel>> GetAccountListAdminModel()
+        {
+            return await _accountQuery.QueryListAdminAccount();
+        }
     }
 }

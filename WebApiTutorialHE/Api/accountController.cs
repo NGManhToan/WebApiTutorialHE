@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
+using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Service.Interface;
 
 namespace WebApiTutorialHE.Api
@@ -24,7 +25,16 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult> GetAll()
         {
             var accountList = await _accountService.GetAccountListModels();
-            return Ok(accountList);
+            
+            return Ok(new ObjectResponse
+            {
+                result=1,
+                message="Lấy danh sách thành công",
+                content = new
+                {
+                    account=accountList
+                }
+            });
         }
 
         [HttpPut]
@@ -51,6 +61,19 @@ namespace WebApiTutorialHE.Api
 
             var fillterAccount = await _accountService.FillterAccountModel(id/*,email*/);
             return Ok(fillterAccount);
+        }
+        [HttpGet("{search}")]///Tìm kiếm theo ID
+        public async Task<IActionResult> FindAccount(string search)
+        {
+            var findAccount = await _accountService.FindAccountModel(search);
+            return Ok(findAccount);
+        }
+        //Lấy thông tin admin hiện tại
+        [HttpGet("{admin}")]
+        public async Task<IActionResult> ListAdminAccount()
+        {
+            var listAdmin = await _accountService.GetAccountListAdminModel();
+            return Ok(listAdmin);
         }
         //[HttpPost]
         //public IActionResult Create(AccountListModel model)

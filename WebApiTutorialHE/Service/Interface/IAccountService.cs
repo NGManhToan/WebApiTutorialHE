@@ -10,5 +10,9 @@ namespace WebApiTutorialHE.Service.Interface
         Task<Account> PostAccountModel(AccountListModel model);
         Task<string> DeleteAccountModel(int id);
         Task<Account>FillterAccountModel(int id/*, string email*/);
+        Task<List<AccountListModel>> FindAccountModel(string search);
+
+        //Lấy thông tin admin hiện tại
+        Task<List<AccountListModel>> GetAccountListAdminModel();
     }
 }
