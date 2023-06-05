@@ -14,7 +14,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
 {
     public class Utils
     {
-        public static string KeyToken = "!_WebApiTutorialHE11@12!";
+        public static string KeyToken = "17JjUurO1RvK9mzN3LU0lqVexW6gibCo";
         
 
         public static ulong GetUserIdFromToken(HttpRequest request)

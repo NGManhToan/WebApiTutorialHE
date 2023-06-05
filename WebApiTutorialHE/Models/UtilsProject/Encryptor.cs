@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
+
 namespace WebApiTutorialHE.Models.UtilsProject
 {
     public class Encryptor

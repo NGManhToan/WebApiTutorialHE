@@ -3,6 +3,8 @@ using System.Configuration;
 using WebApiTutorialHE.Action;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
+using WebApiTutorialHE.Manager.Token;
+using WebApiTutorialHE.Manager.Token.Interface;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service;
@@ -32,6 +34,10 @@ builder.Services.AddScoped<IAccountService, AccountService>();
 
 builder.Services.AddScoped<IAccountAction,AccountAction>();
 
+builder.Services.AddScoped<ILoginQuery, LoginQuery>();
+builder.Services.AddScoped<ILoginService, LoginService>();
+
+//builder.Services.AddScoped<IAuthService,JWTService>();
 
 var app = builder.Build();
 

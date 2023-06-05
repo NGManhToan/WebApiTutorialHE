@@ -6,7 +6,7 @@ namespace WebApiTutorialHE.Manager.Token
 {
     public class Signature
     {
-        public static JWTContainerModel GetJWTContainerModel(string userId, string email, string password, string role)
+        public static JWTContainerModel GetJWTContainerModel(string userId, string email, string password, string type)
         {
             return new JWTContainerModel()
             {
@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Manager.Token
                     new Claim(ClaimTypes.NameIdentifier, userId),
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.AuthenticationMethod, password),
-                    new Claim(ClaimTypes.Role, role)
+                    new Claim(ClaimTypes.Role, type)
                 }
             };
         }

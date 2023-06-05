@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using System.Collections.Generic;
+
 namespace WebApiTutorialHE.Manager.Token.Interface
 {
     public interface IAuthService
