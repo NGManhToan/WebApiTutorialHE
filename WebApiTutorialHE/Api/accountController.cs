@@ -69,7 +69,7 @@ namespace WebApiTutorialHE.Api
             return Ok(findAccount);
         }
         //Lấy thông tin admin hiện tại
-        [HttpGet("{admin}")]
+        [HttpGet("admin")]
         public async Task<IActionResult> ListAdminAccount()
         {
             var listAdmin = await _accountService.GetAccountListAdminModel();
