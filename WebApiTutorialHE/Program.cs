@@ -37,6 +37,10 @@ builder.Services.AddScoped<IAccountAction,AccountAction>();
 builder.Services.AddScoped<ILoginQuery, LoginQuery>();
 builder.Services.AddScoped<ILoginService, LoginService>();
 
+builder.Services.AddScoped<IRegistationAction, RegistationAction>();
+builder.Services.AddScoped<IRegistrationQuery, RegistrationQuery>();
+builder.Services.AddScoped<IRegistrationService,RegistrationSevice>();
+
 //builder.Services.AddScoped<IAuthService,JWTService>();
 
 var app = builder.Build();
