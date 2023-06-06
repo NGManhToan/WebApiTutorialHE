@@ -1,4 +1,5 @@
-﻿using WebApiTutorialHE.Database.SharingModels;
+﻿using System.Data;
+using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
 
 namespace WebApiTutorialHE.Service.Interface
@@ -14,5 +15,6 @@ namespace WebApiTutorialHE.Service.Interface
 
         //Lấy thông tin admin hiện tại
         Task<List<AccountListModel>> GetAccountListAdminModel();
+        DataTable GetDataTable();
     }
 }

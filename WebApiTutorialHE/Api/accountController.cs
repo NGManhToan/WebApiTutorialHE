@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
@@ -75,6 +77,21 @@ namespace WebApiTutorialHE.Api
             var listAdmin = await _accountService.GetAccountListAdminModel();
             return Ok(listAdmin);
         }
+        [HttpGet("export-excel")]
+        public ActionResult ExportExcel()
+        {
+            var _empdata = _accountService.GetDataTable();
+            using(XLWorkbook wb = new XLWorkbook())
+            {
+                wb.AddWorksheet(_empdata, "Emloyee Records");
+                using(MemoryStream ms = new MemoryStream())
+                {
+                    wb.SaveAs(ms);
+                    return File(ms.ToArray(),"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","Sample.xlsx");
+                }
+            }
+        }
+        
         //[HttpPost]
         //public IActionResult Create(AccountListModel model)
         //{

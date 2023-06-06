@@ -1,4 +1,6 @@
-﻿using WebApiTutorialHE.Action.Interface;
+﻿using System.Data;
+using WebApiTutorialHE.Action.Interface;
+using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Query.Interface;
@@ -10,10 +12,12 @@ namespace WebApiTutorialHE.Service
     {
         private readonly IAccountQuery _accountQuery;
         private readonly IAccountAction _accountAction;
-        public AccountService(IAccountQuery accountQuery,IAccountAction accountAction)
+        private readonly SharingContext _sharingContext;
+        public AccountService(IAccountQuery accountQuery,IAccountAction accountAction,SharingContext sharingContext)
         {
             _accountQuery = accountQuery;
             _accountAction = accountAction;
+            _sharingContext = sharingContext;
         }
         public async Task<List<AccountListModel>> GetAccountListModels()
         {
@@ -44,6 +48,24 @@ namespace WebApiTutorialHE.Service
         public async Task<List<AccountListModel>> GetAccountListAdminModel()
         {
             return await _accountQuery.QueryListAdminAccount();
+        }
+        public DataTable GetDataTable()
+        {
+            DataTable dt = new DataTable();
+            dt.TableName = "Empdata";
+            dt.Columns.Add("account_id", typeof(int));
+            dt.Columns.Add("email", typeof(string));
+            dt.Columns.Add("password", typeof(string));
+            dt.Columns.Add("type", typeof(int));
+            var _list = this._sharingContext.Accounts.ToList();
+            if (_list.Count > 0)
+            {
+                _list.ForEach(item =>
+                {
+                    dt.Rows.Add(item.AccountId, item.Email, item.Password, item.Type);
+                });
+            }
+            return dt;
         }
     }
 }
