@@ -91,7 +91,19 @@ namespace WebApiTutorialHE.Api
                 }
             }
         }
-        
+        [HttpGet("export-pdf")]
+        public IActionResult ExportPdf()
+        {
+            var dataTable = _accountService.GetDataTable(); // Lấy dữ liệu từ DataTable
+
+            var filePath = "accounts.pdf"; // Đường dẫn và tên file PDF đầu ra
+
+            _accountService.ExportDataTableToPdf(dataTable, filePath); // Xuất DataTable ra file PDF
+
+            // Trả về file PDF đính kèm
+            var fileBytes = System.IO.File.ReadAllBytes(filePath);
+            return File(fileBytes, "application/pdf", "accounts.pdf");
+        }
         //[HttpPost]
         //public IActionResult Create(AccountListModel model)
         //{

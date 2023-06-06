@@ -16,5 +16,6 @@ namespace WebApiTutorialHE.Service.Interface
         //Lấy thông tin admin hiện tại
         Task<List<AccountListModel>> GetAccountListAdminModel();
         DataTable GetDataTable();
+        void ExportDataTableToPdf(DataTable dataTable, string filePath);
     }
 }
