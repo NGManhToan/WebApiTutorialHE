@@ -5,6 +5,8 @@ using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
 
 namespace WebApiTutorialHE.Service
 {
@@ -66,6 +68,43 @@ namespace WebApiTutorialHE.Service
                 });
             }
             return dt;
+        }
+
+        public void ExportDataTableToPdf(DataTable dataTable, string filePath)
+        {
+            // Tạo một tài liệu PDF mới
+            Document document = new Document();
+
+            // Tạo một writer để ghi dữ liệu vào tài liệu
+            PdfWriter writer = PdfWriter.GetInstance(document, new FileStream(filePath, FileMode.CreateNew, FileAccess.Write));
+
+
+            // Mở tài liệu để bắt đầu viết
+            document.Open();
+
+            // Tạo một bảng để hiển thị dữ liệu
+            PdfPTable table = new PdfPTable(dataTable.Columns.Count);
+
+            // Đặt tiêu đề cho các cột
+            for (int i = 0; i < dataTable.Columns.Count; i++)
+            {
+                table.AddCell(new Phrase(dataTable.Columns[i].ColumnName));
+            }
+
+            // Đặt dữ liệu cho từng dòng
+            for (int rowIndex = 0; rowIndex < dataTable.Rows.Count; rowIndex++)
+            {
+                for (int colIndex = 0; colIndex < dataTable.Columns.Count; colIndex++)
+                {
+                    table.AddCell(new Phrase(dataTable.Rows[rowIndex][colIndex].ToString()));
+                }
+            }
+
+            // Thêm bảng vào tài liệu
+            document.Add(table);
+
+            // Đóng tài liệu
+            document.Close();
         }
     }
 }
