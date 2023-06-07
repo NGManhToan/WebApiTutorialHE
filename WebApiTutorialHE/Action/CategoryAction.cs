@@ -19,13 +19,14 @@ namespace WebApiTutorialHE.Action
         }
         public async Task<Category> CreateActionCategory(CategoryListModel createcategory)
         {
-            var category = new Category();
+            var category = new Category()
             {
-                category.IdCategory = createcategory.id_category;
-                category.NameCategory = createcategory.name_category;
-                 _sharingContext.Add(category);
-                await _sharingContext.SaveChangesAsync();
+                IdCategory = createcategory.id_category,
+                NameCategory = createcategory.name_category,
+                
             };
+            _sharingContext.Add(category);
+            await _sharingContext.SaveChangesAsync();
             return category;
         }
     }
