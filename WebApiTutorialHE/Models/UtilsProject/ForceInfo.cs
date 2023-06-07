@@ -3,6 +3,6 @@
     public class ForceInfo
     {
         public DateTime DateNow { get; set; }
-        public ulong UserId { get; set; }
+        public int UserId { get; set; }
     }
 }

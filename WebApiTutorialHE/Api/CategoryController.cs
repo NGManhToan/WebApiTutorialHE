@@ -27,6 +27,12 @@ namespace WebApiTutorialHE.Api
             var Catogorylist = await _categoryService.GetCategoryListModels();
             return Ok(Catogorylist);
         }
+        [HttpPost]
+        public async Task<IActionResult>CreateCategory(CategoryListModel categoryListModel)
+        {
+            var create= await _categoryService.CreateCategory(categoryListModel);
+            return Ok(create);
+        }
         
         //[HttpPost]
         //public IActionResult Create(CategoryListModel model)

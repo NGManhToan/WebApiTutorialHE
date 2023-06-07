@@ -41,7 +41,17 @@ builder.Services.AddScoped<IRegistationAction, RegistationAction>();
 builder.Services.AddScoped<IRegistrationQuery, RegistrationQuery>();
 builder.Services.AddScoped<IRegistrationService,RegistrationSevice>();
 
+builder.Services.AddScoped<IUserAction, UserAction>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 //builder.Services.AddScoped<IAuthService,JWTService>();
+
+builder.Services.AddScoped<ICloudMediaService, CloudMediaService>();
+
+builder.Services.AddScoped<ICategoryAction, CategoryAction>();
+builder.Services.AddScoped<ICategoryService,CategoryService>();
+
+
 
 var app = builder.Build();
 
@@ -57,5 +67,10 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseCors(x => x
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .SetIsOriginAllowed(origin => true) // allow any origin
+                    .AllowCredentials()); // allow credentials
 
 app.Run();
