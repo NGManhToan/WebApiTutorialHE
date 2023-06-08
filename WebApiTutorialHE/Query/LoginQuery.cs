@@ -13,12 +13,14 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<LoginSuccessModel>Login(LoginModel loginModel, string password)
         {
-            var query = @"select user_id ,email,password,type,full_name,student_code,phone_number,Class
-                            from accounts ac join users u on ac.account_id=u.account_id
-                            where email=@Email and password=@Password;";
+            var query = @"SELECT Id, UrlAvatar, FullName, group_concat(ur.RoleId) Roles 
+                        FROM user u 
+                        	left join userrole ur on u.id=ur.UserId
+                            where Email = @Email and Password = @Password
+                                    group by Id, UrlAvatar, FullName ;";
             return await _sharingDapper.QuerySingleAsync<LoginSuccessModel>(query, new
             {
-                Email = loginModel.Email,
+                email = loginModel.Email,
                 Password = password,
             });
         }

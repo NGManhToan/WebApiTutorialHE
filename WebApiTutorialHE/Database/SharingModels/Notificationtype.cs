@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Faculty
+    public partial class Notificationtype
     {
-        public Faculty()
+        public Notificationtype()
         {
-            Users = new HashSet<User>();
+            Notifications = new HashSet<Notification>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,8 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime LastModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual User CreatedByNavigation { get; set; } = null!;
+        public virtual User LastModifiedByNavigation { get; set; } = null!;
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

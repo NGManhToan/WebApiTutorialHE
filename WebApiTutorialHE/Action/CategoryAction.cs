@@ -21,11 +21,12 @@ namespace WebApiTutorialHE.Action
         {
             var category = new Category()
             {
-                IdCategory = createcategory.id_category,
-                NameCategory = createcategory.name_category,
+                Id = createcategory.id_category,
+                Name = createcategory.name_category,
                 
             };
             _sharingContext.Add(category);
+
             await _sharingContext.SaveChangesAsync();
             return category;
         }

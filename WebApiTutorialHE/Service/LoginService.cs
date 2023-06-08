@@ -29,7 +29,7 @@ namespace WebApiTutorialHE.Service
                     message = "Đăng nhập thất bại"
                 };
             }
-            IAuthContainerModel model = Signature.GetJWTContainerModel(login.user_id.ToString(), loginModel.Email, loginModel.Password, login.Type.ToString());
+            IAuthContainerModel model = Signature.GetJWTContainerModel(login.Id.ToString(), loginModel.Email, loginModel.Password, login.Roles.ToString());
             IAuthService authService = new JWTService(model.SecretKey);
 
             var token = authService.GenerateToken(model);

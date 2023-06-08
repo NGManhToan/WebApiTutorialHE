@@ -3,15 +3,13 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Category
+    public partial class Violationreport
     {
-        public Category()
-        {
-            Posts = new HashSet<Post>();
-        }
-
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
+        public int PostId { get; set; }
+        public int ItemFeedbackId { get; set; }
+        public int ViolatorId { get; set; }
+        public string Description { get; set; } = null!;
         public int CreatedBy { get; set; }
         public bool IsDeleted { get; set; }
         public bool? IsActive { get; set; }
@@ -20,7 +18,9 @@ namespace WebApiTutorialHE.Database.SharingModels
         public int LastModifiedBy { get; set; }
 
         public virtual User CreatedByNavigation { get; set; } = null!;
+        public virtual Itemfeedback ItemFeedback { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual Post Post { get; set; } = null!;
+        public virtual User Violator { get; set; } = null!;
     }
 }

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class NotificationView
+    public partial class Notificationview
     {
         public int Id { get; set; }
-        public int? NotificationId { get; set; }
-        public int? UserIdView { get; set; }
+        public int ReceiverId { get; set; }
+        public int NotificationId { get; set; }
+        public bool IsRead { get; set; }
         public DateTime? ViewedAt { get; set; }
-        public int? StatusView { get; set; }
 
-        public virtual User? UserIdViewNavigation { get; set; }
+        public virtual Notification Notification { get; set; } = null!;
     }
 }

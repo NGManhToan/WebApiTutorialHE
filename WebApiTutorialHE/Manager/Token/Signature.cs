@@ -1,21 +1,22 @@
 ﻿using WebApiTutorialHE.Models.UtilsProject;
 using System.Security.Claims;
 using WebApiTutorialHE.Manager.Token.Interface;
+using WebApiTutorialHE.Database.SharingModels;
 
 namespace WebApiTutorialHE.Manager.Token
 {
     public class Signature
     {
-        public static JWTContainerModel GetJWTContainerModel(string userId, string email, string password, string type)
+        public static JWTContainerModel GetJWTContainerModel(string Id, string email, string password, string role)
         {
             return new JWTContainerModel()
             {
                 Claims = new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userId),
+                    new Claim(ClaimTypes.NameIdentifier, Id),
                     new Claim(ClaimTypes.Email, email),
                     new Claim(ClaimTypes.AuthenticationMethod, password),
-                    new Claim(ClaimTypes.Role, type)
+                    new Claim(ClaimTypes.Role, role)
                 }
             };
         }

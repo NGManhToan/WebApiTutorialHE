@@ -3,15 +3,17 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Category
+    public partial class Comment
     {
-        public Category()
+        public Comment()
         {
-            Posts = new HashSet<Post>();
+            InverseParentComment = new HashSet<Comment>();
         }
 
         public int Id { get; set; }
-        public string Name { get; set; } = null!;
+        public int PostId { get; set; }
+        public string Content { get; set; } = null!;
+        public int? ParentCommentId { get; set; }
         public int CreatedBy { get; set; }
         public bool IsDeleted { get; set; }
         public bool? IsActive { get; set; }
@@ -21,6 +23,8 @@ namespace WebApiTutorialHE.Database.SharingModels
 
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;
-        public virtual ICollection<Post> Posts { get; set; }
+        public virtual Comment? ParentComment { get; set; }
+        public virtual Post Post { get; set; } = null!;
+        public virtual ICollection<Comment> InverseParentComment { get; set; }
     }
 }

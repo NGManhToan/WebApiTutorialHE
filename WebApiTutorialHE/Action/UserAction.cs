@@ -1,11 +1,16 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using WebApiTutorialHE.Database.SharingModels;
+using Microsoft.AspNetCore.Mvc;
+using WebApiTutorialHE.Models.UtilsProject;
+using Microsoft.EntityFrameworkCore;
+using System.Data;
 using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.User;
-using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.UtilsService.Interface;
+
 
 namespace WebApiTutorialHE.Action
 {
@@ -13,19 +18,70 @@ namespace WebApiTutorialHE.Action
     {
         private readonly SharingContext _sharingContext;
         private readonly ICloudMediaService _cloudMediaService;
+
         public UserAction(SharingContext sharingContext,ICloudMediaService cloudMediaService)
         {
             _sharingContext = sharingContext;
             _cloudMediaService = cloudMediaService;
         }
+        public static List<User> accounts = new List<User>();
+        //public async Task<User> AccountUpdateModels(AccountUpdateModel model)
+        //{
+        //    var upadateAccount = await _sharingContext.Users.FindAsync(model.account_id);
 
-        public async Task<Account> ChangePassword(UserChangePasswordModel userForgotPassword)
+        //    if (upadateAccount != null)
+        //    {
+        //        upadateAccount.Email = model.email;
+        //        upadateAccount.Password = model.password;
+
+        //        _sharingContext.Users.Update(upadateAccount);
+        //        await _sharingContext.SaveChangesAsync();
+        //    }
+
+        //    return upadateAccount;
+        //}
+        public async Task<User> ActionCreateAccount(UserListModel model)
         {
-            var user = await _sharingContext.Accounts.FirstOrDefaultAsync(x => x.Email.Equals(userForgotPassword.Email));
+            var createAccout = new User()
+            {
+                Id = model.id,
+                Email = model.email.Trim(),
+                Password = Encryptor.MD5Hash(model.password.Trim()),
+                //Roles = List<>.,
+            };
+            _sharingContext.Add(createAccout);
+            await _sharingContext.SaveChangesAsync();
+            return createAccout;
+        }
+        public async Task<string> DeleteUser(int id)
+        {
+            var deleteAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            deleteAccount.IsDeleted = true;
+            await _sharingContext.SaveChangesAsync();
+            return "Đã xóa";
+        }
+
+        //public async Task<User> ActionFillterAccount(int id/*, string email*/)
+        //{
+        //    var fillterAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id.Equals(id));
+        //    if (fillterAccount == null)
+        //    {
+        //        // Xử lý khi không tìm thấy tài khoản
+        //        // Ví dụ: throw một ngoại lệ hoặc trả về giá trị mặc định
+        //        throw new Exception("Không tìm thấy tài khoản."); // Ví dụ sử dụng ngoại lệ
+        //                                                          // return null; // Ví dụ trả về giá trị mặc định
+        //    }
+
+        //    return fillterAccount;
+        //}
+
+        public async Task<User> ChangePassword(UserChangePasswordModel userForgotPassword)
+        {
+            var user = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(userForgotPassword.Email));
             if (user != null)
             {
                 user.Password = Encryptor.MD5Hash(userForgotPassword.NewPassword.Trim());
-                user.AccountId = user.AccountId;
+                user.Id = user.Id;
                 _sharingContext.Update(user);
                 _sharingContext.SaveChanges();
             }
@@ -42,29 +98,43 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<Tuple<Account,User>> Register(UserRegisterModel userRegisterModel)
+        public async Task<User> Register(Models.User.UserRegisterModel userRegisterModel)
         {
-
-
-
             var user = new User
             {
-                FullName = userRegisterModel.full_name,
-                PhoneNumber = userRegisterModel.phone_number,
+                Email = userRegisterModel.Email,
+                Password = Encryptor.MD5Hash(userRegisterModel.Password.Trim()),
+                FullName = userRegisterModel.FullName,
+                PhoneNumber = userRegisterModel.PhoneNumber,
                 Class = userRegisterModel.Class,
-                StudentCode = userRegisterModel.student_code,
-                UrlAvartar = userRegisterModel.url_avatar.FileName
-            };
+                StudentCode = userRegisterModel.StudentCode,
+                FacultyId = userRegisterModel.FacultyId,
+                UrlAvatar = userRegisterModel.UrlAvatar.FileName,
 
-            var account = new Account
-            {
-                Email=userRegisterModel.email,
-                Password=Encryptor.MD5Hash(userRegisterModel.password.Trim()),
             };
-            _sharingContext.Accounts.Add(account);
+            
+
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
-            return Tuple.Create(account, user);
+            return user;
         }
+        public DataTable GetDataTable()
+        {
+            DataTable dt = new DataTable();
+            dt.TableName = "Empdata";
+            dt.Columns.Add("user_id", typeof(int));
+            dt.Columns.Add("email", typeof(string));
+            dt.Columns.Add("password", typeof(string));
+            var _list = this._sharingContext.Users.ToList();
+            if (_list.Count > 0)
+            {
+                _list.ForEach(item =>
+                {
+                    dt.Rows.Add(item.Id, item.Email, item.Password);
+                });
+            }
+            return dt;
+        }
+
     }
 }

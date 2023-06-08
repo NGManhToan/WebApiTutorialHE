@@ -5,16 +5,25 @@ namespace WebApiTutorialHE.Database.SharingModels
 {
     public partial class Registation
     {
-        public int RegistationId { get; set; }
-        public int? ItemId { get; set; }
-        public int? RegisterId { get; set; }
-        public DateTime RegistationDate { get; set; }
-        public string? Content { get; set; }
-        public int RegisterStatus { get; set; }
-        public DateTime? ApprovalDate { get; set; }
-        public int? RegisterNotifi { get; set; }
+        public Registation()
+        {
+            Notifications = new HashSet<Notification>();
+        }
 
-        public virtual Item? Item { get; set; }
-        public virtual User? Register { get; set; }
+        public int Id { get; set; }
+        public int PostId { get; set; }
+        public string Content { get; set; } = null!;
+        public int Status { get; set; }
+        public int CreatedBy { get; set; }
+        public bool IsDeleted { get; set; }
+        public bool? IsActive { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public DateTime LastModifiedDate { get; set; }
+        public int LastModifiedBy { get; set; }
+
+        public virtual User CreatedByNavigation { get; set; } = null!;
+        public virtual User LastModifiedByNavigation { get; set; } = null!;
+        public virtual Post Post { get; set; } = null!;
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

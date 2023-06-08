@@ -32,5 +32,20 @@ namespace WebApiTutorialHE.Api
             return Ok(register);
 
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var accountList = await _userService.GetAllUser();
+
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy danh sách thành công",
+                content = new
+                {
+                    account = accountList
+                }
+            });
+        }
     }
 }

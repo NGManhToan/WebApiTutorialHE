@@ -29,10 +29,8 @@ builder.Services.AddSingleton<ISharingDapper, SharingDapper>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<ICategoryQuery, CategoryQuery>();
 
-builder.Services.AddScoped<IAccountQuery, AccountQuery>();
-builder.Services.AddScoped<IAccountService, AccountService>();
-
-builder.Services.AddScoped<IAccountAction,AccountAction>();
+builder.Services.AddScoped<IUserQuery, UserQuery>();
+builder.Services.AddScoped<IUserAction,UserAction>();
 
 builder.Services.AddScoped<ILoginQuery, LoginQuery>();
 builder.Services.AddScoped<ILoginService, LoginService>();

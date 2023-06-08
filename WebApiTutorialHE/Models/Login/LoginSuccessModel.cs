@@ -2,11 +2,9 @@
 {
     public class LoginSuccessModel
     {
-        public int user_id { get; set; }
-        public string full_name { get; set; }
-        public string student_code { get; set; }
-        public string phone_number{ get; set; }
-        public string Class { get; set; }
-        public int Type { get; set; }
+        public int Id { get; set; }
+        public string FullName { get; set; }
+        public string? UrlAvatar { get; set; }
+        public string Roles { get; set; } = 3.ToString();
     }
 }
