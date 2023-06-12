@@ -12,7 +12,7 @@ namespace WebApiTutorialHE.Service
         {
             _registrationQuery = registrationQuery;
         }
-        public async Task<List<RegistationListModel>> SeviceGetListRegistation()
+        public async Task<List<RegistationListModel>> GetListRegistation()
         {
             return await _registrationQuery.QueryGetListRegistation();
         }
