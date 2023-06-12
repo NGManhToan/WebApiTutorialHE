@@ -1,4 +1,7 @@
-﻿namespace WebApiTutorialHE.Models.User
+﻿using System.ComponentModel;
+using System.Text.Json.Serialization;
+
+namespace WebApiTutorialHE.Models.User
 {
     public class UserRegisterModel
     {
@@ -10,6 +13,10 @@
         public string Class { get; set; }
         public string StudentCode { get; set; }
         public int FacultyId { get; set; }
+        [DefaultValue(1)]
+        public int IsActive { get; set; }
+        [DefaultValue(3)]
+        public int RoleID { get; set; }
         public IFormFile UrlAvatar { get; set; }
     }
 }

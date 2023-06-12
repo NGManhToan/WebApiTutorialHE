@@ -24,7 +24,7 @@ namespace WebApiTutorialHE.Action
             _sharingContext = sharingContext;
             _cloudMediaService = cloudMediaService;
         }
-        public static List<User> accounts = new List<User>();
+
         //public async Task<User> AccountUpdateModels(AccountUpdateModel model)
         //{
         //    var upadateAccount = await _sharingContext.Users.FindAsync(model.account_id);
@@ -98,24 +98,70 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<User> Register(Models.User.UserRegisterModel userRegisterModel)
+        public async Task<User> Register(UserRegisterModel userRegisterModel)
         {
             var user = new User
             {
                 Email = userRegisterModel.Email,
                 Password = Encryptor.MD5Hash(userRegisterModel.Password.Trim()),
-                FullName = userRegisterModel.FullName,
+                FullName = userRegisterModel.FullName ?? string.Empty,
                 PhoneNumber = userRegisterModel.PhoneNumber,
                 Class = userRegisterModel.Class,
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
                 UrlAvatar = userRegisterModel.UrlAvatar.FileName,
-
+                
+                //Roles = new List<Role> { new Role {  Id=userRegisterModel.RoleID } }
             };
-            
+
+            var role = await _sharingContext.Roles.FindAsync(userRegisterModel.RoleID);
+            user.Roles.Add(role);
+
 
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
+            
+            //_sharingContext.Roles.Add(role);
+            //foreach (var Userrole in roles)
+            //{
+            //    Userrole.Id = user.Id;
+            //    _sharingContext.Roles.Add(Userrole);
+            //    await _sharingContext.SaveChangesAsync();
+            //}
+
+            //var rolesToAdd = roles.Select(role => new Role
+            //{
+            //    Id = user.Id,
+            //    // Các thuộc tính khác của Role
+            //}).ToList();
+
+            //using (var transaction = _sharingContext.Database.BeginTransaction())
+            //{
+            //    try
+            //    {
+            //        _sharingContext.Users.Add(user);
+            //        await _sharingContext.SaveChangesAsync();
+
+            //        var userRole = new Role
+            //        {
+            //            Id = user.Id,
+            //            Name=user.FullName
+
+            //            // Các thuộc tính khác của Role
+            //        };
+
+            //        _sharingContext.Roles.Add(userRole);
+            //        await _sharingContext.SaveChangesAsync();
+
+            //        transaction.Commit();
+            //    }
+            //    catch (Exception)
+            //    {
+            //        transaction.Rollback();
+            //        throw;
+            //    }
+            //}
+
             return user;
         }
         public DataTable GetDataTable()

@@ -2,6 +2,7 @@
 using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.User;
+using WebApiTutorialHE.Models.UtilsProject;
 
 namespace WebApiTutorialHE.Action.Interface
 {
@@ -13,7 +14,7 @@ namespace WebApiTutorialHE.Action.Interface
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<User> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<User> Register(Models.User.UserRegisterModel userRegisterModel);
+        Task<User> Register(UserRegisterModel userRegisterModel);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
     }
 }
