@@ -50,6 +50,9 @@ builder.Services.AddScoped<ICategoryAction, CategoryAction>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 
 
+builder.Services.AddScoped<IPostQuery, PostQuery>();
+builder.Services.AddScoped<IPostService, PostService>();
+
 
 var app = builder.Build();
 

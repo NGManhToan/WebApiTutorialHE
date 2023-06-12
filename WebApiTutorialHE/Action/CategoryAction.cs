@@ -17,18 +17,23 @@ namespace WebApiTutorialHE.Action
         {
             _sharingContext = sharingContext;
         }
-        public async Task<Category> CreateActionCategory(CategoryListModel createcategory)
-        {
-            var category = new Category()
-            {
-                Id = createcategory.id_category,
-                Name = createcategory.name_category,
-                
-            };
-            _sharingContext.Add(category);
+        //public async Task<Category> CreateActionCategory(CategoryListModel createcategory)
+        //{
+        //    var category = new Category()
+        //    {
+        //        Id = createcategory.Id,
+        //        Name = createcategory.Name,
+        //        CreatedBy=createcategory.CreatedBy,
+        //        IsDeleted = createcategory.IsDeleted,
+        //        IsActive = createcategory.IsActive,
+        //        CreatedDate = createcategory.CreatedDate,
+        //        LastModifiedDate = createcategory.LastModifiedDate,
+        //        LastModifiedBy = createcategory.LastModifiedBy
+        //    };
+        //    _sharingContext.Add(category);
 
-            await _sharingContext.SaveChangesAsync();
-            return category;
-        }
+        //    await _sharingContext.SaveChangesAsync();
+        //    return category;
+        //}
     }
 }

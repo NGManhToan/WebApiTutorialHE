@@ -14,8 +14,8 @@ namespace WebApiTutorialHE.Query
         public async Task<List<CategoryListModel>> QueryListCategory()
         {
             var query =
-                @"SELECT * 
-                  FROM sharingtogether.category";
+                @"SELECT Name 
+                  FROM category";
             return await _sharingDapper.QueryAsync<CategoryListModel>(query);
         }
        
