@@ -6,7 +6,7 @@ using WebApiTutorialHE.Service.Interface;
 
 namespace WebApiTutorialHE.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class RegistrationController:ControllerBase
     {
@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Api
         {
             _registrationService = registrationService;
         }
-        public static List<Registation> registations = new List<Registation>();
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -26,7 +26,21 @@ namespace WebApiTutorialHE.Api
                 message="Lấy danh sách thành công",
                 content = new
                 {
-                    registations= registration
+                    registration= registration
+                }
+            });
+        }
+        [HttpPut]
+        public async Task<IActionResult>UpdateRegistration(RegistationUpdateModel registationUpdate)
+        {
+            var update= await _registrationService.updateRegistation(registationUpdate);
+            return Ok(new ObjectResponse
+            {
+                result=1,
+                message="Cập nhật thành công",
+                content=new
+                {
+                    registationUpdate= update
                 }
             });
         }

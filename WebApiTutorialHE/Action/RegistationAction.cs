@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
+using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Registation;
+using WebApiTutorialHE.Models.UtilsProject;
 
 namespace WebApiTutorialHE.Action
 {
@@ -12,6 +14,23 @@ namespace WebApiTutorialHE.Action
         {
             _sharingContext = sharingContext;
         }
-        
+
+        public async Task<Registation> updateRegistration(RegistationUpdateModel registationUpdate)
+        {
+            var update = await _sharingContext.Registations.FindAsync(registationUpdate.Id);
+            if (update != null)
+            {
+                update.Content = registationUpdate.Content;
+                update.LastModifiedDate = Utils.DateNow();
+                update.LastModifiedBy = registationUpdate.Userid;
+
+                _sharingContext.Registations.Update(update);
+                await _sharingContext.SaveChangesAsync();
+            }
+
+            return update;
+        }
+
+
     }
 }
