@@ -2,12 +2,15 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Database;
+using System.Data;
 
 namespace WebApiTutorialHE.Service.Interface
 {
     public interface ICategoryService
     {
         Task<List<CategoryListModel>> GetCategoryListModels();
-        Task<Category>CreateCategory(CategoryListModel category);
+        //Task<Category>CreateCategory(CategoryListModel category);
+        DataTable GetDatabase();
     }
 }

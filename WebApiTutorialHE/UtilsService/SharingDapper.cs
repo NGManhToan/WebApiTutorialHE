@@ -43,6 +43,12 @@ namespace WebApiTutorialHE.UtilsService
             return db.Query<T>(sp, parms).ToList();
         }
 
+        public async Task<T> QuerySingleOrDefaultAsync<T>(string sp, object parms = null)
+        {
+            using IDbConnection db = new MySqlConnection(_config.GetConnectionString(Connectionstring));
+            return await db.QuerySingleOrDefaultAsync<T>(sp, parms);
+        }
+
         public async Task<T> QuerySingleAsync<T>(string sp, object parms = null)
         {
             using IDbConnection db = new MySqlConnection(_config.GetConnectionString(Connectionstring));

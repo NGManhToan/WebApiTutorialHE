@@ -5,6 +5,6 @@ namespace WebApiTutorialHE.Action.Interface
 {
     public interface ICategoryAction
     {
-        Task<Category> CreateActionCategory(CategoryListModel createcategory);
+        //Task<Category> CreateActionCategory(CategoryListModel createcategory);
     }
 }
