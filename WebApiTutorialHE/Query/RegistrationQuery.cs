@@ -16,19 +16,21 @@ namespace WebApiTutorialHE.Query
         public async Task<List<RegistationListModel>> QueryGetListRegistation()
         {
             var query = @"SELECT 
-                            Title,FullName,
-                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',m.ImageUrl) as imageUrl,
+                            Title,
+                            FullName,
+                            CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) AS imageUrl,
                             r.Content,
                             r.Status
-                          FROM
+                        FROM
                             post p
                                 JOIN
                             registration r ON p.Id = r.PostId
                                 JOIN
                             user u ON p.CreatedBy = u.Id
-								join
-							media m on p.CreatedBy=m.PostId
-                            where r.IsDeleted=false";
+                                JOIN
+                            media m ON p.Id = m.PostId
+                        WHERE
+                            r.IsDeleted = FALSE";
             return await _sharingDapper.QueryAsync<RegistationListModel>(query);
         }
     }

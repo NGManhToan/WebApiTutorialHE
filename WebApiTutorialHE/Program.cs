@@ -61,6 +61,8 @@ builder.Services.AddScoped<IItemFeedbackService, ItemfeedbackService>();
 builder.Services.AddScoped<IPostQuery, PostQuery>();
 builder.Services.AddScoped<IPostService, PostService>();
 
+builder.Services.AddScoped<IShowImageSevice, ShowImageSevice>();
+
 
 var app = builder.Build();
 

@@ -16,5 +16,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<User> ChangePassword(UserChangePasswordModel userForgotPassword);
         Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
+        //Task<User> ForgotPassword(UserForgotPasswordModel userForgotPassword, ForceInfo forceInfo);
     }
 }
