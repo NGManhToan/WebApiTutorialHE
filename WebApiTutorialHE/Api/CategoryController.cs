@@ -11,7 +11,7 @@ using WebApiTutorialHE.Service.Interface;
 
 namespace WebApiTutorialHE.Api
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class CategoryController : ControllerBase
     {

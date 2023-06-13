@@ -6,6 +6,7 @@ namespace WebApiTutorialHE.Service.Interface
     {
         Task<List<HomePostModel>> HomePost();
         Task<List<HomePostModel>> FindPost(string search);
-        Task<List<HomePostModel>> GetPostFollowCategoryId(int id);
+        Task<List<HomePostModel>> GetPostFollowCategoryId();
+        Task<List<HomeWishModel>> GetWishList();
     }
 }

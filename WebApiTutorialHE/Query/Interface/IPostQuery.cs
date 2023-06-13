@@ -8,7 +8,9 @@ namespace WebApiTutorialHE.Query.Interface
         Task<List<HomePostModel>> QueryFindPost(string search);
 
         //Lấy ds các vật phẩm theo categoryId
-        Task<List<HomePostModel>> QuerySelectPostFollowCategoryId(int id);
+        Task<List<HomePostModel>> QuerySelectPostFollowCategoryId();
+
+        Task<List<HomeWishModel>>QueryGetWishList();
 
     }
 }

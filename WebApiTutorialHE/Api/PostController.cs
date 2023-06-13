@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Api
         }
 
         public static List<Post> Categories = new List<Post>();
-        [HttpGet]
+        [HttpGet("GetAllSharingItems")]
         public async Task<IActionResult> GetAll()
         {
             var homePost = await _postService.HomePost();
@@ -29,11 +29,17 @@ namespace WebApiTutorialHE.Api
             return Ok(findPost);
         }
 
-        [HttpGet("/{id}")]
-        public async Task<IActionResult> GetPostFromCategoryId(int id)
+        [HttpGet("/GetCategoryId")]
+        public async Task<IActionResult> GetPostFromCategoryId()
         {
-            var getPost = await _postService.GetPostFollowCategoryId(id);
+            var getPost = await _postService.GetPostFollowCategoryId();
             return Ok(getPost);
+        }
+        [HttpGet("GetWishlist")]
+        public async Task<IActionResult> GetWishlish()
+        {
+            var getWish = await _postService.GetWishList();
+            return Ok(getWish);
         }
     }
 }
