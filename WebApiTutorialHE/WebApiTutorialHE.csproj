@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Upload\Avatar\Dictionary.jpg" />
+    <None Include="wwwroot\Upload\Avata\Dictionary.jpg" />
   </ItemGroup>
 
 </Project>

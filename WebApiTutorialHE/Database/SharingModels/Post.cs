@@ -20,7 +20,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public string Title { get; set; } = null!;
         public string Content { get; set; } = null!;
         public string? Status { get; set; }
-        public string? Hastag { get; set; }
+        public float? Price { get; set; }
         public string? EdocUrl { get; set; }
         public int CreatedBy { get; set; }
         public bool IsDeleted { get; set; }
@@ -29,6 +29,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime LastModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
         public string DesiredStatus { get; set; } = null!;
+        public string Type { get; set; } = null!;
 
         public virtual Category Category { get; set; } = null!;
         public virtual User CreatedByNavigation { get; set; } = null!;

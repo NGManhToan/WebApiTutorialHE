@@ -31,6 +31,15 @@ namespace WebApiTutorialHE.Action
             return update;
         }
 
+        public async Task<string>DeleteRegistration(RegistationListModel registationDelete)
+        {
+            var delete= await _sharingContext.Registrations.FindAsync(registationDelete.Id);
+            delete.IsDeleted = true;
+            await _sharingContext.SaveChangesAsync();
+            return "Đã xóa";
+            
+        }
+
 
     }
 }

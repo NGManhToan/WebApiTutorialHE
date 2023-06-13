@@ -10,7 +10,7 @@ using System.Data;
 using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.UtilsService.Interface;
-
+using System.Linq;
 
 namespace WebApiTutorialHE.Action
 {
@@ -92,13 +92,13 @@ namespace WebApiTutorialHE.Action
         {
             var cloudOneMediaConfig = new CloudOneMediaConfig
             {
-                Folder = "Upload/Avatar/Avatar_",
+                Folder = Path.Combine("wwwroot", "Upload","Avata"),
                 FileName = "Image_Avatar",
                 FormFile = avata,
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<User> Register(UserRegisterModel userRegisterModel)
+        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel)
         {
             var user = new User
             {
@@ -120,49 +120,22 @@ namespace WebApiTutorialHE.Action
 
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
-            
-            //_sharingContext.Roles.Add(role);
-            //foreach (var Userrole in roles)
-            //{
-            //    Userrole.Id = user.Id;
-            //    _sharingContext.Roles.Add(Userrole);
-            //    await _sharingContext.SaveChangesAsync();
-            //}
 
-            //var rolesToAdd = roles.Select(role => new Role
-            //{
-            //    Id = user.Id,
-            //    // Các thuộc tính khác của Role
-            //}).ToList();
 
-            //using (var transaction = _sharingContext.Database.BeginTransaction())
-            //{
-            //    try
-            //    {
-            //        _sharingContext.Users.Add(user);
-            //        await _sharingContext.SaveChangesAsync();
 
-            //        var userRole = new Role
-            //        {
-            //            Id = user.Id,
-            //            Name=user.FullName
-
-            //            // Các thuộc tính khác của Role
-            //        };
-
-            //        _sharingContext.Roles.Add(userRole);
-            //        await _sharingContext.SaveChangesAsync();
-
-            //        transaction.Commit();
-            //    }
-            //    catch (Exception)
-            //    {
-            //        transaction.Rollback();
-            //        throw;
-            //    }
-            //}
-
-            return user;
+            return new UserReturnRegister
+            {
+                Id = user.Id,
+                Email = user.Email,
+                Password = user.Password,
+                FullName = user.FullName,
+                PhoneNumber = user.PhoneNumber,
+                Class = user.Class,
+                StudentCode = user.StudentCode,
+                FacultyId = user.FacultyId,
+                UrlAvatar = user.UrlAvatar,
+                RoleIDs = user.Roles.Select(x => x.Id).ToList()
+            };
         }
         public DataTable GetDataTable()
         {

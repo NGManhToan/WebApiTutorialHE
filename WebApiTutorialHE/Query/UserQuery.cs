@@ -25,21 +25,6 @@ namespace WebApiTutorialHE.Query
 	                        left join role r on ur.RoleId = r.Id";
             return await _sharingDapper.QueryAsync<UserRoleModel>(query);
         }
-        //public async Task<List<UserListModel>> QueryFindAccount(string search)
-        //{
-        //    var query = @"SELECT * FROM user WHERE id LIKE @search";
-        //    var parameters = new { Search = "%" + search + "%" };
-        //    return await _sharingDapper.QueryAsync<UserListModel>(query, parameters);
-        //}
-
-        ////Lấy thông tin admin hiện tại
-        //public async Task<List<UserListModel>> QueryListAdminAccount()
-        //{
-        //    var query = @"select *
-        //                from `user` u join userrole ur on u.Id = ur.UserId
-        //                where RoleId=1";
-        //    return await _sharingDapper.QueryAsync<UserListModel>(query);
-        //}
 
     }
 }

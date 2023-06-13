@@ -60,7 +60,7 @@ namespace WebApiTutorialHE.Service
             };
         }
 
-        public async Task<User> Register(UserRegisterModel userRegisterModel)
+        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel)
         {
             await _userAction.SaveOneMediaData(userRegisterModel.UrlAvatar);
 

@@ -351,8 +351,6 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.EdocUrl).HasMaxLength(255);
 
-                entity.Property(e => e.Hastag).HasMaxLength(100);
-
                 entity.Property(e => e.IsActive)
                     .IsRequired()
                     .HasDefaultValueSql("'1'");
@@ -364,6 +362,8 @@ namespace WebApiTutorialHE.Database
                 entity.Property(e => e.Status).HasMaxLength(255);
 
                 entity.Property(e => e.Title).HasMaxLength(100);
+
+                entity.Property(e => e.Type).HasColumnType("enum('Sharing items','Wish items')");
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Posts)

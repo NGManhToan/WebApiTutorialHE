@@ -17,15 +17,18 @@ namespace WebApiTutorialHE.Query
         {
             var query = @"SELECT 
                             Title,FullName,
-                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',p.ImageUrl) imageUrl,
+                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',m.ImageUrl) as imageUrl,
                             r.Content,
                             r.Status
                           FROM
                             post p
                                 JOIN
-                            registation r ON p.Id = r.PostId
+                            registration r ON p.Id = r.PostId
                                 JOIN
-                            user u ON p.CreatedBy = u.Id";
+                            user u ON p.CreatedBy = u.Id
+								join
+							media m on p.CreatedBy=m.PostId
+                            where r.IsDeleted=false";
             return await _sharingDapper.QueryAsync<RegistationListModel>(query);
         }
     }

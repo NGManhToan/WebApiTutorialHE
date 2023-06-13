@@ -5,6 +5,6 @@
         public int Id { get; set; }
         public string FullName { get; set; }
         public string? UrlAvatar { get; set; }
-        public string Roles { get; set; } = 3.ToString();
+        public string Roles { get; set; } 
     }
 }
