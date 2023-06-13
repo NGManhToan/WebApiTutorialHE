@@ -25,21 +25,7 @@ namespace WebApiTutorialHE.Action
             _cloudMediaService = cloudMediaService;
         }
 
-        //public async Task<User> AccountUpdateModels(AccountUpdateModel model)
-        //{
-        //    var upadateAccount = await _sharingContext.Users.FindAsync(model.account_id);
-
-        //    if (upadateAccount != null)
-        //    {
-        //        upadateAccount.Email = model.email;
-        //        upadateAccount.Password = model.password;
-
-        //        _sharingContext.Users.Update(upadateAccount);
-        //        await _sharingContext.SaveChangesAsync();
-        //    }
-
-        //    return upadateAccount;
-        //}
+        
         public async Task<User> ActionCreateAccount(UserListModel model)
         {
             var createAccout = new User()
@@ -61,19 +47,6 @@ namespace WebApiTutorialHE.Action
             return "Đã xóa";
         }
 
-        //public async Task<User> ActionFillterAccount(int id/*, string email*/)
-        //{
-        //    var fillterAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id.Equals(id));
-        //    if (fillterAccount == null)
-        //    {
-        //        // Xử lý khi không tìm thấy tài khoản
-        //        // Ví dụ: throw một ngoại lệ hoặc trả về giá trị mặc định
-        //        throw new Exception("Không tìm thấy tài khoản."); // Ví dụ sử dụng ngoại lệ
-        //                                                          // return null; // Ví dụ trả về giá trị mặc định
-        //    }
-
-        //    return fillterAccount;
-        //}
 
         public async Task<User> ChangePassword(UserChangePasswordModel userForgotPassword)
         {

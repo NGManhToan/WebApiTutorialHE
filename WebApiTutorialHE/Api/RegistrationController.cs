@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Models.Itemfeedback;
 using WebApiTutorialHE.Models.Registation;
 using WebApiTutorialHE.Models.UtilsProject;
+using WebApiTutorialHE.Service;
 using WebApiTutorialHE.Service.Interface;
 
 namespace WebApiTutorialHE.Api
@@ -41,6 +43,20 @@ namespace WebApiTutorialHE.Api
                 content=new
                 {
                     registationUpdate= update
+                }
+            });
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeleteRegistrationID(int id)
+        {
+            var delete = await _registrationService.DeleteRegistation(id);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Xóa thành công",
+                content = new
+                {
+                    registrationDelete = delete
                 }
             });
         }

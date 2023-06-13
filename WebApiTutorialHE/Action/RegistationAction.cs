@@ -31,9 +31,9 @@ namespace WebApiTutorialHE.Action
             return update;
         }
 
-        public async Task<string>DeleteRegistration(RegistationListModel registationDelete)
+        public async Task<string>DeleteRegistration(int id)
         {
-            var delete= await _sharingContext.Registrations.FindAsync(registationDelete.Id);
+            var delete= await _sharingContext.Registrations.FindAsync(id);
             delete.IsDeleted = true;
             await _sharingContext.SaveChangesAsync();
             return "Đã xóa";

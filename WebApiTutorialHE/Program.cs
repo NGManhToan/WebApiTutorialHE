@@ -54,6 +54,9 @@ builder.Services.AddScoped<ICloudMediaService, CloudMediaService>();
 builder.Services.AddScoped<ICategoryAction, CategoryAction>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
 
+builder.Services.AddScoped<IItemfeedbackAction, ItemfeedbackAction>();
+builder.Services.AddScoped<IItemfeedbackQuery, ItemfeedbackQuery>();
+builder.Services.AddScoped<IItemFeedbackService, ItemfeedbackService>();
 
 builder.Services.AddScoped<IPostQuery, PostQuery>();
 builder.Services.AddScoped<IPostService, PostService>();

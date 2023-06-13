@@ -7,6 +7,6 @@ namespace WebApiTutorialHE.Action.Interface
     public interface IRegistationAction
     {
         Task<Registration> updateRegistration(RegistationUpdateModel registationUpdate);
-        Task<string> DeleteRegistration(RegistationListModel registationDelete);
+        Task<string> DeleteRegistration(int id);
     }
 }
