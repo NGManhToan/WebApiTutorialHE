@@ -36,4 +36,8 @@
     <Folder Include="Controllers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="wwwroot\Upload\Avatar\Dictionary.jpg" />
+  </ItemGroup>
+
 </Project>

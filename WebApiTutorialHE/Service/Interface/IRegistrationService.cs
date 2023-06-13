@@ -7,6 +7,6 @@ namespace WebApiTutorialHE.Service.Interface
     public interface IRegistrationService
     {
         Task<List<RegistationListModel>>GetListRegistation();
-        Task<Registation> updateRegistation(RegistationUpdateModel registationUpdate);
+        Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate);
     }
 }

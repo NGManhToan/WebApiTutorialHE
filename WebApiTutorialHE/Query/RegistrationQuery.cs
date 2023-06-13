@@ -3,7 +3,6 @@ using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.UtilsService;
 using WebApiTutorialHE.UtilsService.Interface;
 using WebApiTutorialHE.Models.UtilsProject;
-using WebApiTutorialHE.Models.UtilsProject;
 
 namespace WebApiTutorialHE.Query
 {
@@ -18,7 +17,7 @@ namespace WebApiTutorialHE.Query
         {
             var query = @"SELECT 
                             Title,FullName,
-                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/Avatar_/',p.ImageUrl) imageUrl,
+                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',p.ImageUrl) imageUrl,
                             r.Content,
                             r.Status
                           FROM

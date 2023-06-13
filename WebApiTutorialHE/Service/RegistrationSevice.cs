@@ -22,7 +22,7 @@ namespace WebApiTutorialHE.Service
             return await _registrationQuery.QueryGetListRegistation();
         }
 
-        public async Task<Registation> updateRegistation(RegistationUpdateModel registationUpdate)
+        public async Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate)
         {
             return await _registationAction.updateRegistration(registationUpdate);
         }

@@ -29,7 +29,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual User? LastModifiedByNavigation { get; set; }
         public virtual Notificationtype NotificationType { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
-        public virtual Registation Registation { get; set; } = null!;
+        public virtual Registration Registation { get; set; } = null!;
         public virtual ICollection<Notificationview> Notificationviews { get; set; }
     }
 }

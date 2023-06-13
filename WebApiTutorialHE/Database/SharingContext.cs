@@ -20,13 +20,13 @@ namespace WebApiTutorialHE.Database
         public virtual DbSet<Category> Categories { get; set; } = null!;
         public virtual DbSet<Comment> Comments { get; set; } = null!;
         public virtual DbSet<Faculty> Faculties { get; set; } = null!;
-        public virtual DbSet<Imagepost> Imageposts { get; set; } = null!;
         public virtual DbSet<Itemfeedback> Itemfeedbacks { get; set; } = null!;
+        public virtual DbSet<Medium> Media { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
         public virtual DbSet<Notificationtype> Notificationtypes { get; set; } = null!;
         public virtual DbSet<Notificationview> Notificationviews { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
-        public virtual DbSet<Registation> Registations { get; set; } = null!;
+        public virtual DbSet<Registration> Registrations { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
         public virtual DbSet<Violationreport> Violationreports { get; set; } = null!;
@@ -42,14 +42,12 @@ namespace WebApiTutorialHE.Database
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.UseCollation("utf8mb4_unicode_ci")
+            modelBuilder.UseCollation("utf8mb4_0900_ai_ci")
                 .HasCharSet("utf8mb4");
 
             modelBuilder.Entity<Category>(entity =>
             {
                 entity.ToTable("category");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "FK_Category_CreatedBy");
 
@@ -85,8 +83,6 @@ namespace WebApiTutorialHE.Database
             modelBuilder.Entity<Comment>(entity =>
             {
                 entity.ToTable("comment");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
@@ -138,8 +134,6 @@ namespace WebApiTutorialHE.Database
             {
                 entity.ToTable("faculty");
 
-                entity.UseCollation("utf8mb4_0900_ai_ci");
-
                 entity.Property(e => e.CreatedDate)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -157,32 +151,9 @@ namespace WebApiTutorialHE.Database
                 entity.Property(e => e.Name).HasMaxLength(50);
             });
 
-            modelBuilder.Entity<Imagepost>(entity =>
-            {
-                entity.ToTable("imagepost");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
-
-                entity.HasIndex(e => e.PostId, "PostId");
-
-                entity.Property(e => e.ImageUrl).HasMaxLength(255);
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("'1'");
-
-                entity.HasOne(d => d.Post)
-                    .WithMany(p => p.Imageposts)
-                    .HasForeignKey(d => d.PostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("imagepost_ibfk_1");
-            });
-
             modelBuilder.Entity<Itemfeedback>(entity =>
             {
                 entity.ToTable("itemfeedback");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
@@ -223,11 +194,28 @@ namespace WebApiTutorialHE.Database
                     .HasConstraintName("itemfeedback_ibfk_1");
             });
 
+            modelBuilder.Entity<Medium>(entity =>
+            {
+                entity.ToTable("media");
+
+                entity.HasIndex(e => e.PostId, "PostId");
+
+                entity.Property(e => e.ImageUrl).HasMaxLength(255);
+
+                entity.Property(e => e.ThumbnailUrl).HasMaxLength(255);
+
+                entity.Property(e => e.VideoUrl).HasMaxLength(255);
+
+                entity.HasOne(d => d.Post)
+                    .WithMany(p => p.Media)
+                    .HasForeignKey(d => d.PostId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("media_ibfk_1");
+            });
+
             modelBuilder.Entity<Notification>(entity =>
             {
                 entity.ToTable("notification");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
@@ -295,8 +283,6 @@ namespace WebApiTutorialHE.Database
             {
                 entity.ToTable("notificationtype");
 
-                entity.UseCollation("utf8mb4_0900_ai_ci");
-
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
                 entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
@@ -332,8 +318,6 @@ namespace WebApiTutorialHE.Database
             {
                 entity.ToTable("notificationview");
 
-                entity.UseCollation("utf8mb4_0900_ai_ci");
-
                 entity.HasIndex(e => e.NotificationId, "NotificationId");
 
                 entity.Property(e => e.ViewedAt).HasColumnType("datetime");
@@ -349,8 +333,6 @@ namespace WebApiTutorialHE.Database
             {
                 entity.ToTable("post");
 
-                entity.UseCollation("utf8mb4_0900_ai_ci");
-
                 entity.HasIndex(e => e.CategoryId, "CategoryId");
 
                 entity.HasIndex(e => e.CreatedBy, "FK_Post_CreatedBy");
@@ -363,11 +345,13 @@ namespace WebApiTutorialHE.Database
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.DesiredStatus)
+                    .HasColumnType("enum('Free','ForSale','Both')")
+                    .HasDefaultValueSql("'Free'");
+
                 entity.Property(e => e.EdocUrl).HasMaxLength(255);
 
                 entity.Property(e => e.Hastag).HasMaxLength(100);
-
-                entity.Property(e => e.ImageUrl).HasMaxLength(255);
 
                 entity.Property(e => e.IsActive)
                     .IsRequired()
@@ -380,8 +364,6 @@ namespace WebApiTutorialHE.Database
                 entity.Property(e => e.Status).HasMaxLength(255);
 
                 entity.Property(e => e.Title).HasMaxLength(100);
-
-                entity.Property(e => e.VideoUrl).HasMaxLength(255);
 
                 entity.HasOne(d => d.Category)
                     .WithMany(p => p.Posts)
@@ -402,11 +384,9 @@ namespace WebApiTutorialHE.Database
                     .HasConstraintName("FK_Post_LastModifiedBy");
             });
 
-            modelBuilder.Entity<Registation>(entity =>
+            modelBuilder.Entity<Registration>(entity =>
             {
-                entity.ToTable("registation");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
+                entity.ToTable("registration");
 
                 entity.HasIndex(e => e.CreatedBy, "FK_Registation_CreatedBy");
 
@@ -428,30 +408,32 @@ namespace WebApiTutorialHE.Database
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.Status)
+                    .HasColumnType("enum('Confirming','Accepted','Disapproved')")
+                    .HasDefaultValueSql("'Confirming'");
+
                 entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.RegistationCreatedByNavigations)
+                    .WithMany(p => p.RegistrationCreatedByNavigations)
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Registation_CreatedBy");
 
                 entity.HasOne(d => d.LastModifiedByNavigation)
-                    .WithMany(p => p.RegistationLastModifiedByNavigations)
+                    .WithMany(p => p.RegistrationLastModifiedByNavigations)
                     .HasForeignKey(d => d.LastModifiedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Registation_LastModifiedBy");
 
                 entity.HasOne(d => d.Post)
-                    .WithMany(p => p.Registations)
+                    .WithMany(p => p.Registrations)
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("registation_ibfk_1");
+                    .HasConstraintName("registration_ibfk_1");
             });
 
             modelBuilder.Entity<Role>(entity =>
             {
                 entity.ToTable("role");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "FK_Role_CreatedBy");
 
@@ -491,7 +473,7 @@ namespace WebApiTutorialHE.Database
                         {
                             j.HasKey("RoleId", "UserId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
 
-                            j.ToTable("userrole").UseCollation("utf8mb4_0900_ai_ci");
+                            j.ToTable("userrole");
 
                             j.HasIndex(new[] { "UserId" }, "UserId");
                         });
@@ -500,8 +482,6 @@ namespace WebApiTutorialHE.Database
             modelBuilder.Entity<User>(entity =>
             {
                 entity.ToTable("user");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.LastModifiedBy, "FK_User_LastModifiedBy");
 
@@ -557,8 +537,6 @@ namespace WebApiTutorialHE.Database
             modelBuilder.Entity<Violationreport>(entity =>
             {
                 entity.ToTable("violationreport");
-
-                entity.UseCollation("utf8mb4_0900_ai_ci");
 
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 

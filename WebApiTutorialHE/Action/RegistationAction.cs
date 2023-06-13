@@ -15,16 +15,16 @@ namespace WebApiTutorialHE.Action
             _sharingContext = sharingContext;
         }
 
-        public async Task<Registation> updateRegistration(RegistationUpdateModel registationUpdate)
+        public async Task<Registration> updateRegistration(RegistationUpdateModel registationUpdate)
         {
-            var update = await _sharingContext.Registations.FindAsync(registationUpdate.Id);
+            var update = await _sharingContext.Registrations.FindAsync(registationUpdate.Id);
             if (update != null)
             {
                 update.Content = registationUpdate.Content;
                 update.LastModifiedDate = Utils.DateNow();
                 update.LastModifiedBy = registationUpdate.Userid;
 
-                _sharingContext.Registations.Update(update);
+                _sharingContext.Registrations.Update(update);
                 await _sharingContext.SaveChangesAsync();
             }
 

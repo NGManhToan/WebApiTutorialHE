@@ -22,8 +22,8 @@ namespace WebApiTutorialHE.Database.SharingModels
             NotificationtypeLastModifiedByNavigations = new HashSet<Notificationtype>();
             PostCreatedByNavigations = new HashSet<Post>();
             PostLastModifiedByNavigations = new HashSet<Post>();
-            RegistationCreatedByNavigations = new HashSet<Registation>();
-            RegistationLastModifiedByNavigations = new HashSet<Registation>();
+            RegistrationCreatedByNavigations = new HashSet<Registration>();
+            RegistrationLastModifiedByNavigations = new HashSet<Registration>();
             RoleCreatedByNavigations = new HashSet<Role>();
             RoleLastModifiedByNavigations = new HashSet<Role>();
             ViolationreportCreatedByNavigations = new HashSet<Violationreport>();
@@ -67,8 +67,8 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual ICollection<Notificationtype> NotificationtypeLastModifiedByNavigations { get; set; }
         public virtual ICollection<Post> PostCreatedByNavigations { get; set; }
         public virtual ICollection<Post> PostLastModifiedByNavigations { get; set; }
-        public virtual ICollection<Registation> RegistationCreatedByNavigations { get; set; }
-        public virtual ICollection<Registation> RegistationLastModifiedByNavigations { get; set; }
+        public virtual ICollection<Registration> RegistrationCreatedByNavigations { get; set; }
+        public virtual ICollection<Registration> RegistrationLastModifiedByNavigations { get; set; }
         public virtual ICollection<Role> RoleCreatedByNavigations { get; set; }
         public virtual ICollection<Role> RoleLastModifiedByNavigations { get; set; }
         public virtual ICollection<Violationreport> ViolationreportCreatedByNavigations { get; set; }

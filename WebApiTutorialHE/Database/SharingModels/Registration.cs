@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Registation
+    public partial class Registration
     {
-        public Registation()
+        public Registration()
         {
             Notifications = new HashSet<Notification>();
         }
@@ -13,7 +13,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public int Id { get; set; }
         public int PostId { get; set; }
         public string Content { get; set; } = null!;
-        public int Status { get; set; }
+        public string Status { get; set; } = null!;
         public int CreatedBy { get; set; }
         public bool IsDeleted { get; set; }
         public bool? IsActive { get; set; }
