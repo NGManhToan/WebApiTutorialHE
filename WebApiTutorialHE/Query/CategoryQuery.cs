@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Query
         {
             var query =
                 @"SELECT Name 
-                  FROM category";
+                  FROM Category";
             return await _sharingDapper.QueryAsync<CategoryListModel>(query);
         }
        

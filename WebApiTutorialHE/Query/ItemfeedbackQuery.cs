@@ -18,9 +18,9 @@ namespace WebApiTutorialHE.Query
         {
             var query = @"SELECT p.Title,u.FullName,i.Content,
                             CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',m.ImageUrl) as imageUrl
-                            from post p join itemfeedback i on i.PostId=p.Id
-                            join user u on p.CreatedBy= u.Id
-                            join media m on p.CreatedBy=m.PostId
+                            from Post p join ItemFeedback i on i.PostId=p.Id
+                            join User u on p.CreatedBy= u.Id
+                            join Media m on p.CreatedBy=m.PostId
                             where i.IsDeleted=false";
             return await _sharingDapper.QueryAsync<ReceivedListModel>(query); 
         }
