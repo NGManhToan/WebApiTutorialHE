@@ -30,9 +30,9 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpGet("/GetCategoryId")]
-        public async Task<IActionResult> GetPostFromCategoryId()
+        public async Task<IActionResult> GetPostFromCategoryId(int id)
         {
-            var getPost = await _postService.GetPostFollowCategoryId();
+            var getPost = await _postService.GetPostFollowCategoryId(id);
             return Ok(getPost);
         }
         [HttpGet("GetWishlist")]
@@ -42,10 +42,28 @@ namespace WebApiTutorialHE.Api
             return Ok(getWish);
         }
         [HttpGet("AscendPrice")]
-        public async Task<IActionResult> AscendPrice()
+        public async Task<IActionResult> AscendPrice(int id)
         {
-            var ascendPrice=await _postService.AscendPrice();
+            var ascendPrice=await _postService.AscendPrice(id);
             return Ok(ascendPrice);
+        }
+        [HttpGet("DescendPrice")]
+        public async Task<IActionResult> DescendPrice(int id)
+        {
+            var descendPrice = await _postService.DescendPrice(id);
+            return Ok(descendPrice);
+        }
+        [HttpGet("FilterFreeItem")]
+        public async Task<IActionResult> FilterFreeItem(int id)
+        {
+            var filterFreeItem = await _postService.FilterFreeItem(id);
+            return Ok(filterFreeItem);
+        }
+        [HttpGet("DetailItem")]
+        public async Task<IActionResult>DetailItem(int postId)
+        {
+            var detailItem=await _postService.GetDetailItem(postId);
+            return Ok(detailItem);
         }
     }
 }
