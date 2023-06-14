@@ -23,23 +23,26 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.QueryFindPost(search);
         }
-        public async Task<List<HomePostModel>> GetPostFollowCategoryId()
+        public async Task<List<HomePostModel>> GetPostFollowCategoryId(int id)
         {
-            return await _postQuery.QuerySelectPostFollowCategoryId();
+            return await _postQuery.QuerySelectPostFollowCategoryId(id);
         }       
-        public async Task<List<HomePostModel>> AscendPrice()
+        public async Task<List<HomePostModel>> AscendPrice(int id)
         {
-            return await _postQuery.QueryAscendPrice();
+            return await _postQuery.QueryAscendPrice(id);
         }
-        public async Task<List<HomePostModel>> DescendPrice()
+        public async Task<List<HomePostModel>> DescendPrice(int id)
         {
-            return await _postQuery.QueryDescendPrice();
+            return await _postQuery.QueryDescendPrice(id);
         }
-        public async Task<List<HomePostModel>> FilterFreeItem()
+        public async Task<List<HomePostModel>> FilterFreeItem(int id)
         {
-            return await _postQuery.QueryFilterFreeItem();
+            return await _postQuery.QueryFilterFreeItem(id);
         }
-
+        public async Task<List<HomePostModel>>GetDetailItem(int postId)
+        {
+            return await _postQuery.QueryGetDetailItem(postId); 
+        }
 
         public async Task<List<HomeWishModel>> GetWishList()
         {
