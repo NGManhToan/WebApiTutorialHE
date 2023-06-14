@@ -18,7 +18,7 @@ namespace WebApiTutorialHE.Service
         }
         public async Task<ObjectResponse>Login(LoginModel loginModel)
         {
-            loginModel.Password=Encryptor.MD5Hash(loginModel.Password);
+            loginModel.Password=Encryptor.SHA256Encode(loginModel.Password);
             var login = await _loginQuery.Login(loginModel, loginModel.Password);
 
             if (login == null)

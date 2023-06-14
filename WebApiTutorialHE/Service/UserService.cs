@@ -80,33 +80,38 @@ namespace WebApiTutorialHE.Service
 
             return accounts;
         }
-        //public async Task<User> PutAccountUpdateModel(AccountUpdateModel model)
-        //{
-        //    return await _userAction.AccountUpdateModels(model);
-        //}
-        //public async Task<User> PostAccountModel(UserListModel model)
-        //{
-        //    return await _userAction.ActionCreateAccount(model);
-        //}
+        
         public async Task<string> DeleteUser(int id)
         {
             return await _userAction.DeleteUser(id);
         }
-        //public async Task<User> FillterAccountModel(int id/*,string email*/)
-        //{
-        //    return await _userAction.ActionFillterAccount(id/*,email*/);
-        //}
-        //public async Task<List<UserListModel>> FindAccountModel(string search)
-        //{
-        //    return await _userQuery.QueryFindAccount(search);
-        //}
-
-        //Lấy thông tin admin hiện tại
-        //public async Task<List<UserListModel>> GetAccountListAdminModel()
-        //{
-        //    return await _userQuery.QueryListAdminAccount();
-        //}
         
+        public async Task<UserProfileModel> QueryFrofile(int id)
+        {
+            return await _userQuery.QueryFrofile(id);
+        }
+
+        public async Task<UserProfileSharingModel> QueryFrofileSharing(int id)
+        {
+            return await _userQuery.QueryFrofileSharing(id);
+        }
+
+        public async Task<List<UserProfileFeedback>> QueryItemFeedback(int id)
+        {
+            return await _userQuery.QueryItemFeedback(id);
+        }
+        public async Task<User> UpdateProfile(UserUpdateModel userUpdate)
+        {
+            var filename = "";
+
+            if(userUpdate.UrlImage != null)
+            {
+                var image = await _userAction.SaveOneMediaData(userUpdate.UrlImage);
+                filename = image.FileName;
+            }
+
+            return await _userAction.UpdateProfile(userUpdate, filename);
+        }
 
         public void ExportDataTableToPdf(DataTable dataTable, string filePath)
         {
@@ -144,5 +149,9 @@ namespace WebApiTutorialHE.Service
             // Đóng tài liệu
             document.Close();
         }
+        //public async Task UpdatePassword()
+        //{
+        //    await _userAction.UpdatePassword();
+        //}
     }
 }

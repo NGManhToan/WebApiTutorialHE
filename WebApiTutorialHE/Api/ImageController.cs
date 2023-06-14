@@ -16,7 +16,8 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult> GetImage(string fileName)
         {
             var file = await _showImage.ShowImageAsync(fileName);
-            return new FileContentResult(file, "image/jpeg");
+            var ext = Path.GetExtension(fileName) == ".png" ? "png" : "jpeg";
+            return new FileContentResult(file, "image/" + ext);
         }
     }
 }

@@ -26,19 +26,7 @@ namespace WebApiTutorialHE.Action
         }
 
         
-        public async Task<User> ActionCreateAccount(UserListModel model)
-        {
-            var createAccout = new User()
-            {
-                Id = model.id,
-                Email = model.email.Trim(),
-                Password = Encryptor.MD5Hash(model.password.Trim()),
-                //Roles = List<>.,
-            };
-            _sharingContext.Add(createAccout);
-            await _sharingContext.SaveChangesAsync();
-            return createAccout;
-        }
+        
         public async Task<string> DeleteUser(int id)
         {
             var deleteAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id == id);
@@ -76,7 +64,7 @@ namespace WebApiTutorialHE.Action
             var user = new User
             {
                 Email = userRegisterModel.Email,
-                Password = Encryptor.MD5Hash(userRegisterModel.Password.Trim()),
+                Password = Encryptor.SHA256Encode(userRegisterModel.Password.Trim()),
                 FullName = userRegisterModel.FullName ?? string.Empty,
                 PhoneNumber = userRegisterModel.PhoneNumber,
                 Class = userRegisterModel.Class,
@@ -110,6 +98,29 @@ namespace WebApiTutorialHE.Action
                 RoleIDs = user.Roles.Select(x => x.Id).ToList()
             };
         }
+        public async Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename)
+        {
+            var update = await _sharingContext.Users.FindAsync(userUpdate.Id);
+
+            if (update != null)
+            {
+                update.FullName = userUpdate.FullName;
+                update.Class = userUpdate.Class;
+                update.StudentCode = userUpdate.StudentCode;
+                update.FacultyId = userUpdate.FacultyId;
+                update.LastModifiedDate = Utils.DateNow();
+                update.LastModifiedBy = update.Id;
+
+                if (userUpdate.UrlImage != null)
+                {
+                    update.UrlAvatar = filename;
+                }
+
+                _sharingContext.Users.Update(update);
+                await _sharingContext.SaveChangesAsync();
+            };
+            return update;
+        }
         public DataTable GetDataTable()
         {
             DataTable dt = new DataTable();
@@ -127,6 +138,16 @@ namespace WebApiTutorialHE.Action
             }
             return dt;
         }
+        //public async Task UpdatePassword()
+        //{
+        //    foreach (var user in this._sharingContext.Users)
+        //    {
+        //        user.Password = Encryptor.SHA256Encode(user.StudentCode.Trim());
+        //        _sharingContext.Users.Update(user);
+        //    }
+
+        //    await this._sharingContext.SaveChangesAsync();
+        //}
 
     }
 }

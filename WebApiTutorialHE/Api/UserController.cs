@@ -47,5 +47,69 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetProfileByUser(int id)
+        {
+            var profile = await _userService.QueryFrofile(id);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy người dùng thành công",
+                content = new
+                {
+                    Profile = profile
+                }
+            });
+        }
+        [HttpGet]
+        public async Task<IActionResult> QueryFrofileSharing(int id)
+        {
+            var profileSharing  = await _userService.QueryFrofileSharing(id);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công",
+                content = new
+                {
+                    profileSharing = profileSharing
+                }
+            });
+        }
+        [HttpGet]
+        public async Task<IActionResult> QueryItemFeedback(int id)
+        {
+            var itemFrofile= await _userService.QueryItemFeedback(id);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công danh sách",
+                content = new
+                {
+                    itemFrofile = itemFrofile
+                }
+            });
+        }
+        [HttpPut]
+        public async Task<IActionResult> UpdateProfile([FromForm] UserUpdateModel userUpdate)
+        {
+            var updateUser = await _userService.UpdateProfile(userUpdate);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công danh sách",
+                content = new
+                {
+                    userUpdate = updateUser
+                }
+            });
+        }
+        //[HttpPut]
+        //public async Task<IActionResult> UpdatePassWord()
+        //{
+        //    await _userService.UpdatePassword();
+
+        //    return Ok();
+        //}
     }
 }
