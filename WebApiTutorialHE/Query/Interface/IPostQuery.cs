@@ -11,6 +11,7 @@ namespace WebApiTutorialHE.Query.Interface
         Task<List<HomePostModel>> QuerySelectPostFollowCategoryId();
 
         Task<List<HomeWishModel>>QueryGetWishList();
+        Task<List<HomePostModel>> QueryAscendPrice();
 
     }
 }
