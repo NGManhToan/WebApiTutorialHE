@@ -12,6 +12,8 @@ namespace WebApiTutorialHE.Query.Interface
 
         Task<List<HomeWishModel>>QueryGetWishList();
         Task<List<HomePostModel>> QueryAscendPrice();
+        Task<List<HomePostModel>>QueryDescendPrice();
+        Task<List<HomePostModel>> QueryFilterFreeItem();
 
     }
 }

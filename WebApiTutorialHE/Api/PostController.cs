@@ -47,5 +47,17 @@ namespace WebApiTutorialHE.Api
             var ascendPrice=await _postService.AscendPrice();
             return Ok(ascendPrice);
         }
+        [HttpGet("DescendPrice")]
+        public async Task<IActionResult> DescendPrice()
+        {
+            var descendPrice = await _postService.DescendPrice();
+            return Ok(descendPrice);
+        }
+        [HttpGet("FilterFreeItem")]
+        public async Task<IActionResult> FilterFreeItem()
+        {
+            var filterFreeItem = await _postService.FilterFreeItem();
+            return Ok(filterFreeItem);
+        }
     }
 }
