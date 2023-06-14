@@ -50,6 +50,12 @@ namespace WebApiTutorialHE.Query
                                 left JOIN media m ON p.Id=m.PostId WHERE type=2";
             return await _sharingDapper.QueryAsync<HomeWishModel>(query);
         }
-
+        public async Task<List<HomePostModel>> QueryAscendPrice()
+        {
+            var query= @"SELECT CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avatar/',m.ImageUrl) as ImageUrl,
+                    Title, Price
+                  FROM post p LEFT JOIN media m ON p.Id=m.PostId WHERE type=1 ORDER BY Price ASC";
+            return await _sharingDapper.QueryAsync<HomePostModel>(query);
+        }
     }
 }

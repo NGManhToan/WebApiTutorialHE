@@ -8,5 +8,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<HomePostModel>> FindPost(string search);
         Task<List<HomePostModel>> GetPostFollowCategoryId();
         Task<List<HomeWishModel>> GetWishList();
+        Task<List<HomePostModel>>AscendPrice();
     }
 }

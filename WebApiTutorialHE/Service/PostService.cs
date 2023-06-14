@@ -31,5 +31,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.QueryGetWishList();
         }
+        public async Task<List<HomePostModel>> AscendPrice()
+        {
+            return await _postQuery.QueryAscendPrice();
+        }
     }
 }

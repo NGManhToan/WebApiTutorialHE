@@ -41,5 +41,11 @@ namespace WebApiTutorialHE.Api
             var getWish = await _postService.GetWishList();
             return Ok(getWish);
         }
+        [HttpGet("AscendPrice")]
+        public async Task<IActionResult> AscendPrice()
+        {
+            var ascendPrice=await _postService.AscendPrice();
+            return Ok(ascendPrice);
+        }
     }
 }
