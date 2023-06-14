@@ -7,12 +7,12 @@ namespace WebApiTutorialHE.Database.SharingModels
     {
         public Notification()
         {
-            Notificationviews = new HashSet<Notificationview>();
+            NotificationViews = new HashSet<NotificationView>();
         }
 
         public int Id { get; set; }
         public int? FromUserId { get; set; }
-        public int RegistationId { get; set; }
+        public int RegistrationId { get; set; }
         public int NotificationTypeId { get; set; }
         public int PostId { get; set; }
         public string Content { get; set; } = null!;
@@ -27,9 +27,9 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual User? CreatedByNavigation { get; set; }
         public virtual User? FromUser { get; set; }
         public virtual User? LastModifiedByNavigation { get; set; }
-        public virtual Notificationtype NotificationType { get; set; } = null!;
+        public virtual NotificationType NotificationType { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
-        public virtual Registration Registation { get; set; } = null!;
-        public virtual ICollection<Notificationview> Notificationviews { get; set; }
+        public virtual Registration Registration { get; set; } = null!;
+        public virtual ICollection<NotificationView> NotificationViews { get; set; }
     }
 }

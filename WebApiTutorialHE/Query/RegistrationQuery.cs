@@ -22,13 +22,13 @@ namespace WebApiTutorialHE.Query
                             r.Content,
                             r.Status
                         FROM
-                            post p
+                            Post p
                                 JOIN
-                            registration r ON p.Id = r.PostId
+                            Registration r ON p.Id = r.PostId
                                 JOIN
-                            user u ON p.CreatedBy = u.Id
+                            User u ON p.CreatedBy = u.Id
                                 JOIN
-                            media m ON p.Id = m.PostId
+                            Media m ON p.Id = m.PostId
                         WHERE
                             r.IsDeleted = FALSE";
             return await _sharingDapper.QueryAsync<RegistationListModel>(query);

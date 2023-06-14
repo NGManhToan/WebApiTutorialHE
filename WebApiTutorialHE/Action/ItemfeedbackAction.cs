@@ -12,13 +12,13 @@ namespace WebApiTutorialHE.Action
         {
             _sharingContext = sharingContext;
         }
-        public async Task<Itemfeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
+        public async Task<ItemFeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
         {
-            var update= await _sharingContext.Itemfeedbacks.FindAsync(updateItem.Id);
+            var update= await _sharingContext.ItemFeedbacks.FindAsync(updateItem.Id);
             if (update != null)
             {
                 update.Content = updateItem.Content;
-                _sharingContext.Itemfeedbacks.Update(update);
+                _sharingContext.ItemFeedbacks.Update(update);
                 await _sharingContext.SaveChangesAsync();
             }
             return update;
@@ -26,7 +26,7 @@ namespace WebApiTutorialHE.Action
 
         public async Task<string> Deleteitemfeedback(int id)
         {
-            var deletefeebback = await _sharingContext.Itemfeedbacks.FindAsync(id);
+            var deletefeebback = await _sharingContext.ItemFeedbacks.FindAsync(id);
             deletefeebback.IsDeleted=true;
             await _sharingContext.SaveChangesAsync();
             return "Đã xóa";

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Notificationtype
+    public partial class NotificationType
     {
-        public Notificationtype()
+        public NotificationType()
         {
             Notifications = new HashSet<Notification>();
         }

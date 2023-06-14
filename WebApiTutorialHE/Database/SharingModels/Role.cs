@@ -19,9 +19,6 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime LastModifiedDate { get; set; }
         public int? LastModifiedBy { get; set; }
 
-        public virtual User? CreatedByNavigation { get; set; }
-        public virtual User? LastModifiedByNavigation { get; set; }
-
         public virtual ICollection<User> Users { get; set; }
     }
 }

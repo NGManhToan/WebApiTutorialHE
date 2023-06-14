@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Itemfeedback
+    public partial class ItemFeedback
     {
-        public Itemfeedback()
+        public ItemFeedback()
         {
-            Violationreports = new HashSet<Violationreport>();
+            ViolationReports = new HashSet<ViolationReport>();
         }
 
         public int Id { get; set; }
@@ -23,6 +23,6 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
-        public virtual ICollection<Violationreport> Violationreports { get; set; }
+        public virtual ICollection<ViolationReport> ViolationReports { get; set; }
     }
 }

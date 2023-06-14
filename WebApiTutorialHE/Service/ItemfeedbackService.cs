@@ -20,7 +20,7 @@ namespace WebApiTutorialHE.Service
         {
             return await _itemfeedbackQuery.GetItemfeedback();
         }
-        public async Task<Itemfeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
+        public async Task<ItemFeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
         {
             return await _itemfeedbackAction.Updateitemfeedback(updateItem);
         }

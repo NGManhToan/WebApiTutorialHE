@@ -13,22 +13,21 @@ namespace WebApiTutorialHE.Database.SharingModels
             CommentLastModifiedByNavigations = new HashSet<Comment>();
             InverseCreatedByNavigation = new HashSet<User>();
             InverseLastModifiedByNavigation = new HashSet<User>();
-            ItemfeedbackCreatedByNavigations = new HashSet<Itemfeedback>();
-            ItemfeedbackLastModifiedByNavigations = new HashSet<Itemfeedback>();
+            ItemFeedbackCreatedByNavigations = new HashSet<ItemFeedback>();
+            ItemFeedbackLastModifiedByNavigations = new HashSet<ItemFeedback>();
             NotificationCreatedByNavigations = new HashSet<Notification>();
             NotificationFromUsers = new HashSet<Notification>();
             NotificationLastModifiedByNavigations = new HashSet<Notification>();
-            NotificationtypeCreatedByNavigations = new HashSet<Notificationtype>();
-            NotificationtypeLastModifiedByNavigations = new HashSet<Notificationtype>();
+            NotificationTypeCreatedByNavigations = new HashSet<NotificationType>();
+            NotificationTypeLastModifiedByNavigations = new HashSet<NotificationType>();
+            NotificationViews = new HashSet<NotificationView>();
             PostCreatedByNavigations = new HashSet<Post>();
             PostLastModifiedByNavigations = new HashSet<Post>();
             RegistrationCreatedByNavigations = new HashSet<Registration>();
             RegistrationLastModifiedByNavigations = new HashSet<Registration>();
-            RoleCreatedByNavigations = new HashSet<Role>();
-            RoleLastModifiedByNavigations = new HashSet<Role>();
-            ViolationreportCreatedByNavigations = new HashSet<Violationreport>();
-            ViolationreportLastModifiedByNavigations = new HashSet<Violationreport>();
-            ViolationreportViolators = new HashSet<Violationreport>();
+            ViolationReportCreatedByNavigations = new HashSet<ViolationReport>();
+            ViolationReportLastModifiedByNavigations = new HashSet<ViolationReport>();
+            ViolationReportViolators = new HashSet<ViolationReport>();
             Roles = new HashSet<Role>();
         }
 
@@ -58,22 +57,21 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual ICollection<Comment> CommentLastModifiedByNavigations { get; set; }
         public virtual ICollection<User> InverseCreatedByNavigation { get; set; }
         public virtual ICollection<User> InverseLastModifiedByNavigation { get; set; }
-        public virtual ICollection<Itemfeedback> ItemfeedbackCreatedByNavigations { get; set; }
-        public virtual ICollection<Itemfeedback> ItemfeedbackLastModifiedByNavigations { get; set; }
+        public virtual ICollection<ItemFeedback> ItemFeedbackCreatedByNavigations { get; set; }
+        public virtual ICollection<ItemFeedback> ItemFeedbackLastModifiedByNavigations { get; set; }
         public virtual ICollection<Notification> NotificationCreatedByNavigations { get; set; }
         public virtual ICollection<Notification> NotificationFromUsers { get; set; }
         public virtual ICollection<Notification> NotificationLastModifiedByNavigations { get; set; }
-        public virtual ICollection<Notificationtype> NotificationtypeCreatedByNavigations { get; set; }
-        public virtual ICollection<Notificationtype> NotificationtypeLastModifiedByNavigations { get; set; }
+        public virtual ICollection<NotificationType> NotificationTypeCreatedByNavigations { get; set; }
+        public virtual ICollection<NotificationType> NotificationTypeLastModifiedByNavigations { get; set; }
+        public virtual ICollection<NotificationView> NotificationViews { get; set; }
         public virtual ICollection<Post> PostCreatedByNavigations { get; set; }
         public virtual ICollection<Post> PostLastModifiedByNavigations { get; set; }
         public virtual ICollection<Registration> RegistrationCreatedByNavigations { get; set; }
         public virtual ICollection<Registration> RegistrationLastModifiedByNavigations { get; set; }
-        public virtual ICollection<Role> RoleCreatedByNavigations { get; set; }
-        public virtual ICollection<Role> RoleLastModifiedByNavigations { get; set; }
-        public virtual ICollection<Violationreport> ViolationreportCreatedByNavigations { get; set; }
-        public virtual ICollection<Violationreport> ViolationreportLastModifiedByNavigations { get; set; }
-        public virtual ICollection<Violationreport> ViolationreportViolators { get; set; }
+        public virtual ICollection<ViolationReport> ViolationReportCreatedByNavigations { get; set; }
+        public virtual ICollection<ViolationReport> ViolationReportLastModifiedByNavigations { get; set; }
+        public virtual ICollection<ViolationReport> ViolationReportViolators { get; set; }
 
         public virtual ICollection<Role> Roles { get; set; }
     }

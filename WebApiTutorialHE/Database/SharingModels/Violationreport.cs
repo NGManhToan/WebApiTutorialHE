@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace WebApiTutorialHE.Database.SharingModels
 {
-    public partial class Violationreport
+    public partial class ViolationReport
     {
         public int Id { get; set; }
         public int PostId { get; set; }
@@ -18,7 +18,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public int LastModifiedBy { get; set; }
 
         public virtual User CreatedByNavigation { get; set; } = null!;
-        public virtual Itemfeedback ItemFeedback { get; set; } = null!;
+        public virtual ItemFeedback ItemFeedback { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
         public virtual User Violator { get; set; } = null!;
