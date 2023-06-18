@@ -100,7 +100,15 @@ namespace WebApiTutorialHE.Query
             return await _sharingDapper.QueryAsync<HomePostModel>(query, new { postId=postId });
         }
         
-
-        
+        public async Task<List<MySharingModel>> QueryGetShareListByUser(int id)
+        {
+            var query = @"select p.Title,
+		                        CONCAT('"" + Utils.LinkMedia("""") + @""', 'Upload/Post/',m.ImageUrl) as ImageUrl
+                        from Post p
+	                         left join Media m on p.Id=m.PostId
+	                         join User u on p.CreatedBy=u.Id
+                        where p.CreatedBy=5";
+            return await _sharingDapper.QueryAsync<MySharingModel>(query, new {id=id});
+        }
     }
 }

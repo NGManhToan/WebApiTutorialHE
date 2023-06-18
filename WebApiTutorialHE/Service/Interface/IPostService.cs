@@ -12,5 +12,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<HomePostModel>> DescendPrice(int id);
         Task<List<HomePostModel>> FilterFreeItem(int id);
         Task<List<HomePostModel>> GetDetailItem(int postId);
+        Task<List<MySharingModel>> QueryGetShareListByUser(int id);
     }
 }

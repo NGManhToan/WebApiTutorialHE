@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Models.Post;
+using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Service.Interface;
 
 namespace WebApiTutorialHE.Api
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class PostController: ControllerBase
     {
@@ -64,6 +66,21 @@ namespace WebApiTutorialHE.Api
         {
             var detailItem=await _postService.GetDetailItem(postId);
             return Ok(detailItem);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> QueryGetShareListByUser(int id)
+        {
+            var getList=await _postService.QueryGetShareListByUser(id);
+            return Ok(new ObjectResponse
+            {
+                result=1,
+                message="Lấy thành công danh sách đăng theo người dùng",
+                content = new
+                {
+                    getList= getList
+                }
+            });
         }
     }
 }

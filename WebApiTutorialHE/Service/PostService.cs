@@ -48,5 +48,10 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.QueryGetWishList();
         }
+
+        public async Task<List<MySharingModel>> QueryGetShareListByUser(int id)
+        {
+            return await _postQuery.QueryGetShareListByUser(id);
+        }
     }
 }
