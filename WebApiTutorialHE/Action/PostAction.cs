@@ -46,11 +46,10 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<Post> PostItem(PostItemModel postItemModel)
+        public async Task<Post> PostItem(PostItemModel postItemModel, string fileName)
         {
             var create = new Post()
             {
-                Id = postItemModel.Id,
                 Title = postItemModel.Title,
                 CategoryId = postItemModel.CategoryId,
                 Status = postItemModel.Status,
@@ -58,16 +57,16 @@ namespace WebApiTutorialHE.Action
                 Content = postItemModel.Content,
                 Type = postItemModel.Type,
                 CreatedBy = postItemModel.CreatedBy,
-                CreatedDate = postItemModel.CreatedDate,
+                CreatedDate = Utils.DateNow(),
                 LastModifiedBy = postItemModel.CreatedBy
             };
             _sharingContext.Posts.Add(create);
             await _sharingContext.SaveChangesAsync();
-            var mediaId = create.Id;
+            var postId = create.Id;
             var media = new Medium()
             {
-                PostId = mediaId,
-                ImageUrl = postItemModel.UrlImage
+                PostId = postId,
+                ImageUrl = fileName
             };
             _sharingContext.Media.Add(media);
             await _sharingContext.SaveChangesAsync();

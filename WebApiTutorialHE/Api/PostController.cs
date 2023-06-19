@@ -117,7 +117,7 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpPost]
-        public async Task<IActionResult> PostItem(PostItemModel postItemModel)
+        public async Task<IActionResult> PostItem([FromForm]PostItemModel postItemModel)
         {
             var postItem = await _postService.PostItem(postItemModel);
             return Ok(postItem);

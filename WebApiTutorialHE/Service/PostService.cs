@@ -1,6 +1,8 @@
-﻿using WebApiTutorialHE.Action.Interface;
+﻿using WebApiTutorialHE.Action;
+using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Post;
+using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
@@ -71,7 +73,8 @@ namespace WebApiTutorialHE.Service
         }
         public async Task<Post> PostItem(PostItemModel postItemModel)
         {
-            return await _postAction.PostItem(postItemModel);
+            var file = await _postAction.SaveOneMediaData(postItemModel.UrlImage);
+            return await _postAction.PostItem(postItemModel, file.FileName);
         }
 
     }
