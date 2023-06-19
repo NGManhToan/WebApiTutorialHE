@@ -31,14 +31,16 @@
     <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
 
   </ItemGroup>
-
+  
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="wwwroot\Upload\Post\" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\Upload\Avata\Dictionary.jpg" />
+    <None Include="wwwroot\**">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
