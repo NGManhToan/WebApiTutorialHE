@@ -40,6 +40,24 @@ namespace WebApiTutorialHE.Action
             
         }
 
+        public async Task<Registration>CreateRegistration(RegistationPostModel registationPost)
+        {
+            //var update = await _sharingContext.Registrations.FindAsync(registation);
+            var registration = new Registration()
+            {
+                Content = registationPost.Content,
+                PostId= registationPost.PostId,
+                LastModifiedDate = Utils.DateNow(),
+                CreatedBy=registationPost.CreatedBy,
+                LastModifiedBy = registationPost.CreatedBy
+            };
+            _sharingContext.Add(registration);
+                await _sharingContext.SaveChangesAsync(); 
+            return registration;       
 
+            
+
+            
+        }
     }
 }

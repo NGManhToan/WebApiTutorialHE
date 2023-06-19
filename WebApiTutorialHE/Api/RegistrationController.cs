@@ -60,5 +60,19 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpPost]
+        public async Task<IActionResult> CreateRegistration(RegistationPostModel registationPost)
+        {
+            var create = await _registrationService.CreateRegistation(registationPost);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Thêm thành công",
+                content = new
+                {
+                    registrationCreate = create
+                }
+            });
+        }
     }
 }
