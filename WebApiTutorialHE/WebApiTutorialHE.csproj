@@ -34,13 +34,16 @@
   
   <ItemGroup>
     <Folder Include="Controllers\" />
-    <Folder Include="wwwroot\Upload\Post\" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="wwwroot\**">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="wwwroot\Upload\Post\Dictionary.jpg" />
   </ItemGroup>
 
 </Project>
