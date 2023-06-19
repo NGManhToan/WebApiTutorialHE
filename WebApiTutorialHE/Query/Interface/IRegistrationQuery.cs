@@ -4,6 +4,6 @@ namespace WebApiTutorialHE.Query.Interface
 {
     public interface IRegistrationQuery
     {
-        Task<List<RegistationListModel>>QueryGetListRegistation();
+        Task<List<RegistationListModel>>QueryGetListRegistation(int id);
     }
 }

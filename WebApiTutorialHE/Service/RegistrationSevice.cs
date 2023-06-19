@@ -18,9 +18,9 @@ namespace WebApiTutorialHE.Service
             _registrationQuery = registrationQuery;
             _registationAction = registationAction;
         }
-        public async Task<List<RegistationListModel>> GetListRegistation()
+        public async Task<List<RegistationListModel>> GetListRegistation(int id)
         {
-            return await _registrationQuery.QueryGetListRegistation();
+            return await _registrationQuery.QueryGetListRegistation(id);
         }
 
         public async Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate)

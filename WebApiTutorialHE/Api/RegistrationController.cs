@@ -19,9 +19,9 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll(int id)
         {
-            var registration=await _registrationService.GetListRegistation();
+            var registration=await _registrationService.GetListRegistation(id);
             return Ok(new ObjectResponse
             {
                 result=1,

@@ -2,12 +2,12 @@
 
 namespace WebApiTutorialHE.Service
 {
-    public class ShowImageSevice:IShowImageSevice
+    public class ShowImageSevice : IShowImageSevice
     {
         public async Task<byte[]> ShowImageAsync(string fileName)
         {
-            var path = Path.Combine("wwwroot", "Upload", "Avata", fileName);
-            var fullPath = Directory.GetCurrentDirectory();
+            var basePath = AppDomain.CurrentDomain.BaseDirectory;
+            var path = Path.Combine(basePath, "wwwroot", "Upload", "Avata", fileName);
 
             if (File.Exists(path))
             {
