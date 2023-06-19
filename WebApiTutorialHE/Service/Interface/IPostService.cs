@@ -17,5 +17,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<DetailWishListModel>> GetDetailWishList(int wishId);
         Task<List<CommentModel>> GetListComment(int postId);
         Task<Comment> CreateCommet(CreateCommentModel createComment);
+        Task<Post>PostItem(PostItemModel postItemModel);
     }
 }

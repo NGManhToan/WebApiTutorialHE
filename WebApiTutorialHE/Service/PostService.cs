@@ -69,5 +69,10 @@ namespace WebApiTutorialHE.Service
         {
             return await _postAction.CreateCommet(createComment);
         }
+        public async Task<Post> PostItem(PostItemModel postItemModel)
+        {
+            return await _postAction.PostItem(postItemModel);
+        }
+
     }
 }
