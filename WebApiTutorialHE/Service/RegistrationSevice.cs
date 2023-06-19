@@ -31,5 +31,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registationAction.DeleteRegistration(id);
         }
+        public async Task<Registration> CreateRegistation(RegistationPostModel registationPost)
+        {
+            return await _registationAction.CreateRegistration(registationPost);
+        }
     }
 }

@@ -31,37 +31,37 @@ namespace WebApiTutorialHE.Api
             return Ok(findPost);
         }
 
-        [HttpGet("/GetCategoryId")]
+        [HttpGet]
         public async Task<IActionResult> GetPostFromCategoryId(int id)
         {
             var getPost = await _postService.GetPostFollowCategoryId(id);
             return Ok(getPost);
         }
-        [HttpGet("GetWishlist")]
+        [HttpGet]
         public async Task<IActionResult> GetWishlish()
         {
             var getWish = await _postService.GetWishList();
             return Ok(getWish);
         }
-        [HttpGet("AscendPrice")]
+        [HttpGet]
         public async Task<IActionResult> AscendPrice(int id)
         {
             var ascendPrice=await _postService.AscendPrice(id);
             return Ok(ascendPrice);
         }
-        [HttpGet("DescendPrice")]
+        [HttpGet]
         public async Task<IActionResult> DescendPrice(int id)
         {
             var descendPrice = await _postService.DescendPrice(id);
             return Ok(descendPrice);
         }
-        [HttpGet("FilterFreeItem")]
+        [HttpGet]
         public async Task<IActionResult> FilterFreeItem(int id)
         {
             var filterFreeItem = await _postService.FilterFreeItem(id);
             return Ok(filterFreeItem);
         }
-        [HttpGet("DetailItem")]
+        [HttpGet]
         public async Task<IActionResult>DetailItem(int postId)
         {
             var detailItem=await _postService.GetDetailItem(postId);
