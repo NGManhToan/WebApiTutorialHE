@@ -60,6 +60,8 @@ builder.Services.AddScoped<IItemFeedbackService, ItemfeedbackService>();
 
 builder.Services.AddScoped<IPostQuery, PostQuery>();
 builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IPostAction, PostAction>();
+
 
 builder.Services.AddScoped<IShowImageSevice, ShowImageSevice>();
 

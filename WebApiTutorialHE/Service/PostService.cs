@@ -1,4 +1,6 @@
-﻿using WebApiTutorialHE.Models.Post;
+﻿using WebApiTutorialHE.Action.Interface;
+using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
@@ -9,9 +11,11 @@ namespace WebApiTutorialHE.Service
     public class PostService : IPostService
     {
         private readonly IPostQuery _postQuery;
-        public PostService(IPostQuery postQuery)
+        private readonly IPostAction _postAction;
+        public PostService(IPostQuery postQuery, IPostAction postAction)
         {
             _postQuery = postQuery;
+            _postAction = postAction;
         }
 
 
@@ -56,6 +60,14 @@ namespace WebApiTutorialHE.Service
         public async Task<List<DetailWishListModel>>GetDetailWishList(int wishId)
         {
             return await _postQuery.QueryDetailWishList(wishId);
+        }
+        public async Task<List<CommentModel>> GetListComment(int postId)
+        {
+            return await _postQuery.GetListComment(postId);
+        }
+        public async Task<Comment> CreateCommet(CreateCommentModel createComment)
+        {
+            return await _postAction.CreateCommet(createComment);
         }
     }
 }

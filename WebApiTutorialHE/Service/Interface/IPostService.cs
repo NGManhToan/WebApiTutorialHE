@@ -1,4 +1,5 @@
-﻿using WebApiTutorialHE.Models.Post;
+﻿using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Models.Post;
 
 namespace WebApiTutorialHE.Service.Interface
 {
@@ -14,5 +15,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<HomePostModel>> GetDetailItem(int postId);
         Task<List<MySharingModel>> QueryGetShareListByUser(int id);
         Task<List<DetailWishListModel>> GetDetailWishList(int wishId);
+        Task<List<CommentModel>> GetListComment(int postId);
+        Task<Comment> CreateCommet(CreateCommentModel createComment);
     }
 }

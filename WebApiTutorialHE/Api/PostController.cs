@@ -88,5 +88,33 @@ namespace WebApiTutorialHE.Api
             var detailWish = await _postService.GetDetailWishList(wishId);
             return Ok(detailWish);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetListComment(int postId)
+        {
+            var getList= await _postService.GetListComment(postId);
+            return  Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công danh sách comment theo PostId ",
+                content = new
+                {
+                    getList = getList
+                }
+            });
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateComment(CreateCommentModel createComment)
+        {
+            var create = await _postService.CreateCommet(createComment);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Tạo Comment thành công",
+                content = new
+                {
+                    create = create
+                }
+            });
+        }
     }
 }

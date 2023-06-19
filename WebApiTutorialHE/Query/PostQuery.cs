@@ -125,5 +125,24 @@ namespace WebApiTutorialHE.Query
                     where p.Id = @wishId and type=2;";
             return await _sharingDapper.QueryAsync<DetailWishListModel>(query, new { wishId = wishId });
         }
+
+        public async Task<List<CommentModel>> GetListComment(int postId)
+        {
+            var query = @"SELECT c.Id,u.UrlAvatar, u.FullName, c.Content,
+	                        case  
+                            when timediff(NOW(), c.CreatedDate)> '24:00:00' then concat(datediff(@Now, c.CreatedDate), ' ngày trước')
+                            when timediff(NOW(), c.CreatedDate)> '1:00:00' then concat(hour(timediff(@Now, c.CreatedDate)), ' giờ trước')
+                            else concat(minute(timediff(NOW(), c.CreatedDate)), ' phút trước')
+                            end TimeDiff
+                        FROM Comment c
+	                        JOIN User u ON u.Id = c.CreatedBy
+                            JOIN Post p ON p.Id = c.PostId
+                        WHERE p.Id=@PostId";
+            return await _sharingDapper.QueryAsync<CommentModel>(query, new
+            {
+                PostId=postId,
+                Now=Utils.DateNow()
+            });
+        }
     }
 }
