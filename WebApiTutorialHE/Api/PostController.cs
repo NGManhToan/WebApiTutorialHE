@@ -82,5 +82,11 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpGet]
+        public async Task<IActionResult>DetailWishList(int wishId)
+        {
+            var detailWish = await _postService.GetDetailWishList(wishId);
+            return Ok(detailWish);
+        }
     }
 }

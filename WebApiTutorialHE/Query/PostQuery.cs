@@ -110,5 +110,20 @@ namespace WebApiTutorialHE.Query
                         where p.CreatedBy=5";
             return await _sharingDapper.QueryAsync<MySharingModel>(query, new {id=id});
         }
+        public async Task<List<DetailWishListModel>>QueryDetailWishList(int wishId)
+        {
+            var query = @"select CONCAT('"" + Utils.LinkMedia("""") + @""', 'Upload/Avatar/',u.UrlAvatar) as UrlAvatar, 
+	                    FullName, p.CreatedDate, Content, c.Name, 
+                        CONCAT('"" + Utils.LinkMedia("""") + @""', 'Upload/Post/',m.ImageUrl) as ImageUrl, 
+                        CASE 
+		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
+                            ELSE CAST(DesiredStatus AS char(10))                             
+                            END AS DesiredStatus
+                    from User u left join Post p on u.Id=p.CreatedBy
+			                    left join Category c on c.Id=p.CategoryId
+                                left join Media m on m.PostId=p.Id
+                    where p.Id = @wishId and type=2;";
+            return await _sharingDapper.QueryAsync<DetailWishListModel>(query, new { wishId = wishId });
+        }
     }
 }
