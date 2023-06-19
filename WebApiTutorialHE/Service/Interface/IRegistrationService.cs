@@ -10,6 +10,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate);
         Task<string> DeleteRegistation(int id);
         Task<Registration> CreateRegistation(RegistationPostModel registationPost);
+        Task<List<Registration>>UpdateStatus(UpdateStatus updateStatus);
         
     }
 }

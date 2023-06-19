@@ -25,6 +25,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<UserProfileSharingModel> QueryFrofileSharing(int id);
         Task<List<UserProfileFeedback>> QueryItemFeedback(int id);
         Task<User> UpdateProfile(UserUpdateModel userUpdate);
+        
 
     }
 }

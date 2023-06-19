@@ -54,10 +54,26 @@ namespace WebApiTutorialHE.Action
             _sharingContext.Add(registration);
                 await _sharingContext.SaveChangesAsync(); 
             return registration;       
+        }
+        public async Task<List<Registration>> UpdateRegistrationStatus(UpdateStatus updateStatus)
+        {
+            var update = _sharingContext.Registrations.Select(x => x).Where(x => x.PostId == updateStatus.PostId);
 
-            
+            foreach (var registration in update)
+            {
+                if (registration.Id == updateStatus.Id)
+                {
+                    registration.Status = "Accepted";
+                }
+                else
+                {
+                    registration.Status = "Disapproved";
+                }
+            }
 
-            
+            _sharingContext.Registrations.UpdateRange(update);
+            await _sharingContext.SaveChangesAsync();
+            return update.ToList();
         }
     }
 }

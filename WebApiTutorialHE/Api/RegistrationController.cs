@@ -74,5 +74,19 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpPut]
+        public async Task<IActionResult> UpdateStatus(UpdateStatus updateStatus)
+        {
+            var update = await _registrationService.UpdateStatus(updateStatus);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Đổi thành công",
+                content = new
+                {
+                    update = update
+                }
+            });
+        }
     }
 }
