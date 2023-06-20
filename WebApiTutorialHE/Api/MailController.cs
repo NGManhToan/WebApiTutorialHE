@@ -18,7 +18,7 @@ namespace MailKitDemo.Controllers
         }
 
         [HttpPost("sendmail")]
-        public async Task<IActionResult> SendMailAsync(MailData mailData)
+        public async Task<IActionResult> SendMailAsync([FromForm]MailDataWithAttachments mailData)
         {
             bool result = await _mail.SendMail(mailData, new CancellationToken());
 
@@ -31,5 +31,7 @@ namespace MailKitDemo.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, "An error occured. The Mail could not be sent.");
             }
         }
+
+
     }
 }

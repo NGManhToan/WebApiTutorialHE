@@ -4,6 +4,7 @@ namespace WebApiTutorialHE.Service.Interface
 {
     public interface IMailService
     {
-        Task<bool> SendMail(MailData mailData, CancellationToken ct);
+        Task<bool> SendMail(MailDataWithAttachments mailData, CancellationToken ct);
+        //Task SendWithAttachmentsAsync(MailDataWithAttachments mailData, CancellationToken ct);
     }
 }

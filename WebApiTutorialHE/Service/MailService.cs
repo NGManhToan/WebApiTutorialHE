@@ -16,7 +16,7 @@ namespace WebApiTutorialHE.Service
             _settings = settings.Value;
         }
 
-        public async Task<bool> SendMail(MailData mailData, CancellationToken ct = default)
+        public async Task<bool> SendMail(MailDataWithAttachments mailData, CancellationToken ct = default)
         {
             try
             {
@@ -60,6 +60,29 @@ namespace WebApiTutorialHE.Service
                 var body = new BodyBuilder();
                 mail.Subject = mailData.Subject;
                 body.HtmlBody = mailData.Body;
+                
+                if (mailData.Attachments != null)
+                {
+                    byte[] attachmentFileByteArray;
+
+                    foreach (IFormFile attachment in mailData.Attachments)
+                    {
+                        // Check if length of the file in bytes is larger than 0
+                        if (attachment.Length > 0)
+                        {
+                            // Create a new memory stream and attach attachment to mail body
+                            using (MemoryStream memoryStream = new MemoryStream())
+                            {
+                                // Copy the attachment to the stream
+                                attachment.CopyTo(memoryStream);
+                                attachmentFileByteArray = memoryStream.ToArray();
+                            }
+                            // Add the attachment from the byte array
+                            body.Attachments.Add(attachment.FileName, attachmentFileByteArray, ContentType.Parse(attachment.ContentType));
+                        }
+                    }
+                }
+
                 mail.Body = body.ToMessageBody();
 
                 #endregion
