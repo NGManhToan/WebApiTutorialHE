@@ -75,5 +75,29 @@ namespace WebApiTutorialHE.Action
             await _sharingContext.SaveChangesAsync();
             return update.ToList();
         }
+        public async Task<List<Registration>> EdocRegistrationStatus(List<EdocUpdateStatus> updateStatusList)
+        {
+            var edocPostIds = updateStatusList.Where(u => u.CategoryId == 2).Select(u => u.PostId).Distinct().ToList();
+            var registrationsToUpdate = _sharingContext.Registrations.Where(r => edocPostIds.Contains(r.PostId)).ToList();
+            foreach (var updateStatus in updateStatusList)
+            {
+                if (updateStatus.CategoryId == 2)
+                {
+                    var registrations = registrationsToUpdate.Where(r => r.PostId == updateStatus.PostId);
+
+                    foreach (var registration in registrations)
+                    {
+                        if (registration.Id == updateStatus.Id)
+                        {
+                            registration.Status = "Accepted";
+                        }
+                        
+                    }
+                }
+            }
+            _sharingContext.Registrations.UpdateRange(registrationsToUpdate);
+            await _sharingContext.SaveChangesAsync();
+            return registrationsToUpdate;
+        }
     }
 }

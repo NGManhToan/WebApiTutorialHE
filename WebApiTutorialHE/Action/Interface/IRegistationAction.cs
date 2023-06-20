@@ -10,5 +10,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<string> DeleteRegistration(int id);
         Task<Registration> CreateRegistration(RegistationPostModel registationPost);
         Task<List<Registration>> UpdateRegistrationStatus(UpdateStatus updateStatus);
+        Task<List<Registration>> EdocRegistrationStatus(List<EdocUpdateStatus> updateStatusList);
     }
 }

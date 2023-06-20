@@ -11,6 +11,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<string> DeleteRegistation(int id);
         Task<Registration> CreateRegistation(RegistationPostModel registationPost);
         Task<List<Registration>>UpdateStatus(UpdateStatus updateStatus);
-        
+        Task<List<Registration>>EdocUpdateStatus(List<EdocUpdateStatus> updateStatusList);   
     }
 }

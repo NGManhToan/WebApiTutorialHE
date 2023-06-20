@@ -88,5 +88,19 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpPut]
+        public async Task<IActionResult> EdocStatus(List<EdocUpdateStatus> updateStatusList)
+        {
+            var update = await _registrationService.EdocUpdateStatus(updateStatusList);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Đổi thành công",
+                content = new
+                {
+                    update = update
+                }
+            });
+        }
     }
 }

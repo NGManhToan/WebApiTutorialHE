@@ -39,5 +39,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registationAction.UpdateRegistrationStatus(updateStatus);
         }
+        public async Task<List<Registration>>EdocUpdateStatus(List<EdocUpdateStatus> updateStatusList)
+        {
+            return await _registationAction.EdocRegistrationStatus(updateStatusList);
+        }
     }
 }
