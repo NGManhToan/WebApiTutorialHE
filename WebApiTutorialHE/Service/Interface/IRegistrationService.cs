@@ -1,4 +1,5 @@
-﻿using WebApiTutorialHE.Database.SharingModels;
+﻿using System.Threading.Tasks;
+using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Registation;
 using WebApiTutorialHE.Models.UtilsProject;
 
@@ -11,6 +12,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<string> DeleteRegistation(int id);
         Task<Registration> CreateRegistation(RegistationPostModel registationPost);
         Task<List<Registration>>UpdateStatus(UpdateStatus updateStatus);
-         
+        Task<int> NumRegistation(int postId, int createdBy);
     }
 }

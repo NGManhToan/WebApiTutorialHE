@@ -5,6 +5,7 @@ using WebApiTutorialHE.Models.Registation;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Service;
 using WebApiTutorialHE.Service.Interface;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApiTutorialHE.Api
 {
@@ -88,6 +89,19 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
-        
+        [HttpGet]
+        public async Task<IActionResult> CountNumRegistation(int postId, int createdBy)
+        {
+            var count= await _registrationService.NumRegistation(postId, createdBy);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công",
+                content = new
+                {
+                    count = count
+                }
+            });
+        }
     }
 }

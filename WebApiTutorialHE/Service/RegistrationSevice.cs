@@ -39,6 +39,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registationAction.UpdateRegistrationStatus(updateStatus);
         }
-        
+        public async Task<int> NumRegistation(int postId, int createdBy)
+        {
+            return await _registrationQuery.QueryNumRegistation(postId, createdBy);
+        }
     }
 }
