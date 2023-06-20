@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
@@ -57,47 +58,43 @@ namespace WebApiTutorialHE.Action
         }
         public async Task<List<Registration>> UpdateRegistrationStatus(UpdateStatus updateStatus)
         {
-            var update = _sharingContext.Registrations.Select(x => x).Where(x => x.PostId == updateStatus.PostId);
+            var accepted = await _sharingContext.Registrations.FindAsync(updateStatus.Id);
 
-            foreach (var registration in update)
+            if (accepted != null)
             {
-                if (registration.Id == updateStatus.Id)
+                var category = await _sharingContext.Posts.Where(x => x.Id == accepted.PostId).Select(x => x.CategoryId).FirstOrDefaultAsync();
+                var update = _sharingContext.Registrations.Select(x => x).Where(x => x.PostId == accepted.PostId);
+
+                if (category == 2)
                 {
-                    registration.Status = "Accepted";
+                    {
+                        accepted.Status = "Accepted";
+                        _sharingContext.Registrations.Update(accepted);
+                    }
                 }
                 else
                 {
-                    registration.Status = "Disapproved";
-                }
-            }
-
-            _sharingContext.Registrations.UpdateRange(update);
-            await _sharingContext.SaveChangesAsync();
-            return update.ToList();
-        }
-        public async Task<List<Registration>> EdocRegistrationStatus(List<EdocUpdateStatus> updateStatusList)
-        {
-            var edocPostIds = updateStatusList.Where(u => u.CategoryId == 2).Select(u => u.PostId).Distinct().ToList();
-            var registrationsToUpdate = _sharingContext.Registrations.Where(r => edocPostIds.Contains(r.PostId)).ToList();
-            foreach (var updateStatus in updateStatusList)
-            {
-                if (updateStatus.CategoryId == 2)
-                {
-                    var registrations = registrationsToUpdate.Where(r => r.PostId == updateStatus.PostId);
-
-                    foreach (var registration in registrations)
+                    foreach (var registration in update)
                     {
-                        if (registration.Id == updateStatus.Id)
+                        if (registration.Id == accepted.Id)
                         {
                             registration.Status = "Accepted";
                         }
-                        
+                        else
+                        {
+                            registration.Status = "Disapproved";
+                        }
                     }
+
+                    _sharingContext.Registrations.UpdateRange(update);
                 }
+
+                await _sharingContext.SaveChangesAsync();
+                return update.ToList();
             }
-            _sharingContext.Registrations.UpdateRange(registrationsToUpdate);
-            await _sharingContext.SaveChangesAsync();
-            return registrationsToUpdate;
+
+            return null;
         }
+        
     }
 }
