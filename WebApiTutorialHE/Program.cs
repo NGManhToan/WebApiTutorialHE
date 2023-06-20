@@ -6,6 +6,7 @@ using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Manager.Token;
 using WebApiTutorialHE.Manager.Token.Interface;
+using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service;
@@ -25,6 +26,8 @@ builder.Services.AddControllersWithViews()
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
+builder.Services.AddTransient<IMailService, MailService>();
 
 builder.Services.AddDbContext<SharingContext>(options => options.UseMySql(configuration.GetConnectionString("SharingConnection"),
                 ServerVersion.Parse("8.0.30-mysql")), ServiceLifetime.Scoped, ServiceLifetime.Scoped);
