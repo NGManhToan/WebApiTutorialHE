@@ -442,9 +442,15 @@ namespace WebApiTutorialHE.Database
 
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
+                entity.HasIndex(e => e.Email, "Email_UNIQUE")
+                    .IsUnique();
+
                 entity.HasIndex(e => e.FacultyId, "FacultyId");
 
                 entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
+
+                entity.HasIndex(e => e.PhoneNumber, "PhoneNumber_UNIQUE")
+                    .IsUnique();
 
                 entity.Property(e => e.Class).HasMaxLength(50);
 

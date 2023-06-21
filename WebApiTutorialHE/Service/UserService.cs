@@ -60,13 +60,33 @@ namespace WebApiTutorialHE.Service
             };
         }
 
-        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel)
+        public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel)
         {
-            await _userAction.SaveOneMediaData(userRegisterModel.UrlAvatar);
+            if(await _userAction.IsEmailDuplicate(userRegisterModel.Email))
+            {
+                return new ObjectResponse
+                {
+                    result=0,
+                    message="Mail đã tồn tại"
+                };
+            }
+            if (await _userAction.IsPhoneDuplicate( userRegisterModel.PhoneNumber))
+            {
+                return new ObjectResponse
+                {
+                    result = 0,
+                    message = "Số điện thoại đã tồn tại"
+                };
+            }
 
             var register = await _userAction.Register(userRegisterModel);
+
+            await _userAction.SaveOneMediaData(userRegisterModel.UrlAvatar);
             
-            return register;
+            return new ObjectResponse
+            {
+                content=register
+            };
         }
         public async Task<List<UserListModel>> GetAllUser()
         {

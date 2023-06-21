@@ -41,7 +41,7 @@ namespace WebApiTutorialHE.Action
             var user = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(userForgotPassword.Email));
             if (user != null)
             {
-                user.Password = Encryptor.MD5Hash(userForgotPassword.NewPassword.Trim());
+                user.Password = Encryptor.SHA256Encode(userForgotPassword.NewPassword.Trim());
                 user.Id = user.Id;
                 _sharingContext.Update(user);
                 _sharingContext.SaveChanges();
@@ -59,8 +59,19 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
+        public async Task<bool> IsEmailDuplicate(string email)
+        {
+            return await _sharingContext.Users.AnyAsync(u => u.Email.Equals(email) );
+        }
+
+        public async Task<bool> IsPhoneDuplicate(string phoneNumber)
+        {
+            return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
+        }
+
         public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel)
         {
+            
             var user = new User
             {
                 Email = userRegisterModel.Email,

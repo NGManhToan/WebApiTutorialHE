@@ -9,7 +9,7 @@ namespace WebApiTutorialHE.Service.Interface
     public interface IUserService
     {
         Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel);
+        Task<ObjectResponse> Register(UserRegisterModel userRegisterModel);
         Task<List<UserListModel>> GetAllUser();
         //Task<User> PutAccountUpdateModel(AccountUpdateModel model);
         //Task<User> PostAccountModel(UserListModel model);

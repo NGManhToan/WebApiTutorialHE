@@ -19,5 +19,7 @@ namespace WebApiTutorialHE.Action.Interface
         Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename);
         //Task<User> ForgotPassword(UserForgotPasswordModel userForgotPassword, ForceInfo forceInfo);
         //Task UpdatePassword();
+        Task<bool> IsEmailDuplicate(string email);
+        Task<bool> IsPhoneDuplicate( string phoneNumber);
     }
 }
