@@ -128,5 +128,19 @@ namespace WebApiTutorialHE.Api
             var postProposal = await _postService.PostProposal(postProposalModel);
             return Ok(postProposal);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetWishListByUser(int userId)
+        {
+            var getList = await _postService.GetWishListByUser(userId);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công danh sách đề xuất theo người dùng",
+                content = new
+                {
+                    getList = getList
+                }
+            });
+        }
     }
 }
