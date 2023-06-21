@@ -19,6 +19,7 @@ namespace WebApiTutorialHE.Query.Interface
         Task<List<MySharingModel>> QueryGetShareListByUser(int id);
         Task<List<DetailWishListModel>>QueryDetailWishList(int wishId);
         Task<List<CommentModel>> GetListComment(int postId);
+        Task<List<HomeWishModel>> GetWishListByUser(int userId);
         
 
     }

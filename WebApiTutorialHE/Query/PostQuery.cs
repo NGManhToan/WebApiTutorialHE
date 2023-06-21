@@ -160,6 +160,16 @@ namespace WebApiTutorialHE.Query
                 Now = Utils.DateNow()
             });
         }
-        
+        public async Task<List<HomeWishModel>>GetWishListByUser(int userId)
+        {
+            var query = @"SELECT u.FullName, p.CreatedDate, Content,CASE 
+		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
+                            ELSE CAST(DesiredStatus AS char(10))                             
+                            END AS DesiredStatus,
+                     CONCAT('"" + Utils.LinkMedia("""") + @""', m.ImageUrl) as ImageUrl
+                  FROM Post p left JOIN User u ON p.CreatedBy=u.Id
+                                left JOIN Media m ON p.Id=m.PostId WHERE type=2 and p.CreatedBy=@userId";
+            return await _sharingDapper.QueryAsync<HomeWishModel>(query, new { userId = userId });
+        }
     }
 }

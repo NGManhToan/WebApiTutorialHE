@@ -81,5 +81,9 @@ namespace WebApiTutorialHE.Service
             var file = await _postAction.SaveOneMediaData(postProposalModel.UrlImage);
             return await _postAction.PostProposal(postProposalModel, file.FileName);
         }
+        public async Task<List<HomeWishModel>> GetWishListByUser(int userId)
+        {
+            return await _postQuery.GetWishListByUser(userId);
+        }
     }
 }
