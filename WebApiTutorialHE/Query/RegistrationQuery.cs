@@ -35,5 +35,19 @@ namespace WebApiTutorialHE.Query
                             r.IsDeleted = FALSE AND r.CreatedBy = @id";
             return await _sharingDapper.QueryAsync<RegistationListModel>(query, new {Id=id});
         }
+
+        public async Task<int> QueryNumRegistation(int postId,int createdBy)
+        {
+            var query = @"select count(r.CreatedBy) as Num
+                          from Registration r
+		                        join User u on u.Id = r.CreatedBy
+                                join Post p on p.Id = r.PostId
+                          where r.PostId=@postId and  p.CreatedBy=@createdBy and r.IsDeleted = FALSE";
+            return await _sharingDapper.QuerySingleAsync<int>(query, new
+            {
+                postId=postId,
+                createdBy=createdBy
+            });
+        }
     }
 }
