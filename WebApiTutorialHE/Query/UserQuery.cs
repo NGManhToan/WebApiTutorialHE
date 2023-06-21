@@ -64,5 +64,15 @@ namespace WebApiTutorialHE.Query
                 Id=id,
             });
         }
+        public async Task<RecipientInformationModel>QueryRecipientInfor(int id)
+        {
+            var query = @"select FullName, StudentCode, Class, f.Name, PhoneNumber 
+                    from User u join Faculty f on u.FacultyId=f.Id
+                    where u.Id=@id";
+            return await _sharingDapper.QuerySingleAsync<RecipientInformationModel>(query, new
+            {
+                id = id,
+            });
+        }
     }
 }

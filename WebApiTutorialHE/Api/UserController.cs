@@ -104,6 +104,21 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpGet]
+        public async Task<IActionResult> RecipientInfor(int id)
+        {
+            var account = await _userService.RecipientInfor(id);
+
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy danh sách thành công",
+                content = new
+                {
+                    account=account
+                }
+            });
+        }
         //[HttpPut]
         //public async Task<IActionResult> UpdatePassWord()
         //{

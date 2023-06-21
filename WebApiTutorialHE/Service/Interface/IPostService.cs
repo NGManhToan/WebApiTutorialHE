@@ -1,6 +1,7 @@
 ﻿using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.Registation;
+using WebApiTutorialHE.Models.User;
 
 namespace WebApiTutorialHE.Service.Interface
 {
@@ -21,5 +22,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<Post>PostItem(PostItemModel postItemModel);
         Task<Post>PostProposal(PostProposalModel postProposalModel);
         Task<List<HomeWishModel>>GetWishListByUser(int userId);
+        
     }
 }
