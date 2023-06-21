@@ -23,7 +23,6 @@ namespace WebApiTutorialHE.Database
         public virtual DbSet<ItemFeedback> ItemFeedbacks { get; set; } = null!;
         public virtual DbSet<Medium> Media { get; set; } = null!;
         public virtual DbSet<Notification> Notifications { get; set; } = null!;
-        public virtual DbSet<NotificationType> NotificationTypes { get; set; } = null!;
         public virtual DbSet<NotificationView> NotificationViews { get; set; } = null!;
         public virtual DbSet<Post> Posts { get; set; } = null!;
         public virtual DbSet<Registration> Registrations { get; set; } = null!;
@@ -36,7 +35,7 @@ namespace WebApiTutorialHE.Database
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=180.93.172.49;port=4786;database=SharingTogether;user=user_share_together;password=RFYsGMZq2*AK", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.21-mysql"));
+                optionsBuilder.UseMySql("server=180.93.172.49;port=4786;database=SharingTogether;username=user_share_together;password=RFYsGMZq2*AK", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.21-mysql"));
             }
         }
 
@@ -221,8 +220,6 @@ namespace WebApiTutorialHE.Database
 
                 entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
 
-                entity.HasIndex(e => e.NotificationTypeId, "NotificationTypeId");
-
                 entity.HasIndex(e => e.PostId, "PostId");
 
                 entity.HasIndex(e => e.RegistrationId, "RegistrationId");
@@ -241,6 +238,8 @@ namespace WebApiTutorialHE.Database
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
+                entity.Property(e => e.Type).HasColumnType("enum('Suggest giving','Suggest receiving','Registration','Approve status','Comment','Post the item from wishlist')");
+
                 entity.Property(e => e.Url).HasMaxLength(255);
 
                 entity.HasOne(d => d.CreatedByNavigation)
@@ -258,12 +257,6 @@ namespace WebApiTutorialHE.Database
                     .HasForeignKey(d => d.LastModifiedBy)
                     .HasConstraintName("Notification_ibfk_6");
 
-                entity.HasOne(d => d.NotificationType)
-                    .WithMany(p => p.Notifications)
-                    .HasForeignKey(d => d.NotificationTypeId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("Notification_ibfk_3");
-
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.Notifications)
                     .HasForeignKey(d => d.PostId)
@@ -275,41 +268,6 @@ namespace WebApiTutorialHE.Database
                     .HasForeignKey(d => d.RegistrationId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Notification_ibfk_2");
-            });
-
-            modelBuilder.Entity<NotificationType>(entity =>
-            {
-                entity.ToTable("NotificationType");
-
-                entity.HasIndex(e => e.CreatedBy, "CreatedBy");
-
-                entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
-
-                entity.Property(e => e.CreatedDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.IsActive)
-                    .IsRequired()
-                    .HasDefaultValueSql("'1'");
-
-                entity.Property(e => e.LastModifiedDate)
-                    .HasColumnType("datetime")
-                    .HasDefaultValueSql("CURRENT_TIMESTAMP");
-
-                entity.Property(e => e.Name).HasMaxLength(255);
-
-                entity.HasOne(d => d.CreatedByNavigation)
-                    .WithMany(p => p.NotificationTypeCreatedByNavigations)
-                    .HasForeignKey(d => d.CreatedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("NotificationType_ibfk_1");
-
-                entity.HasOne(d => d.LastModifiedByNavigation)
-                    .WithMany(p => p.NotificationTypeLastModifiedByNavigations)
-                    .HasForeignKey(d => d.LastModifiedBy)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("NotificationType_ibfk_2");
             });
 
             modelBuilder.Entity<NotificationView>(entity =>
@@ -345,6 +303,8 @@ namespace WebApiTutorialHE.Database
 
                 entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
 
+                entity.HasIndex(e => e.FromWishList, "fk_Post_wishlist");
+
                 entity.Property(e => e.Content).HasColumnType("text");
 
                 entity.Property(e => e.CreatedDate)
@@ -365,7 +325,7 @@ namespace WebApiTutorialHE.Database
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.Status).HasMaxLength(100);
+                entity.Property(e => e.Status).HasColumnType("enum('Used','New')");
 
                 entity.Property(e => e.Title).HasMaxLength(100);
 
@@ -382,6 +342,11 @@ namespace WebApiTutorialHE.Database
                     .HasForeignKey(d => d.CreatedBy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Post_ibfk_2");
+
+                entity.HasOne(d => d.FromWishListNavigation)
+                    .WithMany(p => p.InverseFromWishListNavigation)
+                    .HasForeignKey(d => d.FromWishList)
+                    .HasConstraintName("fk_Post_wishlist");
 
                 entity.HasOne(d => d.LastModifiedByNavigation)
                     .WithMany(p => p.PostLastModifiedByNavigations)

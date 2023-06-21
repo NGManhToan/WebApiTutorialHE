@@ -43,5 +43,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registrationQuery.QueryNumRegistation(postId, createdBy);
         }
+        public async Task<List<RegistrationProserModel>> GetListRegistation(int id, int postId)
+        {
+            return await _registrationQuery.GetListRegistrationHaveProposer(postId, id);
+        }
     }
 }

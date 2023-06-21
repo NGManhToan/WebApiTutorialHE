@@ -8,6 +8,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public Post()
         {
             Comments = new HashSet<Comment>();
+            InverseFromWishListNavigation = new HashSet<Post>();
             ItemFeedbacks = new HashSet<ItemFeedback>();
             Media = new HashSet<Medium>();
             Notifications = new HashSet<Notification>();
@@ -30,11 +31,14 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
+        public int? FromWishList { get; set; }
 
         public virtual Category Category { get; set; } = null!;
         public virtual User CreatedByNavigation { get; set; } = null!;
+        public virtual Post? FromWishListNavigation { get; set; }
         public virtual User LastModifiedByNavigation { get; set; } = null!;
         public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Post> InverseFromWishListNavigation { get; set; }
         public virtual ICollection<ItemFeedback> ItemFeedbacks { get; set; }
         public virtual ICollection<Medium> Media { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }

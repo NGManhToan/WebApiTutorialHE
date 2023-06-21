@@ -103,5 +103,19 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetListRegistration(int id, int postId)
+        {
+            var getList = await _registrationService.GetListRegistation(id, postId);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công",
+                content = new
+                {
+                    getList = getList
+                }
+            });
+        }
     }
 }

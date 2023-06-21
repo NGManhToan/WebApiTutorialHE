@@ -18,8 +18,6 @@ namespace WebApiTutorialHE.Database.SharingModels
             NotificationCreatedByNavigations = new HashSet<Notification>();
             NotificationFromUsers = new HashSet<Notification>();
             NotificationLastModifiedByNavigations = new HashSet<Notification>();
-            NotificationTypeCreatedByNavigations = new HashSet<NotificationType>();
-            NotificationTypeLastModifiedByNavigations = new HashSet<NotificationType>();
             NotificationViews = new HashSet<NotificationView>();
             PostCreatedByNavigations = new HashSet<Post>();
             PostLastModifiedByNavigations = new HashSet<Post>();
@@ -62,8 +60,6 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual ICollection<Notification> NotificationCreatedByNavigations { get; set; }
         public virtual ICollection<Notification> NotificationFromUsers { get; set; }
         public virtual ICollection<Notification> NotificationLastModifiedByNavigations { get; set; }
-        public virtual ICollection<NotificationType> NotificationTypeCreatedByNavigations { get; set; }
-        public virtual ICollection<NotificationType> NotificationTypeLastModifiedByNavigations { get; set; }
         public virtual ICollection<NotificationView> NotificationViews { get; set; }
         public virtual ICollection<Post> PostCreatedByNavigations { get; set; }
         public virtual ICollection<Post> PostLastModifiedByNavigations { get; set; }

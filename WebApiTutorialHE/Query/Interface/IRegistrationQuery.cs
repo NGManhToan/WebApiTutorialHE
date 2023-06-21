@@ -6,5 +6,6 @@ namespace WebApiTutorialHE.Query.Interface
     {
         Task<List<RegistationListModel>>QueryGetListRegistation(int id);
         Task <int>QueryNumRegistation(int id,int createdBy);
+        Task<List<RegistrationProserModel>> GetListRegistrationHaveProposer(int PostId,int id);
     }
 }

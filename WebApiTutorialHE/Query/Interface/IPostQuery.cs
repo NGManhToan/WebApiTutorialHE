@@ -1,4 +1,5 @@
 ﻿using WebApiTutorialHE.Models.Post;
+using WebApiTutorialHE.Models.Registation;
 
 namespace WebApiTutorialHE.Query.Interface
 {
@@ -18,6 +19,7 @@ namespace WebApiTutorialHE.Query.Interface
         Task<List<MySharingModel>> QueryGetShareListByUser(int id);
         Task<List<DetailWishListModel>>QueryDetailWishList(int wishId);
         Task<List<CommentModel>> GetListComment(int postId);
+        
 
     }
 }

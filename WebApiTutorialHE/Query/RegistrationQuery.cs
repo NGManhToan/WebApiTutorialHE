@@ -49,5 +49,27 @@ namespace WebApiTutorialHE.Query
                 createdBy=createdBy
             });
         }
+        public async Task<List<RegistrationProserModel>> GetListRegistrationHaveProposer( int postId, int id)
+        {
+            var query = @"select u.FullName,r.Content,u.Id, 
+		                            IF(r.CreatedBy=p1.CreatedBy, 1, 0) IsProposed,
+        	                        case  
+                                        when timediff(@Now, r.CreatedDate)> '24:00:00' then concat(datediff(@Now, r.CreatedDate), ' ngày trước')
+                                        when timediff(@Now, r.CreatedDate)> '1:00:00' then concat(hour(timediff(@Now, r.CreatedDate)), ' giờ trước')
+                                        else concat(minute(timediff(@Now, r.CreatedDate)), ' phút trước')
+                                        end TimeDiff
+                            from Registration r
+		                            join User u on u.Id=r.CreatedBy
+                                    join Post p on p.Id=r.PostId
+                                    left join Post p1 on p1.Id = p.FromWishList
+                            where r.PostId=@PostId and p.CreatedBy = @Id;";
+            return await _sharingDapper.QueryAsync<RegistrationProserModel>(query, new
+            {
+                PostId = postId,
+                Now = Utils.DateNow(),
+                Id=id
+            });
+        }
+
     }
 }

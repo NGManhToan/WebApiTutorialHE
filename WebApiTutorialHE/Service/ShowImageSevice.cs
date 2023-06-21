@@ -9,7 +9,7 @@ namespace WebApiTutorialHE.Service
             var basePath = AppDomain.CurrentDomain.BaseDirectory;
             var path = Path.Combine(basePath, "wwwroot", "Upload", "Avata", fileName);
 
-            if (File.Exists(path))
+           if (File.Exists(path))
             {
                 return await File.ReadAllBytesAsync(path);
             }

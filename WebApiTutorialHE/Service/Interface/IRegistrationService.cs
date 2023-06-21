@@ -7,11 +7,12 @@ namespace WebApiTutorialHE.Service.Interface
 {
     public interface IRegistrationService
     {
-        Task<List<RegistationListModel>>GetListRegistation(int id);
+        Task<List<RegistationListModel>> GetListRegistation(int id);
         Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate);
         Task<string> DeleteRegistation(int id);
         Task<Registration> CreateRegistation(RegistationPostModel registationPost);
         Task<List<Registration>>UpdateStatus(UpdateStatus updateStatus);
         Task<int> NumRegistation(int postId, int createdBy);
+        Task<List<RegistrationProserModel>> GetListRegistation(int postId,int id);
     }
 }

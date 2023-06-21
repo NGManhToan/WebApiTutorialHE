@@ -13,6 +13,7 @@ namespace WebApiTutorialHE.Models.Post
         [DefaultValue(1)]
         public string Type { get; set; }
         public int CreatedBy { get; set; }
+        public int FromWishList { get; set;}
         
     }
 }

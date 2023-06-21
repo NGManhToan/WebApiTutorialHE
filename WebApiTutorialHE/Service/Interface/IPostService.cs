@@ -1,5 +1,6 @@
 ﻿using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Post;
+using WebApiTutorialHE.Models.Registation;
 
 namespace WebApiTutorialHE.Service.Interface
 {
@@ -18,5 +19,6 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<CommentModel>> GetListComment(int postId);
         Task<Comment> CreateCommet(CreateCommentModel createComment);
         Task<Post>PostItem(PostItemModel postItemModel);
+       
     }
 }

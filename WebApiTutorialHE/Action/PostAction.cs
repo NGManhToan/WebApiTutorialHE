@@ -48,6 +48,7 @@ namespace WebApiTutorialHE.Action
         }
         public async Task<Post> PostItem(PostItemModel postItemModel, string fileName)
         {
+            
             var create = new Post()
             {
                 Title = postItemModel.Title,
@@ -58,7 +59,9 @@ namespace WebApiTutorialHE.Action
                 Type = postItemModel.Type,
                 CreatedBy = postItemModel.CreatedBy,
                 CreatedDate = Utils.DateNow(),
-                LastModifiedBy = postItemModel.CreatedBy
+                LastModifiedBy = postItemModel.CreatedBy,
+                FromWishList = postItemModel.FromWishList,
+                
             };
             _sharingContext.Posts.Add(create);
             await _sharingContext.SaveChangesAsync();
