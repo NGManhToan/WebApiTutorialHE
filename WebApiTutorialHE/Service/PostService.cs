@@ -45,7 +45,7 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.QueryFilterFreeItem(id);
         }
-        public async Task<List<HomePostModel>>GetDetailItem(int postId)
+        public async Task<List<DetailItemModel>>GetDetailItem(int postId)
         {
             return await _postQuery.QueryGetDetailItem(postId); 
         }
@@ -76,6 +76,10 @@ namespace WebApiTutorialHE.Service
             var file = await _postAction.SaveOneMediaData(postItemModel.UrlImage);
             return await _postAction.PostItem(postItemModel, file.FileName);
         }
-
+        public async Task<Post>PostProposal(PostProposalModel postProposalModel)
+        {
+            var file = await _postAction.SaveOneMediaData(postProposalModel.UrlImage);
+            return await _postAction.PostProposal(postProposalModel, file.FileName);
+        }
     }
 }
