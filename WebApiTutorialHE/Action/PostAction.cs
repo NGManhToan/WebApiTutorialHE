@@ -1,4 +1,5 @@
-﻿using System.util;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.util;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
@@ -73,6 +74,36 @@ namespace WebApiTutorialHE.Action
             };
             _sharingContext.Media.Add(media);
             await _sharingContext.SaveChangesAsync();
+            return create;
+        }
+        public async Task<Post>PostProposal(PostProposalModel postProposalModel, string fileName)
+        {
+            var create = new Post()
+            {
+                Title=postProposalModel.Title,
+                Content=postProposalModel.Content,
+                DesiredStatus=postProposalModel.DesiredStatus,
+                CategoryId=postProposalModel.CategoryId,
+                CreatedBy=postProposalModel.CreatedBy,
+                Type = postProposalModel.Type,
+                CreatedDate = Utils.DateNow(),
+                LastModifiedBy=postProposalModel.CreatedBy
+            };
+            _sharingContext.Posts.Add(create);
+            await _sharingContext.SaveChangesAsync();
+            if(postProposalModel.UrlImage != null && postProposalModel.UrlImage.Length > 0)
+            {
+                var postId = create.Id;
+                var media = new Medium()
+                {
+                    PostId = postId,
+                    ImageUrl = fileName
+                };
+                _sharingContext.Media.Add(media);
+                await _sharingContext.SaveChangesAsync();
+                
+            }
+            
             return create;
         }
     }

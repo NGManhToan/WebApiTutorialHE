@@ -9,5 +9,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<Comment> CreateCommet(CreateCommentModel createComment);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
         Task<Post> PostItem(PostItemModel postItemModel, string fileName);
+        Task<Post>PostProposal(PostProposalModel postProposalModel, string fileName);
     }
 }

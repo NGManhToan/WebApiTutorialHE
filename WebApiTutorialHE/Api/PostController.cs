@@ -122,5 +122,11 @@ namespace WebApiTutorialHE.Api
             var postItem = await _postService.PostItem(postItemModel);
             return Ok(postItem);
         }
+        [HttpPost]
+        public async Task<IActionResult> PostProposal([FromForm] PostProposalModel postProposalModel)
+        {
+            var postProposal = await _postService.PostProposal(postProposalModel);
+            return Ok(postProposal);
+        }
     }
 }
