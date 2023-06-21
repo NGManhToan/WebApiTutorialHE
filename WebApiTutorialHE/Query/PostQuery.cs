@@ -92,13 +92,13 @@ namespace WebApiTutorialHE.Query
                             AND Price='Free';";
             return await _sharingDapper.QueryAsync<HomePostModel>(query, new { id = id });
         }
-        public async Task<List<HomePostModel>> QueryGetDetailItem(int postId)
+        public async Task<List<DetailItemModel>> QueryGetDetailItem(int postId)
         {
             var query = @"select Title, FullName, p.Status, Content, DesiredStatus, 
                     CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl
                     from Post p left join User u on p.CreatedBy=u.Id left join Media m on m.PostId=p.Id
                     where p.Id LIKE @postId and type=1";
-            return await _sharingDapper.QueryAsync<HomePostModel>(query, new { postId = postId });
+            return await _sharingDapper.QueryAsync<DetailItemModel>(query, new { postId = postId });
         }
 
         public async Task<List<MySharingModel>> QueryGetShareListByUser(int id)
