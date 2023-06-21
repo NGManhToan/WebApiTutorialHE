@@ -18,21 +18,30 @@ namespace WebApiTutorialHE.Query
         {
             var query =
                 @"SELECT CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl,
-                    Title, Price
+                    Title, CASE 
+                                    WHEN Price = 0 THEN 'Free' 
+                                    ELSE CAST(Price AS char(10)) 
+                                END AS Price
                   FROM Post p LEFT JOIN Media m ON p.Id=m.PostId WHERE type=1";
             return await _sharingDapper.QueryAsync<HomePostModel>(query);
         }
         public async Task<List<HomePostModel>> QueryFindPost(string search)
         {
             var query = @"SELECT CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl,
-                    Title, Price FROM Post p LEFT JOIN Media m ON p.Id=m.PostId WHERE Title LIKE @search AND type=1";
+                    Title, CASE 
+                                    WHEN Price = 0 THEN 'Free' 
+                                    ELSE CAST(Price AS char(10)) 
+                                END AS Price FROM Post p LEFT JOIN Media m ON p.Id=m.PostId WHERE Title LIKE @search AND type=1";
             var parameters = new { Search = "%" + search + "%" };
             return await _sharingDapper.QueryAsync<HomePostModel>(query, parameters);
         }
         public async Task<List<HomePostModel>> QuerySelectPostFollowCategoryId(int id)
         {
             var query =
-                @"SELECT Price, Title,
+                @"SELECT CASE 
+                                    WHEN Price = 0 THEN 'Free' 
+                                    ELSE CAST(Price AS char(10)) 
+                                END AS Price, Title,
                     CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl
                   FROM Post p LEFT JOIN Category c ON p.CategoryId=c.Id
                                 LEFT JOIN Media m ON p.Id=m.PostId WHERE CategoryId LIKE @id AND type=1";
@@ -45,7 +54,10 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomeWishModel>> QueryGetWishList()
         {
-            var query = @"SELECT u.FullName, p.CreatedDate, Content,DesiredStatus,
+            var query = @"SELECT u.FullName, p.CreatedDate, Content,CASE 
+		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
+                            ELSE CAST(DesiredStatus AS char(10))                             
+                            END AS DesiredStatus,
                      CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl
                   FROM Post p left JOIN User u ON p.CreatedBy=u.Id
                                 left JOIN Media m ON p.Id=m.PostId WHERE type=2";
@@ -94,7 +106,10 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<DetailItemModel>> QueryGetDetailItem(int postId)
         {
-            var query = @"select Title, FullName, p.Status, Content, DesiredStatus, 
+            var query = @"select Title, FullName, p.Status, Content, CASE 
+                                    WHEN Price = 0 THEN 'Free' 
+                                    ELSE CAST(Price AS char(10)) 
+                                END AS Price, 
                     CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl
                     from Post p left join User u on p.CreatedBy=u.Id left join Media m on m.PostId=p.Id
                     where p.Id LIKE @postId and type=1";
@@ -113,7 +128,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<DetailWishListModel>> QueryDetailWishList(int wishId)
         {
-            var query = @"select CONCAT('"" + Utils.LinkMedia("""") + @""', 'Upload\Avatar\',u.UrlAvatar) as UrlAvatar, 
+            var query = @"select CONCAT('"" + Utils.LinkMedia("""") + @""',u.UrlAvatar) as UrlAvatar, 
 	                    FullName, p.CreatedDate, Content, c.Name, 
                         CONCAT('"" + Utils.LinkMedia("""") + @""', m.ImageUrl) as ImageUrl, 
                         CASE 
