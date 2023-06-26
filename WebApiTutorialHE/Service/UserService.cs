@@ -173,5 +173,9 @@ namespace WebApiTutorialHE.Service
         //{
         //    await _userAction.UpdatePassword();
         //}
+        public async Task<RecipientInformationModel> RecipientInfor(int id)
+        {
+            return await _userQuery.QueryRecipientInfor(id);
+        }
     }
 }
