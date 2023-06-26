@@ -25,8 +25,8 @@ namespace WebApiTutorialHE.Service
 
                 #region Sender / Receiver
                 // Sender
-                mail.From.Add(new MailboxAddress(_settings.DisplayName, mailData.From ?? _settings.From));
-                mail.Sender = new MailboxAddress(mailData.DisplayName ?? _settings.DisplayName, mailData.From ?? _settings.From);
+                mail.From.Add(new MailboxAddress(_settings.DisplayName, mailData.From ?? _settings.UserName));
+                mail.Sender = new MailboxAddress(mailData.DisplayName ?? _settings.DisplayName, mailData.From ?? _settings.UserName);
 
                 // Receiver
                 foreach (string mailAddress in mailData.To)

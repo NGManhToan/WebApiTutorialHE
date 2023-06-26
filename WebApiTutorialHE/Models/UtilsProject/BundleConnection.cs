@@ -3,6 +3,6 @@
     public class BundleConnection
     {
         // link media image video,...
-        public static string LinkMedia = "https://localhost:7080/";
+        public static string LinkMedia = "http://157.119.251.140:5004/";
     }
 }

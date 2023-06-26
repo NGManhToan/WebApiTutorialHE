@@ -11,6 +11,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword);
         Task<ObjectResponse> Register(UserRegisterModel userRegisterModel);
         Task<List<UserListModel>> GetAllUser();
+        Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
         //Task<User> PutAccountUpdateModel(AccountUpdateModel model);
         //Task<User> PostAccountModel(UserListModel model);
         Task<string> DeleteUser(int id);

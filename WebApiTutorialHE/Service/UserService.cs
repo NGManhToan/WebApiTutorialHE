@@ -9,6 +9,7 @@ using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.Query.Interface;
 using System.Data;
 using WebApiTutorialHE.Models.Account;
+using WebApiTutorialHE.Models.Mail;
 
 namespace WebApiTutorialHE.Service
 {
@@ -16,11 +17,34 @@ namespace WebApiTutorialHE.Service
     {
         private readonly IUserAction _userAction;
         private readonly IUserQuery _userQuery;
-        public UserService(IUserAction userAction,IUserQuery userQuery)
+        private readonly IMailService _mailService;
+        public UserService(IUserAction userAction,IUserQuery userQuery,IMailService mailService)
         {
             _userAction = userAction;
             _userQuery = userQuery;
+            _mailService = mailService;
+        }
 
+        public async Task<ObjectResponse>ForgotPassword(UserForgotPasswordModel userForgot)
+        {
+            var mailSetting = new MailSettings();
+            var mailData = new MailDataWithAttachments()
+            {
+                From = mailSetting.UserName,
+                To = new List<string>()
+                {
+                    userForgot.Email
+                },
+                Subject = "Verification",
+                Body = "<h1 style=\"text-align: center;\">Forgot Password</h1>\r\n" +
+                    "<form style=\"text-align: center;\" method=\"post\" action=\"https://localhost:7080/swagger/index.html\">\r\n" +
+                    "<input type=\"submit\" value=\"Verify\">\r\n</form>"
+            };
+
+            var sent = await _mailService.SendMail(mailData, default);
+
+            if (sent) return new ObjectResponse { result = 1 };
+            else return new ObjectResponse { result = 0 };
         }
         public async Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword)
         {

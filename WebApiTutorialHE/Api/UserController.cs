@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Models.Mail;
 using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Service.Interface;
@@ -118,6 +119,15 @@ namespace WebApiTutorialHE.Api
                     account=account
                 }
             });
+        }
+
+
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotAsync(UserForgotPasswordModel userForgot)
+        {
+            var result = await _userService.ForgotPassword(userForgot);
+
+            return Ok(result);
         }
         //[HttpPut]
         //public async Task<IActionResult> UpdatePassWord()

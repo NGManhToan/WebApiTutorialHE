@@ -6,6 +6,7 @@ using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Manager.Token;
 using WebApiTutorialHE.Manager.Token.Interface;
+using WebApiTutorialHE.Models.Mail;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
@@ -13,6 +14,7 @@ using WebApiTutorialHE.Service;
 using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.UtilsService;
 using WebApiTutorialHE.UtilsService.Interface;
+    
 
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
@@ -64,7 +66,6 @@ builder.Services.AddScoped<IItemFeedbackService, ItemfeedbackService>();
 builder.Services.AddScoped<IPostQuery, PostQuery>();
 builder.Services.AddScoped<IPostService, PostService>();
 builder.Services.AddScoped<IPostAction, PostAction>();
-
 
 builder.Services.AddScoped<IShowImageSevice, ShowImageSevice>();
 
