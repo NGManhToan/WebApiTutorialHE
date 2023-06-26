@@ -6,6 +6,6 @@ namespace WebApiTutorialHE.Action.Interface
     public interface IItemfeedbackAction
     {
         Task<ItemFeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem);
-        Task<string> Deleteitemfeedback(int id);
+        Task Deleteitemfeedback(int id);
     }
 }

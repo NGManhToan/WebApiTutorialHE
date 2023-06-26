@@ -3,6 +3,7 @@ using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Category;
+using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
 
@@ -21,9 +22,15 @@ namespace WebApiTutorialHE.Service
             _categoryAction = categoryAction;
         }
          
-        public async Task<List<CategoryListModel>> GetCategoryListModels()
+        public async Task<ObjectResponse> GetCategoryListModels()
         {
-            return await _categoryQuery.QueryListCategory();
+            var category = await _categoryQuery.QueryListCategory();
+            return new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy danh sách vật phẩm thành công",
+                content = category
+            };
         }
 
         //public async Task<Category> CreateCategory(CategoryListModel category)

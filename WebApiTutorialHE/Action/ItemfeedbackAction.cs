@@ -24,12 +24,12 @@ namespace WebApiTutorialHE.Action
             return update;
         }
 
-        public async Task<string> Deleteitemfeedback(int id)
+        public async Task Deleteitemfeedback(int id)
         {
             var deletefeebback = await _sharingContext.ItemFeedbacks.FindAsync(id);
             deletefeebback.IsDeleted=true;
             await _sharingContext.SaveChangesAsync();
-            return "Đã xóa";
+           
         }
     }
 }

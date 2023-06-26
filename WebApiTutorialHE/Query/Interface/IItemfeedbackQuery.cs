@@ -4,6 +4,6 @@ namespace WebApiTutorialHE.Query.Interface
 {
     public interface IItemfeedbackQuery
     {
-        public Task<List<ReceivedListModel>> GetItemfeedback();
+        public Task<List<ReceivedListModel>> GetItemfeedback(int id);
     }
 }

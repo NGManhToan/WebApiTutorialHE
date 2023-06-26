@@ -17,9 +17,9 @@ namespace WebApiTutorialHE.Api
             _itemfeedbackService = itemfeedbackService;
         }
         [HttpGet]
-        public async Task<IActionResult> GetByIdUser()
+        public async Task<IActionResult> GetByIdUser(int id)
         {
-            var itemFeedback = await _itemfeedbackService.GetByUser();
+            var itemFeedback = await _itemfeedbackService.GetByUser(id);
             return Ok(new ObjectResponse
             {
                 result = 1,

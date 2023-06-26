@@ -1,6 +1,7 @@
 ﻿using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Itemfeedback;
+using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
 
@@ -16,17 +17,33 @@ namespace WebApiTutorialHE.Service
             _itemfeedbackQuery = itemfeedbackQuery;
         }
 
-        public async Task<List<ReceivedListModel>> GetByUser()
+        public async Task<ObjectResponse> GetByUser(int id)
         {
-            return await _itemfeedbackQuery.GetItemfeedback();
+            var getByUser= await _itemfeedbackQuery.GetItemfeedback(id);
+            return new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công",
+                content=getByUser
+            };
         }
-        public async Task<ItemFeedback> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
+        public async Task<ObjectResponse> Updateitemfeedback(ItemfeedbackUpdateModel updateItem)
         {
-            return await _itemfeedbackAction.Updateitemfeedback(updateItem);
+            var updateFeedback= await _itemfeedbackAction.Updateitemfeedback(updateItem);
+            return new ObjectResponse
+            {
+                result = 1,
+                message = "Đã cập nhật",
+                content = updateFeedback
+            };
         }
-        public async Task<string> Deleteitemfeedback(int id)
+        public async Task<ObjectResponse> Deleteitemfeedback(int id)
         {
-            return await _itemfeedbackAction.Deleteitemfeedback(id);
+            return new ObjectResponse
+            {
+                result = 1,
+                message = "Đã xóa",
+            };
         }
     }
 }
