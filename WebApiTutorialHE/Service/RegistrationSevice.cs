@@ -23,9 +23,25 @@ namespace WebApiTutorialHE.Service
             return await _registrationQuery.QueryGetListRegistation(id);
         }
 
-        public async Task<Registration> updateRegistation(RegistationUpdateModel registationUpdate)
+        public async Task<ObjectResponse> UpdateRegistation(RegistationUpdateModel registationUpdate)
         {
-            return await _registationAction.updateRegistration(registationUpdate);
+            var updated = await _registationAction.UpdateRegistration(registationUpdate);
+            if (updated)
+            {
+                return new ObjectResponse
+                {
+                    result = 1,
+                    message = "Update thành công",
+                };
+            }
+            else
+            {
+                return new ObjectResponse
+                {
+                    result = 0,
+                    message = "Update thất bại"
+                };
+            }
         }
         public async Task<string> DeleteRegistation(int id)
         {

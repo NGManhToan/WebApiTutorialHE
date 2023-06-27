@@ -7,6 +7,7 @@ namespace WebApiTutorialHE.Database.SharingModels
     {
         public Registration()
         {
+            Media = new HashSet<Medium>();
             Notifications = new HashSet<Notification>();
         }
 
@@ -24,6 +25,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;
         public virtual Post Post { get; set; } = null!;
+        public virtual ICollection<Medium> Media { get; set; }
         public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

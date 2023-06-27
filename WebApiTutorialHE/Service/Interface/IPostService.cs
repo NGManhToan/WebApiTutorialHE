@@ -22,6 +22,8 @@ namespace WebApiTutorialHE.Service.Interface
         Task<Post>PostItem(PostItemModel postItemModel);
         Task<Post>PostProposal(PostProposalModel postProposalModel);
         Task<List<HomeWishModel>>GetWishListByUser(int userId);
-        
+        Task<Medium> PostImage(PostImgaeModel postImgae);
+
+
     }
 }

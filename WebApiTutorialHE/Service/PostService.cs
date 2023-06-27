@@ -85,5 +85,14 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.GetWishListByUser(userId);
         }
+        public async Task<Medium>PostImage(PostImgaeModel postImgae)
+        {
+            var file = await _postAction.SaveOneMediaData(postImgae.Image);
+            if (file != null)
+            {
+                return await _postAction.PostImage(postImgae, file.FileName);
+            }
+            return null;
+        }
     }
 }

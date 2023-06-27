@@ -48,23 +48,7 @@ namespace WebApiTutorialHE.Action
             }
             return user;
         }
-        public async Task<User> ForgotPassword(UserForgotPasswordModel userForgotPassword)
-        {
-            var user = await _sharingContext.Users.FirstOrDefaultAsync(a => a.Email == userForgotPassword.Email);
-
-            if (user != null)
-            {
-                user.Password = Encryptor.SHA256Encode(userForgotPassword.NewPassword.Trim());
-
-                user.LastModifiedBy = user.Id;
-                user.CreatedDate = Utils.DateNow();
-
-                _sharingContext.Users.Update(user);
-                await _sharingContext.SaveChangesAsync();
-            }
-
-            return user;
-        }
+        
 
         public async Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata)
         {
@@ -166,6 +150,7 @@ namespace WebApiTutorialHE.Action
             }
             return dt;
         }
+
         //public async Task UpdatePassword()
         //{
         //    foreach (var user in this._sharingContext.Users)

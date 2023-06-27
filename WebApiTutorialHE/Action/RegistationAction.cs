@@ -16,10 +16,10 @@ namespace WebApiTutorialHE.Action
             _sharingContext = sharingContext;
         }
 
-        public async Task<Registration> updateRegistration(RegistationUpdateModel registationUpdate)
+        public async Task<bool> UpdateRegistration(RegistationUpdateModel registationUpdate)
         {
             var update = await _sharingContext.Registrations.FindAsync(registationUpdate.Id);
-            if (update != null)
+            if (update != null && !update.Status.Equals("Accepted"))
             {
                 update.Content = registationUpdate.Content;
                 update.LastModifiedDate = Utils.DateNow();
@@ -27,9 +27,11 @@ namespace WebApiTutorialHE.Action
 
                 _sharingContext.Registrations.Update(update);
                 await _sharingContext.SaveChangesAsync();
+
+                return true;
             }
 
-            return update;
+            return false;
         }
 
         public async Task<string>DeleteRegistration(int id)

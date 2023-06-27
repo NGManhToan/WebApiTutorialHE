@@ -106,5 +106,17 @@ namespace WebApiTutorialHE.Action
             
             return create;
         }
+        public async Task<Medium> PostImage(PostImgaeModel postImgae, string fileName)
+        {
+            var create = new Medium()
+            {
+                Id = postImgae.Id,
+                PostId = postImgae.PostId,
+                ImageUrl = fileName
+            };
+            _sharingContext.Media.Add(create);
+            await _sharingContext.SaveChangesAsync();
+            return create;
+        }
     }
 }

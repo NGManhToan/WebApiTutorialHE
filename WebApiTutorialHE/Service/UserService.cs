@@ -10,6 +10,8 @@ using WebApiTutorialHE.Query.Interface;
 using System.Data;
 using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Models.Mail;
+using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace WebApiTutorialHE.Service
 {
@@ -25,29 +27,92 @@ namespace WebApiTutorialHE.Service
             _mailService = mailService;
         }
 
+        public static string RandomPassword(PasswordOptions opts = null)
+        {
+            if (opts == null) opts = new PasswordOptions()
+            {
+                RequiredLength = 8,
+                RequiredUniqueChars = 4,
+                RequireDigit = true,
+                RequireLowercase = true,
+                RequireNonAlphanumeric = true,
+                RequireUppercase = true
+            };
+
+            string[] randomChars = new[] {
+            "ABCDEFGHJKLMNOPQRSTUVWXYZ",    // uppercase 
+            "abcdefghijkmnopqrstuvwxyz",    // lowercase
+            "0123456789",                   // digits
+            "!@$?_-"                        // non-alphanumeric
+        };
+
+            Random rand = new Random(Environment.TickCount);
+            List<char> chars = new List<char>();
+
+            if (opts.RequireUppercase)
+                chars.Insert(rand.Next(0, chars.Count),
+                    randomChars[0][rand.Next(0, randomChars[0].Length)]);
+
+            if (opts.RequireLowercase)
+                chars.Insert(rand.Next(0, chars.Count),
+                    randomChars[1][rand.Next(0, randomChars[1].Length)]);
+
+            if (opts.RequireDigit)
+                chars.Insert(rand.Next(0, chars.Count),
+                    randomChars[2][rand.Next(0, randomChars[2].Length)]);
+
+            if (opts.RequireNonAlphanumeric)
+                chars.Insert(rand.Next(0, chars.Count),
+                    randomChars[3][rand.Next(0, randomChars[3].Length)]);
+
+            for (int i = chars.Count; i < opts.RequiredLength
+                || chars.Distinct().Count() < opts.RequiredUniqueChars; i++)
+            {
+                string rcs = randomChars[rand.Next(0, randomChars.Length)];
+                chars.Insert(rand.Next(0, chars.Count),
+                    rcs[rand.Next(0, rcs.Length)]);
+            }
+
+            return new string(chars.ToArray());
+        }
+
         public async Task<ObjectResponse>ForgotPassword(UserForgotPasswordModel userForgot)
         {
-            var mailSetting = new MailSettings();
-            var mailData = new MailDataWithAttachments()
+            var random = RandomPassword();
+
+            var changePassword = _userAction.ChangePassword(new UserChangePasswordModel()
             {
-                From = mailSetting.UserName,
-                To = new List<string>()
+                Email= userForgot.Email,
+                NewPassword= random,
+                RepeatPassword=random,
+            });
+
+            if(changePassword != null )
+            {
+                var mailSetting = new MailSettings();
+                var mailData = new MailDataWithAttachments()
+                {
+                    From = mailSetting.UserName,
+                    To = new List<string>()
                 {
                     userForgot.Email
                 },
-                Subject = "Verification",
-                Body = "<h1 style=\"text-align: center;\">Forgot Password</h1>\r\n" +
-                    "<form style=\"text-align: center;\" method=\"post\" action=\"https://localhost:7080/swagger/index.html\">\r\n" +
-                    "<input type=\"submit\" value=\"Verify\">\r\n</form>"
-            };
+                    Subject = "Verification",
+                    Body ="Password thay đổi: " +random.ToString()
+                };
 
-            var sent = await _mailService.SendMail(mailData, default);
+                var sent = await _mailService.SendMail(mailData, default);
+                if (sent) return new ObjectResponse { result = 1 };
+                else return new ObjectResponse { result = 0 };
+            }
+            return null;
 
-            if (sent) return new ObjectResponse { result = 1 };
-            else return new ObjectResponse { result = 0 };
+           
         }
         public async Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword)
         {
+            
+
             if (string.IsNullOrEmpty(userForgotPassword.Email.Trim()))
             {
                 return new ObjectResponse
@@ -102,6 +167,24 @@ namespace WebApiTutorialHE.Service
                     message = "Số điện thoại đã tồn tại"
                 };
             }
+            var mailSetting = new MailSettings();
+            var mailData = new MailDataWithAttachments()
+            {
+                From = mailSetting.UserName,
+                To = new List<string>()
+                {
+                    userRegisterModel.Email
+                },
+                Subject = "Verification",
+                Body = "Email xác thực"
+            };
+
+            var sent = await _mailService.SendMail(mailData, default);
+            if (!sent) return new ObjectResponse
+            {
+                result = 0,
+                message = "Email không tồn tại",
+            };
 
             var register = await _userAction.Register(userRegisterModel);
 

@@ -17,7 +17,7 @@ namespace WebApiTutorialHE.Action.Interface
         Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
         Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename);
-        Task<User> ForgotPassword(UserForgotPasswordModel userForgotPassword);
+
         //Task UpdatePassword();
         Task<bool> IsEmailDuplicate(string email);
         Task<bool> IsPhoneDuplicate( string phoneNumber);

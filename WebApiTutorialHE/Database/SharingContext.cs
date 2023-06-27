@@ -35,7 +35,7 @@ namespace WebApiTutorialHE.Database
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-                optionsBuilder.UseMySql("server=180.93.172.49;port=4786;database=SharingTogether;username=user_share_together;password=RFYsGMZq2*AK", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.21-mysql"));
+                optionsBuilder.UseMySql("server=180.93.172.49;port=4786;database=SharingTogether;user=user_share_together;password=RFYsGMZq2*AK", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.21-mysql"));
             }
         }
 
@@ -197,6 +197,8 @@ namespace WebApiTutorialHE.Database
             {
                 entity.HasIndex(e => e.PostId, "PostId");
 
+                entity.HasIndex(e => e.RegistrationId, "fk_Media_Registration");
+
                 entity.Property(e => e.ImageUrl).HasMaxLength(255);
 
                 entity.Property(e => e.ThumbnailUrl).HasMaxLength(255);
@@ -208,6 +210,11 @@ namespace WebApiTutorialHE.Database
                     .HasForeignKey(d => d.PostId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("Media_ibfk_1");
+
+                entity.HasOne(d => d.Registration)
+                    .WithMany(p => p.Media)
+                    .HasForeignKey(d => d.RegistrationId)
+                    .HasConstraintName("fk_Media_Registration");
             });
 
             modelBuilder.Entity<Notification>(entity =>
@@ -238,7 +245,7 @@ namespace WebApiTutorialHE.Database
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
-                entity.Property(e => e.Type).HasColumnType("enum('Suggest giving','Suggest receiving','Registration','Approve status','Comment','Post the item from wishlist')");
+                entity.Property(e => e.Type).HasColumnType("enum('Suggest giving','Suggest receiving','Registration','Approve status','Comment','Post the item from wishlist','Reminder','Sharing Succesfully')");
 
                 entity.Property(e => e.Url).HasMaxLength(255);
 
@@ -321,6 +328,8 @@ namespace WebApiTutorialHE.Database
                     .IsRequired()
                     .HasDefaultValueSql("'1'");
 
+                entity.Property(e => e.IsSuccess).HasDefaultValueSql("'0'");
+
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
@@ -380,7 +389,7 @@ namespace WebApiTutorialHE.Database
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Status)
-                    .HasColumnType("enum('Confirming','Accepted','Disapproved')")
+                    .HasColumnType("enum('Confirming','Accepted','Disapproved','Received')")
                     .HasDefaultValueSql("'Confirming'");
 
                 entity.HasOne(d => d.CreatedByNavigation)

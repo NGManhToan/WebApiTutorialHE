@@ -32,6 +32,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime LastModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
         public int? FromWishList { get; set; }
+        public bool? IsSuccess { get; set; }
 
         public virtual Category Category { get; set; } = null!;
         public virtual User CreatedByNavigation { get; set; } = null!;

@@ -36,16 +36,8 @@ namespace WebApiTutorialHE.Api
         [HttpPut]
         public async Task<IActionResult>UpdateRegistration(RegistationUpdateModel registationUpdate)
         {
-            var update= await _registrationService.updateRegistation(registationUpdate);
-            return Ok(new ObjectResponse
-            {
-                result=1,
-                message="Cập nhật thành công",
-                content=new
-                {
-                    registationUpdate= update
-                }
-            });
+            var update= await _registrationService.UpdateRegistation(registationUpdate);
+            return Ok(update);
         }
         [HttpDelete]
         public async Task<IActionResult> DeleteRegistrationID(int id)
