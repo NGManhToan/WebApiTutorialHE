@@ -94,5 +94,10 @@ namespace WebApiTutorialHE.Service
             }
             return null;
         }
+
+        public async Task<Post> UpdateIssuccess(int id)
+        {
+            return await _postAction.UpdateIssuccess(id);
+        }
     }
 }

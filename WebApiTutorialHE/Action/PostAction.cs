@@ -118,5 +118,27 @@ namespace WebApiTutorialHE.Action
             await _sharingContext.SaveChangesAsync();
             return create;
         }
+
+        public async Task<Post> UpdateIssuccess(int id)
+        {
+            var proposed = await _sharingContext.Posts.FindAsync(id);
+            if (proposed != null)
+            {
+                proposed.IsSuccess = true;
+                _sharingContext.Posts.Update(proposed);
+
+                var wishList = await _sharingContext.Posts.FindAsync(proposed.FromWishList);
+                if(wishList != null)
+                {
+                    wishList.IsSuccess = true;
+                    _sharingContext.Posts.Update(proposed);
+                }
+
+                await _sharingContext.SaveChangesAsync();
+
+                return proposed;
+            }
+            return null;
+        }
     }
 }

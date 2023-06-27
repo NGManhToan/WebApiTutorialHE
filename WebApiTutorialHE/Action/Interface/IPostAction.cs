@@ -11,5 +11,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<Post> PostItem(PostItemModel postItemModel, string fileName);
         Task<Post>PostProposal(PostProposalModel postProposalModel, string fileName);
         Task<Medium> PostImage(PostImgaeModel postImgae,string fileName);
+        Task<Post> UpdateIssuccess(int id);
     }
 }

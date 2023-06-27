@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.UtilsProject;
@@ -139,6 +140,20 @@ namespace WebApiTutorialHE.Api
                 content = new
                 {
                     getList = getList
+                }
+            });
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update(int id)
+        {
+            var update = await _postService.UpdateIssuccess(id);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Cập nhật thành công",
+                content = new
+                {
+                    update = update
                 }
             });
         }
