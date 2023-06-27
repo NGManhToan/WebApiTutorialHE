@@ -99,5 +99,10 @@ namespace WebApiTutorialHE.Service
         {
             return await _postAction.UpdateIssuccess(id);
         }
+
+        public async Task<bool> DeleteWishList(int id)
+        {
+            return await _postAction.DeleteWishList(id);
+        }
     }
 }

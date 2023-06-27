@@ -157,5 +157,11 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+        [HttpDelete]
+        public async Task<IActionResult>DeleteWish(int id)
+        {
+            var delete = await _postService.DeleteWishList(id);
+            return Ok(delete);
+        }
     }
 }

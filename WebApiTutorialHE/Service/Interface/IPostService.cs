@@ -24,6 +24,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<HomeWishModel>>GetWishListByUser(int userId);
         Task<Medium> PostImage(PostImgaeModel postImgae);
         Task<Post> UpdateIssuccess(int id);
+        Task<bool> DeleteWishList(int id);
 
 
     }

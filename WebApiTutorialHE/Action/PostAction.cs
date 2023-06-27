@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.util;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
@@ -128,10 +129,17 @@ namespace WebApiTutorialHE.Action
                 _sharingContext.Posts.Update(proposed);
 
                 var wishList = await _sharingContext.Posts.FindAsync(proposed.FromWishList);
-                if(wishList != null)
+                if (wishList != null)
                 {
-                    wishList.IsSuccess = true;
-                    _sharingContext.Posts.Update(proposed);
+                    var createdBy = _sharingContext.Registrations
+                                        .Where(x => x.PostId == id && x.CreatedBy == wishList.CreatedBy && !x.IsDeleted)
+                                        .Where(x => x.Status.Equals("Accepted") || x.Status.Equals("Received"))
+                                        .ToList();
+                    if (createdBy != null && createdBy.Count > 0)
+                    {
+                        wishList.IsSuccess = true;
+                        _sharingContext.Posts.Update(wishList);
+                    }
                 }
 
                 await _sharingContext.SaveChangesAsync();
@@ -139,6 +147,41 @@ namespace WebApiTutorialHE.Action
                 return proposed;
             }
             return null;
+        }
+
+        public async Task<bool>DeleteWishList(int id)
+        {
+            var statusRegistrationList = new List<string> {
+                "Disapproved", "Confirming"
+            };
+            var delete = await _sharingContext.Posts.FindAsync(id);
+
+            if(delete != null && !delete.IsDeleted)
+            {
+                delete.IsDeleted = true;
+
+                var proposed=_sharingContext.Posts.Where(x => x.FromWishList== id).ToList();
+                foreach (var post in proposed)
+                {
+                    var register = await _sharingContext.Registrations.Where(x => x.PostId == post.Id
+                                                                    && x.CreatedBy == delete.CreatedBy
+                                                                    && !x.IsDeleted 
+                                                                    && statusRegistrationList.Contains(x.Status)).FirstOrDefaultAsync();
+                    if(register != null)
+                    {
+                        register.IsDeleted = true;
+                        _sharingContext.Update(register);
+                    }
+                    
+                }
+
+                _sharingContext.Posts.Update(delete);
+
+                await _sharingContext.SaveChangesAsync();
+                return true;
+
+            }
+            return false;
         }
     }
 }
