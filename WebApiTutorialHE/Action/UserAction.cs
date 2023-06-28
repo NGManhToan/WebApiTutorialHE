@@ -70,7 +70,7 @@ namespace WebApiTutorialHE.Action
             return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
         }
 
-        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel)
+        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel, string fileName)
         {
             
             var user = new User
@@ -82,12 +82,12 @@ namespace WebApiTutorialHE.Action
                 Class = userRegisterModel.Class,
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
-                UrlAvatar = userRegisterModel.UrlAvatar.FileName,
+                UrlAvatar = fileName,
                 
                 //Roles = new List<Role> { new Role {  Id=userRegisterModel.RoleID } }
             };
 
-            var role = await _sharingContext.Roles.FindAsync(userRegisterModel.RoleID);
+            var role = await _sharingContext.Roles.FindAsync(3);
             user.Roles.Add(role);
 
 
@@ -106,7 +106,7 @@ namespace WebApiTutorialHE.Action
                 Class = user.Class,
                 StudentCode = user.StudentCode,
                 FacultyId = user.FacultyId,
-                UrlAvatar = user.UrlAvatar,
+                UrlAvatar = Utils.LinkMedia(@"Upload/Avata/" + user.UrlAvatar),
                 RoleIDs = user.Roles.Select(x => x.Id).ToList()
             };
         }

@@ -14,7 +14,7 @@ namespace WebApiTutorialHE.Action.Interface
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<User> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel);
+        Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel,string fileName);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
         Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename);
 
