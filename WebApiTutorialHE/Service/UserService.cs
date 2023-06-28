@@ -192,6 +192,7 @@ namespace WebApiTutorialHE.Service
             
             return new ObjectResponse
             {
+                result=1,
                 content=register
             };
         }
