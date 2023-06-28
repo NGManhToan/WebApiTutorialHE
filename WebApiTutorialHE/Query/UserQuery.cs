@@ -28,12 +28,12 @@ namespace WebApiTutorialHE.Query
         public async Task<UserProfileModel> QueryFrofile(int id)
         {
             var query = @"select u.Id,u.FullName,u.StudentCode,f.Name Faculty, u.Class,left(u.Class,3) Session, 
-	                        count(1) Items, count(r.Id) Shared
-                          from Post p
-	                        left join User u on u.Id=p.CreatedBy
+	                        count(p.id) Items, count(r.Id) Shared
+                          from User u
+	                        left join Post p on u.Id=p.CreatedBy and p.Type = 1
                             left join Registration r on r.PostId=p.Id and r.Status = 2
                             left join Faculty f on f.Id=u.FacultyId
-                          where p.Type = 1 and u.Id = @Id
+                          where u.Id = @id
                           group by u.Id,u.FullName,u.StudentCode,f.Name, u.Class";
             return await _sharingDapper.QuerySingleAsync<UserProfileModel>(query, new
             {
@@ -42,11 +42,11 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<UserProfileSharingModel> QueryFrofileSharing(int id)
         {
-            var query = @"select p.Title,p.DesiredStatus
+            var query = @"select p.id, p.Title,p.DesiredStatus
                           from Post p
 	                           left join User u on u.Id=p.CreatedBy
                                left join Registration r on r.PostId=p.Id and r.Status != 2
-                          where p.Type=1 and u.Id=@Id";
+                          where p.Type=1 and u.Id=@id";
             return await _sharingDapper.QuerySingleAsync<UserProfileSharingModel>(query, new
             {
                 Id = id,
