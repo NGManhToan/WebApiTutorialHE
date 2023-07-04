@@ -6,18 +6,30 @@ namespace WebApiTutorialHE.Api
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class LoginController:ControllerBase
+    public class LoginController : ControllerBase
     {
         private readonly ILoginService _loginService;
-        public  LoginController(ILoginService loginService)
+
+        public LoginController(ILoginService loginService)
         {
             _loginService = loginService;
         }
 
         [HttpPost]
-        public async Task<IActionResult>Login(LoginModel loginModel)
+        public async Task<IActionResult> Login([FromBody] LoginModel loginModel)
         {
-            var login= await _loginService.Login(loginModel);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var login = await _loginService.Login(loginModel);
+
+            if (login == null)
+            {
+                return NotFound();
+            }
+
             return Ok(login);
         }
     }

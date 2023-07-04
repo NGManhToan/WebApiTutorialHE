@@ -25,30 +25,37 @@ namespace WebApiTutorialHE.Action
             _cloudMediaService = cloudMediaService;
         }
 
-        
-        
-        public async Task<string> DeleteUser(int id)
+
+
+        public async Task<ActionResult<string>> DeleteUser(int id)
         {
             var deleteAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            if (deleteAccount == null)
+            {
+                return new NotFoundResult();
+            }
+
             deleteAccount.IsDeleted = true;
             await _sharingContext.SaveChangesAsync();
+
             return "Đã xóa";
         }
 
 
-        public async Task<User> ChangePassword(UserChangePasswordModel userForgotPassword)
+
+        public async Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword)
         {
             var user = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(userForgotPassword.Email));
             if (user != null)
             {
                 user.Password = Encryptor.SHA256Encode(userForgotPassword.NewPassword.Trim());
-                user.Id = user.Id;
                 _sharingContext.Update(user);
-                _sharingContext.SaveChanges();
+                await _sharingContext.SaveChangesAsync();
             }
+
             return user;
         }
-        
+
 
         public async Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata)
         {
@@ -70,9 +77,8 @@ namespace WebApiTutorialHE.Action
             return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
         }
 
-        public async Task<UserReturnRegister> Register(UserRegisterModel userRegisterModel, string fileName)
+        public async Task<ActionResult<UserReturnRegister>> Register(UserRegisterModel userRegisterModel, string fileName)
         {
-            
             var user = new User
             {
                 Email = userRegisterModel.Email,
@@ -83,18 +89,13 @@ namespace WebApiTutorialHE.Action
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
                 UrlAvatar = fileName,
-                
-                //Roles = new List<Role> { new Role {  Id=userRegisterModel.RoleID } }
             };
 
             var role = await _sharingContext.Roles.FindAsync(3);
             user.Roles.Add(role);
 
-
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
-
-
 
             return new UserReturnRegister
             {
@@ -150,17 +151,5 @@ namespace WebApiTutorialHE.Action
             }
             return dt;
         }
-
-        //public async Task UpdatePassword()
-        //{
-        //    foreach (var user in this._sharingContext.Users)
-        //    {
-        //        user.Password = Encryptor.SHA256Encode(user.StudentCode.Trim());
-        //        _sharingContext.Users.Update(user);
-        //    }
-
-        //    await this._sharingContext.SaveChangesAsync();
-        //}
-
     }
 }

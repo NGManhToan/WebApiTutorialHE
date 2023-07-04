@@ -1,4 +1,5 @@
-﻿using System.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Models.User;
@@ -12,21 +13,14 @@ namespace WebApiTutorialHE.Service.Interface
         Task<ObjectResponse> Register(UserRegisterModel userRegisterModel);
         Task<List<UserListModel>> GetAllUser();
         Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
-        //Task<User> PutAccountUpdateModel(AccountUpdateModel model);
-        //Task<User> PostAccountModel(UserListModel model);
-        Task<string> DeleteUser(int id);
-        //Task<User> FillterAccountModel(int id/*, string email*/);
-        //Task<List<UserListModel>> FindAccountModel(string search);
-
-        ////Lấy thông tin admin hiện tại
-        //Task<List<UserListModel>> GetAccountListAdminModel();
-        //Task UpdatePassword();
+        Task<ActionResult<string>>DeleteUser(int id);
         void ExportDataTableToPdf(DataTable dataTable, string filePath);
         Task<UserProfileModel> QueryFrofile(int id);
         Task<UserProfileSharingModel> QueryFrofileSharing(int id);
         Task<List<UserProfileFeedback>> QueryItemFeedback(int id);
         Task<User> UpdateProfile(UserUpdateModel userUpdate);
         Task<RecipientInformationModel> RecipientInfor(int id);
+
 
     }
 }

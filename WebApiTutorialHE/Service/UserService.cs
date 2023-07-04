@@ -12,6 +12,7 @@ using WebApiTutorialHE.Models.Account;
 using WebApiTutorialHE.Models.Mail;
 using Microsoft.AspNetCore.Identity;
 using System;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WebApiTutorialHE.Service
 {
@@ -209,7 +210,7 @@ namespace WebApiTutorialHE.Service
             return accounts;
         }
         
-        public async Task<string> DeleteUser(int id)
+        public async Task<ActionResult<string>> DeleteUser(int id)
         {
             return await _userAction.DeleteUser(id);
         }
@@ -277,10 +278,7 @@ namespace WebApiTutorialHE.Service
             // Đóng tài liệu
             document.Close();
         }
-        //public async Task UpdatePassword()
-        //{
-        //    await _userAction.UpdatePassword();
-        //}
+       
         public async Task<RecipientInformationModel> RecipientInfor(int id)
         {
             return await _userQuery.QueryRecipientInfor(id);

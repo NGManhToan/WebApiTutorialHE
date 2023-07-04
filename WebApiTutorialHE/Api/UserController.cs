@@ -129,12 +129,11 @@ namespace WebApiTutorialHE.Api
 
             return Ok(result);
         }
-        //[HttpPut]
-        //public async Task<IActionResult> UpdatePassWord()
-        //{
-        //    await _userService.UpdatePassword();
-
-        //    return Ok();
-        //}
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserID(int id)
+        {
+            var result = await _userService.DeleteUser(id);
+            return Ok(result);
+        }
     }
 }
