@@ -87,26 +87,38 @@ namespace WebApiTutorialHE.Service
                 NewPassword= random,
                 RepeatPassword=random,
             });
-
-            if(changePassword != null )
+            try
             {
-                var mailSetting = new MailSettings();
-                var mailData = new MailDataWithAttachments()
+                if (changePassword != null)
                 {
-                    From = mailSetting.UserName,
-                    To = new List<string>()
+                    var mailSetting = new MailSettings();
+                    var mailData = new MailDataWithAttachments()
+                    {
+                        From = mailSetting.UserName,
+                        To = new List<string>()
                 {
                     userForgot.Email
                 },
-                    Subject = "Verification",
-                    Body ="Password thay đổi: " +random.ToString()
-                };
+                        Subject = "Verification",
+                        Body = "Password thay đổi: " + random.ToString()
+                    };
 
-                var sent = await _mailService.SendMail(mailData, default);
-                if (sent) return new ObjectResponse { result = 1 };
-                else return new ObjectResponse { result = 0 };
+                    var sent = await _mailService.SendMail(mailData, default);
+                    if (sent) return new ObjectResponse { result = 1 };
+                    else return new ObjectResponse { result = 0 };
+                }
+                return null;
             }
-            return null;
+            catch (Exception ex)
+            {
+                return new ObjectResponse
+                {
+                    result = 0,
+                    message = ex.Message,
+                    content = false
+                };
+            }
+            
 
            
         }
