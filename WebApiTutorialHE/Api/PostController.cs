@@ -18,10 +18,10 @@ namespace WebApiTutorialHE.Api
         }
 
         public static List<Post> Categories = new List<Post>();
-        [HttpGet("GetAllSharingItems")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet]
+        public async Task<IActionResult> GetAll(int pageNumber, int pageSize)
         {
-            var homePost = await _postService.HomePost();
+            var homePost = await _postService.HomePost(pageNumber,pageSize);
             return Ok(homePost);
         }
 

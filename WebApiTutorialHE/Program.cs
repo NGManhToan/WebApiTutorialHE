@@ -1,4 +1,6 @@
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 using System.Configuration;
 using WebApiTutorialHE.Action;
@@ -19,6 +21,10 @@ using WebApiTutorialHE.UtilsService.Interface;
 var builder = WebApplication.CreateBuilder(args);
 var configuration = builder.Configuration;
 // Add services to the container.
+
+
+
+
 
 builder.Services.AddControllers();
 builder.Services.AddControllersWithViews()
@@ -72,13 +78,23 @@ builder.Services.AddScoped<IShowImageSevice, ShowImageSevice>();
 
 var app = builder.Build();
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 
+
+
 }
+
+
+FirebaseApp.Create(new AppOptions()
+{
+    Credential = GoogleCredential.FromFile("./sharing.json"),
+});
 
 app.UseStaticFiles();
 

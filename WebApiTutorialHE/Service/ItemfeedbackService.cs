@@ -37,13 +37,9 @@ namespace WebApiTutorialHE.Service
                 content = updateFeedback
             };
         }
-        public async Task<ObjectResponse> Deleteitemfeedback(int id)
-        {
-            return new ObjectResponse
-            {
-                result = 1,
-                message = "Đã xóa",
-            };
+        public async Task<string> Deleteitemfeedback(int id)
+        {  
+             return await _itemfeedbackAction.Deleteitemfeedback(id);
         }
     }
 }

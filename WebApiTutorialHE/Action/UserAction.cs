@@ -11,6 +11,8 @@ using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.UtilsService.Interface;
 using System.Linq;
+using Google.Cloud.Storage.V1;
+using System.Security.AccessControl;
 
 namespace WebApiTutorialHE.Action
 {
@@ -79,6 +81,16 @@ namespace WebApiTutorialHE.Action
 
         public async Task<ActionResult<UserReturnRegister>> Register(UserRegisterModel userRegisterModel, string fileName)
         {
+            var storageClient = await StorageClient.CreateAsync();
+            var objectName = $"Upload/Avata/{fileName}"; // Path to the file in Firebase Storage
+            var bucketName = "gs://sharingtogether-c8be8.appspot.com/";
+
+            using (var fileStream = System.IO.File.OpenRead(fileName))
+            {
+                // Upload the file to Firebase Cloud Storage
+                await storageClient.UploadObjectAsync(bucketName, objectName, null, fileStream);
+            }
+
             var user = new User
             {
                 Email = userRegisterModel.Email,
@@ -107,10 +119,11 @@ namespace WebApiTutorialHE.Action
                 Class = user.Class,
                 StudentCode = user.StudentCode,
                 FacultyId = user.FacultyId,
-                UrlAvatar = Utils.LinkMedia(@"Upload/Avata/" + user.UrlAvatar),
+                UrlAvatar = $"https://storage.googleapis.com/{bucketName}/{objectName}",
                 RoleIDs = user.Roles.Select(x => x.Id).ToList()
             };
         }
+
         public async Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename)
         {
             var update = await _sharingContext.Users.FindAsync(userUpdate.Id);

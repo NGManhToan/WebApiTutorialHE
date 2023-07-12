@@ -115,5 +115,10 @@ namespace WebApiTutorialHE.Models.UtilsProject
         {
             return Regex.Replace(str, "[^a-zA-Z 0-9-/-]", "");
         }
+
+
+
+
+
     }
 }

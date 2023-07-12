@@ -5,7 +5,7 @@ namespace WebApiTutorialHE.Query.Interface
 {
     public interface IPostQuery
     {
-        Task<List<HomePostModel>> QueryHomePost();
+        Task<List<HomePostModel>> QueryHomePost(int pageNumber, int pageSize);
         Task<List<HomePostModel>> QueryFindPost(string search);
 
         //Lấy ds các vật phẩm theo categoryId

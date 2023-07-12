@@ -8,6 +8,7 @@ using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.UtilsService.Interface;
+using System.Net.Http;
 
 namespace WebApiTutorialHE.Action
 {
@@ -22,6 +23,7 @@ namespace WebApiTutorialHE.Action
         }
         public async Task<Comment> CreateCommet(CreateCommentModel createComment)
         {
+           
             var comment = new Comment
             {
                 Content = createComment.Content,

@@ -21,9 +21,9 @@ namespace WebApiTutorialHE.Service
         }
 
 
-        public async Task<List<HomePostModel>> HomePost()
+        public async Task<List<HomePostModel>> HomePost(int pageNumber, int pageSize)
         {
-            return await _postQuery.QueryHomePost();
+            return await _postQuery.QueryHomePost(pageNumber,pageSize);
         }
         public async Task<List<HomePostModel>> FindPost(string search)
         {

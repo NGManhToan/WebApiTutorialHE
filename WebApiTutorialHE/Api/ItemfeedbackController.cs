@@ -45,7 +45,7 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpDelete]
-        public async Task<IActionResult> Deleteitemfeedback(int id)
+        public async Task<IActionResult> Deletefeedback(int id)
         {
             var itemFeedback = await _itemfeedbackService.Deleteitemfeedback(id);
             return Ok(new ObjectResponse
