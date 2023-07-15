@@ -118,9 +118,9 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpPost]
-        public async Task<IActionResult> PostItem([FromForm]PostItemModel postItemModel)
+        public async Task<IActionResult> PostItem([FromForm]PostItemModel postItemModel, IFormFile fileName)
         {
-            var postItem = await _postService.PostItem(postItemModel);
+            var postItem = await _postService.PostItem(postItemModel,fileName);
             return Ok(postItem);
         }
         [HttpPost]

@@ -9,6 +9,8 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Firebase.Auth;
+using Firebase.Storage;
 
 namespace WebApiTutorialHE.Models.UtilsProject
 {
@@ -16,7 +18,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
     {
         public static string KeyToken = "17JjUurO1RvK9mzN3LU0lqVexW6gibCo";
         
-
+        
         public static ulong GetUserIdFromToken(HttpRequest request)
         {
             var headers = request.Headers;
@@ -118,6 +120,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
 
 
 
+        
 
 
     }

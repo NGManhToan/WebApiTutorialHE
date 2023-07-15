@@ -162,7 +162,7 @@ namespace WebApiTutorialHE.Service
             };
         }
 
-        public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel)
+        public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName)
         {
             if(await _userAction.IsEmailDuplicate(userRegisterModel.Email))
             {
@@ -201,7 +201,7 @@ namespace WebApiTutorialHE.Service
 
             var file = await _userAction.SaveOneMediaData(userRegisterModel.UrlAvatar);
 
-            var register = await _userAction.Register(userRegisterModel, file.FileName);
+            var register = await _userAction.Register(userRegisterModel,fileName);
             
             return new ObjectResponse
             {

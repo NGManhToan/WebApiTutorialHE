@@ -9,6 +9,7 @@ using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.UtilsService.Interface;
 using System.Net.Http;
+using DocumentFormat.OpenXml.Vml;
 
 namespace WebApiTutorialHE.Action
 {
@@ -44,13 +45,13 @@ namespace WebApiTutorialHE.Action
         {
             var cloudOneMediaConfig = new CloudOneMediaConfig
             {
-                Folder = Path.Combine("wwwroot", "Upload", "Post"),
+                Folder = System.IO.Path.Combine("wwwroot", "Upload", "Post"),
                 FileName = "Image_Post",
                 FormFile = image,
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<Post> PostItem(PostItemModel postItemModel, string fileName)
+        public async Task<Post> PostItem(PostItemModel postItemModel, IFormFile fileName)
         {
             
             var create = new Post()
@@ -69,11 +70,22 @@ namespace WebApiTutorialHE.Action
             };
             _sharingContext.Posts.Add(create);
             await _sharingContext.SaveChangesAsync();
+
+            var uploader = new Uploadfirebase();
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await fileName.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
+
+            string imageUrl = await uploader.UploadPost(imageData, fileName.FileName);
+
             var postId = create.Id;
             var media = new Medium()
             {
                 PostId = postId,
-                ImageUrl = fileName
+                ImageUrl = imageUrl,
             };
             _sharingContext.Media.Add(media);
             await _sharingContext.SaveChangesAsync();

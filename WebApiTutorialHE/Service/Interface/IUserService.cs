@@ -10,7 +10,7 @@ namespace WebApiTutorialHE.Service.Interface
     public interface IUserService
     {
         Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<ObjectResponse> Register(UserRegisterModel userRegisterModel);
+        Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName);
         Task<List<UserListModel>> GetAllUser();
         Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
         Task<ActionResult<string>>DeleteUser(int id);

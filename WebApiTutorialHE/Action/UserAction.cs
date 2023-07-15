@@ -12,12 +12,18 @@ using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.UtilsService.Interface;
 using System.Linq;
 using Google.Cloud.Storage.V1;
-using System.Security.AccessControl;
+using System.IO;
+using Microsoft.Win32;
+using DocumentFormat.OpenXml.Bibliography;
+
 
 namespace WebApiTutorialHE.Action
 {
+
     public class UserAction:IUserAction
     {
+        
+
         private readonly SharingContext _sharingContext;
         private readonly ICloudMediaService _cloudMediaService;
 
@@ -79,18 +85,8 @@ namespace WebApiTutorialHE.Action
             return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
         }
 
-        public async Task<ActionResult<UserReturnRegister>> Register(UserRegisterModel userRegisterModel, string fileName)
+        public async Task<ActionResult<UserReturnRegister>> Register(UserRegisterModel userRegisterModel, IFormFile imageFile)
         {
-            var storageClient = await StorageClient.CreateAsync();
-            var objectName = $"Upload/Avata/{fileName}"; // Path to the file in Firebase Storage
-            var bucketName = "gs://sharingtogether-c8be8.appspot.com/";
-
-            using (var fileStream = System.IO.File.OpenRead(fileName))
-            {
-                // Upload the file to Firebase Cloud Storage
-                await storageClient.UploadObjectAsync(bucketName, objectName, null, fileStream);
-            }
-
             var user = new User
             {
                 Email = userRegisterModel.Email,
@@ -100,11 +96,24 @@ namespace WebApiTutorialHE.Action
                 Class = userRegisterModel.Class,
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
-                UrlAvatar = fileName,
+                UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
             };
 
             var role = await _sharingContext.Roles.FindAsync(3);
             user.Roles.Add(role);
+
+            var uploader = new Uploadfirebase();
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await imageFile.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
+
+            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
+
+            // Lưu link của ảnh vào thuộc tính UrlAvatar của user
+            user.UrlAvatar = imageUrl;
 
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
@@ -119,7 +128,7 @@ namespace WebApiTutorialHE.Action
                 Class = user.Class,
                 StudentCode = user.StudentCode,
                 FacultyId = user.FacultyId,
-                UrlAvatar = $"https://storage.googleapis.com/{bucketName}/{objectName}",
+                UrlAvatar = Utils.LinkMedia(@"Upload/Avata/" + user.UrlAvatar),
                 RoleIDs = user.Roles.Select(x => x.Id).ToList()
             };
         }
@@ -164,5 +173,7 @@ namespace WebApiTutorialHE.Action
             }
             return dt;
         }
+
+
     }
 }

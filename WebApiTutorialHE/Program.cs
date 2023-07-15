@@ -85,9 +85,6 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-
-
-
 }
 
 
@@ -95,6 +92,8 @@ FirebaseApp.Create(new AppOptions()
 {
     Credential = GoogleCredential.FromFile("./sharing.json"),
 });
+
+
 
 app.UseStaticFiles();
 

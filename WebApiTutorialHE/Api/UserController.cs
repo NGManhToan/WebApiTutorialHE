@@ -27,9 +27,10 @@ namespace WebApiTutorialHE.Api
             return Ok(objectResponse);
         }
         [HttpPost]
-        public async Task<IActionResult> Register([FromForm] UserRegisterModel userRegisterModel)
+        public async Task<IActionResult> Register([FromForm] UserRegisterModel userRegisterModel, IFormFile fileName)
         {
-            var register = await _userService.Register(userRegisterModel);
+
+            var register = await _userService.Register(userRegisterModel, fileName);
             return Ok(register);
 
         }
