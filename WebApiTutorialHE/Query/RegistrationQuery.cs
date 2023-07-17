@@ -19,7 +19,7 @@ namespace WebApiTutorialHE.Query
                             r.Id,
                             Title,
                             FullName,
-                            CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avata/',m.ImageUrl) as imageUrl,
+                             m.imageUrl,
                             r.Content,
                             r.Status
                           FROM

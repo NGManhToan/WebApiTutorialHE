@@ -8,9 +8,9 @@ namespace WebApiTutorialHE.Action.Interface
     {
         Task<Comment> CreateCommet(CreateCommentModel createComment);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
-        Task<Post> PostItem(PostItemModel postItemModel, IFormFile fileName);
-        Task<Post>PostProposal(PostProposalModel postProposalModel, string fileName);
-        Task<Medium> PostImage(PostImgaeModel postImgae,string fileName);
+        Task<ReturnPostItemModel> PostItem(PostItemModel postItemModel, IFormFile fileName);
+        Task<Post>PostProposal(PostProposalModel postProposalModel, IFormFile fileName);
+        Task<Medium> PostImage(PostImgaeModel postImgae, string fileName);
         Task<Post> UpdateIssuccess(int id);
         Task<bool> DeleteWishList(int id);
     }

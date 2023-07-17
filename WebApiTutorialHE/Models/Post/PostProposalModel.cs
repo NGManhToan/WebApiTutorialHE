@@ -8,7 +8,6 @@ namespace WebApiTutorialHE.Models.Post
         public string Content { get; set; }
         public string DesiredStatus { get; set; }
         public int CategoryId { get; set; }
-        public IFormFile? UrlImage { get; set; }
         public int CreatedBy { get; set; }
         [DefaultValue (2)]
         public string Type { get; set; }

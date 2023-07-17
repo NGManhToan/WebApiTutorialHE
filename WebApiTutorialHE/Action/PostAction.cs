@@ -51,7 +51,7 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
-        public async Task<Post> PostItem(PostItemModel postItemModel, IFormFile fileName)
+        public async Task<ReturnPostItemModel> PostItem(PostItemModel postItemModel, IFormFile fileName)
         {
             
             var create = new Post()
@@ -89,9 +89,20 @@ namespace WebApiTutorialHE.Action
             };
             _sharingContext.Media.Add(media);
             await _sharingContext.SaveChangesAsync();
-            return create;
+            return new ReturnPostItemModel 
+            {
+                Title= create.Title,
+                CreatedBy= create.CreatedBy,
+                CategoryId= create.CategoryId,
+                Content = create.Content,
+                Price = create.Price,
+                FromWishList= create.FromWishList,
+                Status = create.Status,
+                Type = create.Type,
+                UrlImage = media.ImageUrl
+            };
         }
-        public async Task<Post>PostProposal(PostProposalModel postProposalModel, string fileName)
+        public async Task<Post>PostProposal(PostProposalModel postProposalModel, IFormFile fileName)
         {
             var create = new Post()
             {
@@ -106,13 +117,24 @@ namespace WebApiTutorialHE.Action
             };
             _sharingContext.Posts.Add(create);
             await _sharingContext.SaveChangesAsync();
-            if(postProposalModel.UrlImage != null && postProposalModel.UrlImage.Length > 0)
+
+            var uploader = new Uploadfirebase();
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await fileName.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
+
+            string imageUrl = await uploader.UploadProposal(imageData, fileName.FileName);
+
+            if (imageUrl != null && imageUrl.Length>0)
             {
                 var postId = create.Id;
                 var media = new Medium()
                 {
                     PostId = postId,
-                    ImageUrl = fileName
+                    ImageUrl = imageUrl
                 };
                 _sharingContext.Media.Add(media);
                 await _sharingContext.SaveChangesAsync();

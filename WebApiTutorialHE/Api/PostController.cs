@@ -124,9 +124,9 @@ namespace WebApiTutorialHE.Api
             return Ok(postItem);
         }
         [HttpPost]
-        public async Task<IActionResult> PostProposal([FromForm] PostProposalModel postProposalModel)
+        public async Task<IActionResult> PostProposal([FromForm] PostProposalModel postProposalModel, IFormFile fileName)
         {
-            var postProposal = await _postService.PostProposal(postProposalModel);
+            var postProposal = await _postService.PostProposal(postProposalModel, fileName);
             return Ok(postProposal);
         }
         [HttpGet]

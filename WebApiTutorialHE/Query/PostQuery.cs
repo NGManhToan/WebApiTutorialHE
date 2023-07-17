@@ -18,15 +18,15 @@ namespace WebApiTutorialHE.Query
         {
             int offset = (pageNumber - 1) * pageSize;
             var query = @"
-        SELECT p.Id, CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/', m.ImageUrl) as imageUrl,
-        Title, CASE 
-                    WHEN Price = 0 THEN 'Free' 
-                    ELSE CAST(Price AS char(10)) 
-                END AS Price
-        FROM Post p 
-        LEFT JOIN Media m ON p.Id = m.PostId 
-        WHERE type = 1
-        LIMIT @PageSize OFFSET @Offset";
+                            SELECT p.Id, m.imageUrl,
+                            Title, CASE 
+                                        WHEN Price = 0 THEN 'Free' 
+                                        ELSE CAST(Price AS char(10)) 
+                                    END AS Price
+                            FROM Post p 
+                            LEFT JOIN Media m ON p.Id = m.PostId 
+                            WHERE type = 1
+                            LIMIT @PageSize OFFSET @Offset";
 
             var parameters = new { PageSize = pageSize, Offset = offset };
             return await _sharingDapper.QueryAsync<HomePostModel>(query, parameters);
@@ -34,7 +34,7 @@ namespace WebApiTutorialHE.Query
 
         public async Task<List<HomePostModel>> QueryFindPost(string search)
         {
-            var query = @"SELECT p.Id, CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl,
+            var query = @"SELECT p.Id, m.imageUrl,
                     Title, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
@@ -49,7 +49,7 @@ namespace WebApiTutorialHE.Query
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
                                 END AS Price,p.Id, Title,
-                    CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl
+                    m.imageUrl
                   FROM Post p LEFT JOIN Category c ON p.CategoryId=c.Id
                                 LEFT JOIN Media m ON p.Id=m.PostId WHERE CategoryId LIKE @id AND type=1";
             //return await _sharingDapper.QueryAsync<HomePostModel>(query, new
@@ -65,7 +65,7 @@ namespace WebApiTutorialHE.Query
 		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
                             ELSE CAST(DesiredStatus AS char(10))                             
                             END AS DesiredStatus,
-                     CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl
+                     m.imageUrl
                   FROM Post p left JOIN User u ON p.CreatedBy=u.Id
                                 left JOIN Media m ON p.Id=m.PostId WHERE type=2";
             return await _sharingDapper.QueryAsync<HomeWishModel>(query);
@@ -85,7 +85,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomePostModel>> QueryDescendPrice(int id)
         {
-            var query = @"SELECT p.Id,CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl,
+            var query = @"SELECT p.Id,m.imageUrl,
                     p.Title, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
@@ -98,7 +98,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomePostModel>> QueryFilterFreeItem(int id)
         {
-            var query = @"SELECT pId,CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl,
+            var query = @"SELECT pId,m.imageUrl,
                                 Title, 
                                 CASE 
                                     WHEN Price = 0 THEN 'Free' 
@@ -117,7 +117,7 @@ namespace WebApiTutorialHE.Query
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
                                 END AS Price, 
-                    CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl
+                    m.imageUrl
                     from Post p left join User u on p.CreatedBy=u.Id left join Media m on m.PostId=p.Id
                     where p.Id LIKE @postId and type=1";
             return await _sharingDapper.QueryAsync<DetailItemModel>(query, new { postId = postId });
@@ -126,7 +126,7 @@ namespace WebApiTutorialHE.Query
         public async Task<List<MySharingModel>> QueryGetShareListByUser(int id)
         {
             var query = @"select p.Id,p.Title,
-		                        CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl
+		                        m.imageUrl
                         from Post p
 	                         left join Media m on p.Id=m.PostId
 	                         join User u on p.CreatedBy=u.Id
@@ -137,7 +137,7 @@ namespace WebApiTutorialHE.Query
         {
             var query = @"select CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avata/',m.ImageUrl) as imageUrl,
 	                    FullName, p.CreatedDate, Content, c.Name, 
-                        CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl,
+                        m.imageUrl,
                         CASE 
 		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
                             ELSE CAST(DesiredStatus AS char(10))                             
@@ -173,7 +173,7 @@ namespace WebApiTutorialHE.Query
 		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
                             ELSE CAST(DesiredStatus AS char(10))                             
                             END AS DesiredStatus,
-                     CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Post/',m.ImageUrl) as imageUrl
+                     m.imageUrl
                   FROM Post p left JOIN User u ON p.CreatedBy=u.Id
                                 left JOIN Media m ON p.Id=m.PostId WHERE type=2 and p.CreatedBy=@userId";
             return await _sharingDapper.QueryAsync<HomeWishModel>(query, new { userId = userId });

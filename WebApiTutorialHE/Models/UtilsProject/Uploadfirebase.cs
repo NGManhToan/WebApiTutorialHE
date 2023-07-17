@@ -75,5 +75,37 @@ namespace WebApiTutorialHE.Models.UtilsProject
                 throw;
             }
         }
+        public async Task<string> UploadProposal(byte[] imageData, string fileName)
+        {
+            var auth = new FirebaseAuthProvider(new FirebaseConfig(ApiKey));
+            var a = await auth.SignInWithEmailAndPasswordAsync(AuthEmail, AuthPassword);
+
+            // You can use CancellationTokenSource to cancel the upload midway
+            var cancellation = new CancellationTokenSource();
+
+            var task = new FirebaseStorage(
+                Bucket,
+                new FirebaseStorageOptions
+                {
+                    AuthTokenAsyncFactory = () => Task.FromResult(a.FirebaseToken),
+                    ThrowOnCancel = true // when you cancel the upload, an exception is thrown. By default, no exception is thrown.
+                })
+                .Child("Upload")
+                .Child("Proposal")
+                .Child(fileName)
+                .PutAsync(new MemoryStream(imageData), cancellation.Token);
+
+            try
+            {
+                // error during upload will be thrown when awaiting the task
+                string link = await task;
+                return link;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Exception was thrown: {0}", ex);
+                throw;
+            }
+        }
     }
 }

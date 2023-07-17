@@ -199,8 +199,6 @@ namespace WebApiTutorialHE.Service
                 message = "Email không tồn tại",
             };
 
-            var file = await _userAction.SaveOneMediaData(userRegisterModel.UrlAvatar);
-
             var register = await _userAction.Register(userRegisterModel,fileName);
             
             return new ObjectResponse

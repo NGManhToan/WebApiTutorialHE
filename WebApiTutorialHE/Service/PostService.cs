@@ -71,15 +71,14 @@ namespace WebApiTutorialHE.Service
         {
             return await _postAction.CreateCommet(createComment);
         }
-        public async Task<Post> PostItem(PostItemModel postItemModel, IFormFile fileName)
+        public async Task<ReturnPostItemModel> PostItem(PostItemModel postItemModel, IFormFile fileName)
         {
-            var file = await _postAction.SaveOneMediaData(postItemModel.UrlImage);
+            //var file = await _postAction.SaveOneMediaData(postItemModel.UrlImage);
             return await _postAction.PostItem(postItemModel, fileName);
         }
-        public async Task<Post>PostProposal(PostProposalModel postProposalModel)
+        public async Task<Post>PostProposal(PostProposalModel postProposalModel, IFormFile fileName)
         {
-            var file = await _postAction.SaveOneMediaData(postProposalModel.UrlImage);
-            return await _postAction.PostProposal(postProposalModel, file.FileName);
+            return await _postAction.PostProposal(postProposalModel, fileName);
         }
         public async Task<List<HomeWishModel>> GetWishListByUser(int userId)
         {

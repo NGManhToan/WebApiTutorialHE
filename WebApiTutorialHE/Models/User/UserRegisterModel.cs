@@ -13,6 +13,6 @@ namespace WebApiTutorialHE.Models.User
         public string Class { get; set; }
         public string StudentCode { get; set; }
         public int FacultyId { get; set; }
-        public IFormFile UrlAvatar { get; set; }
+        
     }
 }

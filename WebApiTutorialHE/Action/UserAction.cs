@@ -128,7 +128,7 @@ namespace WebApiTutorialHE.Action
                 Class = user.Class,
                 StudentCode = user.StudentCode,
                 FacultyId = user.FacultyId,
-                UrlAvatar = Utils.LinkMedia(@"Upload/Avata/" + user.UrlAvatar),
+                UrlAvatar = user.UrlAvatar,
                 RoleIDs = user.Roles.Select(x => x.Id).ToList()
             };
         }
