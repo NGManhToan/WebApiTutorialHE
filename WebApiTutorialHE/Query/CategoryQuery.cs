@@ -14,8 +14,11 @@ namespace WebApiTutorialHE.Query
         public async Task<List<CategoryListModel>> QueryListCategory()
         {
             var query =
-                @"SELECT Name 
-                  FROM Category";
+                @"SELECT
+                    Name, Id, LastModifiedDate
+                FROM
+                    Category
+                where IsDeleted = false";
             return await _sharingDapper.QueryAsync<CategoryListModel>(query);
         }
        

@@ -4,6 +4,9 @@ using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.UtilsService.Interface;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Models.Registation;
+using DocumentFormat.OpenXml.Drawing;
+using DocumentFormat.OpenXml.Math;
+using GrapeCity.Documents.Common;
 
 namespace WebApiTutorialHE.Query
 {
@@ -25,7 +28,7 @@ namespace WebApiTutorialHE.Query
                                     END AS Price
                             FROM Post p 
                             LEFT JOIN Media m ON p.Id = m.PostId 
-                            WHERE type = 1
+                            WHERE type = 1 and p.IsActive = true
                             LIMIT @PageSize OFFSET @Offset";
 
             var parameters = new { PageSize = pageSize, Offset = offset };
@@ -42,33 +45,53 @@ namespace WebApiTutorialHE.Query
             var parameters = new { Search = "%" + search + "%" };
             return await _sharingDapper.QueryAsync<HomePostModel>(query, parameters);
         }
-        public async Task<List<HomePostModel>> QuerySelectPostFollowCategoryId(int id)
+        public async Task<List<HomePostModel>> QuerySelectPostFollowCategoryId(int id, int pageNumber, int pageSize)
         {
+            int offset = (pageNumber - 1) * pageSize;
             var query =
                 @"SELECT CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
-                                END AS Price,p.Id, Title,
+                                END AS Price,p.Id,p.CategoryId, Title,
                     m.imageUrl
                   FROM Post p LEFT JOIN Category c ON p.CategoryId=c.Id
-                                LEFT JOIN Media m ON p.Id=m.PostId WHERE CategoryId LIKE @id AND type=1";
+                                LEFT JOIN Media m ON p.Id=m.PostId WHERE CategoryId LIKE @id AND type=1
+                    LIMIT @PageSize OFFSET @Offset";
+
             //return await _sharingDapper.QueryAsync<HomePostModel>(query, new
             //{
             //    id = id
             //});
-            return await _sharingDapper.QueryAsync<HomePostModel>(query, new { id = id });
+            var parameters = new { id = id,PageSize = pageSize, Offset = offset };
+            return await _sharingDapper.QueryAsync<HomePostModel>(query,parameters);
 
         }
         public async Task<List<HomeWishModel>> QueryGetWishList()
         {
-            var query = @"SELECT p.Id,u.FullName, p.CreatedDate, Content,CASE 
-		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
-                            ELSE CAST(DesiredStatus AS char(10))                             
+            var query = @"SELECT 
+                            p.Id,
+                            u.FullName,
+                            CASE 
+                                WHEN TIMESTAMPDIFF(DAY, p.CreatedDate, CURRENT_TIMESTAMP) > 0 THEN CONCAT(TIMESTAMPDIFF(DAY, p.CreatedDate, CURRENT_TIMESTAMP), ' ngày trước')
+                                WHEN TIMESTAMPDIFF(HOUR, p.CreatedDate, CURRENT_TIMESTAMP) > 0 THEN CONCAT(TIMESTAMPDIFF(HOUR, p.CreatedDate, CURRENT_TIMESTAMP), ' giờ trước')
+                                ELSE CONCAT(TIMESTAMPDIFF(MINUTE, p.CreatedDate, CURRENT_TIMESTAMP), ' phút trước')
+                            END AS TimeDiff,
+                            p.Content,
+                            CASE
+                                WHEN p.DesiredStatus = 3 THEN 'Free, Purchase'
+                                ELSE CAST(p.DesiredStatus AS CHAR(10))
                             END AS DesiredStatus,
-                     m.imageUrl
-                  FROM Post p left JOIN User u ON p.CreatedBy=u.Id
-                                left JOIN Media m ON p.Id=m.PostId WHERE type=2";
-            return await _sharingDapper.QueryAsync<HomeWishModel>(query);
+                            m.imageUrl
+                        FROM
+                            Post p
+                            LEFT JOIN User u ON p.CreatedBy = u.Id
+                            LEFT JOIN Media m ON p.Id = m.PostId
+                        WHERE
+                            p.type = 2";
+            return await _sharingDapper.QueryAsync<HomeWishModel>(query,new
+            {
+                Now = Utils.DateNow()
+            });
         }
         public async Task<List<HomePostModel>> QueryAscendPrice(int id)
         {
@@ -151,16 +174,21 @@ namespace WebApiTutorialHE.Query
 
         public async Task<List<CommentModel>> GetListComment(int postId)
         {
-            var query = @"SELECT u.UrlAvatar, u.FullName, c.Content,
-	                        case  
-                            when timediff(NOW(), c.CreatedDate)> '24:00:00' then concat(datediff(@Now, c.CreatedDate), ' ngày trước')
-                            when timediff(NOW(), c.CreatedDate)> '1:00:00' then concat(hour(timediff(@Now, c.CreatedDate)), ' giờ trước')
-                            else concat(minute(timediff(NOW(), c.CreatedDate)), ' phút trước')
-                            end TimeDiff
-                        FROM Comment c
-	                        JOIN User u ON u.Id = c.CreatedBy
+            var query = @"SELECT 
+                            u.UrlAvatar,
+                            u.FullName,
+                            c.Content,
+                            CASE 
+                                WHEN TIMESTAMPDIFF(DAY, c.CreatedDate, NOW()) > 0 THEN CONCAT(TIMESTAMPDIFF(DAY, c.CreatedDate, NOW()), ' ngày trước')
+                                WHEN TIMESTAMPDIFF(HOUR, c.CreatedDate, NOW()) > 0 THEN CONCAT(TIMESTAMPDIFF(HOUR, c.CreatedDate, NOW()), ' giờ trước')
+                                ELSE CONCAT(TIMESTAMPDIFF(MINUTE, c.CreatedDate, NOW()), ' phút trước')
+                            END AS TimeDiff
+                        FROM 
+                            Comment c
+                            JOIN User u ON u.Id = c.CreatedBy
                             JOIN Post p ON p.Id = c.PostId
-                        WHERE p.Id=@PostId";
+                        WHERE 
+                            p.Id = @PostId";
             return await _sharingDapper.QueryAsync<CommentModel>(query, new
             {
                 PostId = postId,

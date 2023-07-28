@@ -29,9 +29,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _postQuery.QueryFindPost(search);
         }
-        public async Task<List<HomePostModel>> GetPostFollowCategoryId(int id)
+        public async Task<List<HomePostModel>> GetPostFollowCategoryId(int id, int pageNumber, int pageSize)
         {
-            return await _postQuery.QuerySelectPostFollowCategoryId(id);
+            return await _postQuery.QuerySelectPostFollowCategoryId(id,pageNumber,pageSize);
         }       
         public async Task<List<HomePostModel>> AscendPrice(int id)
         {

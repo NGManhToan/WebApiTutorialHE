@@ -11,7 +11,7 @@ namespace WebApiTutorialHE.Query.Interface
         //Task<List<UserListModel>> QueryListAdminAccount();
         Task<List<UserRoleModel>> QueryUserRoles();
         Task<UserProfileModel> QueryFrofile(int id);
-        Task<UserProfileSharingModel> QueryFrofileSharing(int id);
+        Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id);
         Task<List<UserProfileFeedback>> QueryItemFeedback(int id);
         Task<RecipientInformationModel> QueryRecipientInfor(int id);
     }

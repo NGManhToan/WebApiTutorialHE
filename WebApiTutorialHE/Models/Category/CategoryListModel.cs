@@ -2,8 +2,9 @@
 {
     public class CategoryListModel
     {
-        //public int Id { get; set; }
+        public int Id { get; set; }
         public string Name { get; set; } = null!;
+        public string LastModifiedDate { get; set; }
         //public int CreatedBy { get; set; }
         //public bool IsDeleted { get; set; }
         //public bool? IsActive { get; set; }

@@ -9,7 +9,7 @@ namespace WebApiTutorialHE.Service.Interface
     {
         Task<List<HomePostModel>> HomePost(int pageNumber, int pageSize);
         Task<List<HomePostModel>> FindPost(string search);
-        Task<List<HomePostModel>> GetPostFollowCategoryId(int id);
+        Task<List<HomePostModel>> GetPostFollowCategoryId(int id, int pageNumber, int pageSize);
         Task<List<HomeWishModel>> GetWishList();
         Task<List<HomePostModel>>AscendPrice(int id);
         Task<List<HomePostModel>> DescendPrice(int id);

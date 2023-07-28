@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "478508382380",
+    "project_id": "sharingtogether-c8be8",
+    "storage_bucket": "sharingtogether-c8be8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:478508382380:android:c300d2e1f6c978f3de4709",
+        "android_client_info": {
+          "package_name": "com.uis.sharingtogether"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "478508382380-j6c092ikvn7movfb0aa8cd8qrvu35cp8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDD7_4XIfwm9qVBBD9aX47lWjWIYlYAPJI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "478508382380-j6c092ikvn7movfb0aa8cd8qrvu35cp8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

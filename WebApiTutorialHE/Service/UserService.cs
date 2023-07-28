@@ -230,7 +230,7 @@ namespace WebApiTutorialHE.Service
             return await _userQuery.QueryFrofile(id);
         }
 
-        public async Task<UserProfileSharingModel> QueryFrofileSharing(int id)
+        public async Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id)
         {
             return await _userQuery.QueryFrofileSharing(id);
         }

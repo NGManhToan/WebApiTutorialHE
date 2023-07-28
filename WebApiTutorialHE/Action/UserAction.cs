@@ -139,10 +139,29 @@ namespace WebApiTutorialHE.Action
 
             if (update != null)
             {
-                update.FullName = userUpdate.FullName;
-                update.Class = userUpdate.Class;
-                update.StudentCode = userUpdate.StudentCode;
-                update.FacultyId = userUpdate.FacultyId;
+                if (!string.IsNullOrEmpty(userUpdate.FullName))
+                {
+                    update.FullName = userUpdate.FullName;
+                }
+
+                if (!string.IsNullOrEmpty(userUpdate.Class))
+                {
+                    update.Class = userUpdate.Class;
+                }
+
+                if (!string.IsNullOrEmpty(userUpdate.StudentCode))
+                {
+                    update.StudentCode = userUpdate.StudentCode;
+                }
+
+                if (userUpdate.FacultyId != null && userUpdate.FacultyId != 0)
+                {
+                    update.FacultyId = userUpdate.FacultyId.Value; // Use Value property to get the non-nullable value
+                }
+
+
+                // Cập nhật các trường không thay đổi
+
                 update.LastModifiedDate = Utils.DateNow();
                 update.LastModifiedBy = update.Id;
 
@@ -153,9 +172,13 @@ namespace WebApiTutorialHE.Action
 
                 _sharingContext.Users.Update(update);
                 await _sharingContext.SaveChangesAsync();
-            };
+            }
+
             return update;
         }
+
+
+
         public DataTable GetDataTable()
         {
             DataTable dt = new DataTable();

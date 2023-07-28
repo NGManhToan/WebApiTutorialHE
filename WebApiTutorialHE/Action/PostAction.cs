@@ -8,8 +8,8 @@ using WebApiTutorialHE.Models.CloudMedia;
 using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.UtilsService.Interface;
-using System.Net.Http;
 using DocumentFormat.OpenXml.Vml;
+using Microsoft.AspNetCore.Authorization;
 
 namespace WebApiTutorialHE.Action
 {
@@ -51,9 +51,23 @@ namespace WebApiTutorialHE.Action
             };
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
+
+        [Authorize(Roles = "3")]
         public async Task<ReturnPostItemModel> PostItem(PostItemModel postItemModel, IFormFile fileName)
         {
-            
+            int maxFileSizeBytes = 5 * 1024 * 1024; // 5 MB
+            if (fileName.Length > maxFileSizeBytes)
+            {
+                Results.BadRequest("Tệp đã vượt quá kích thước cho phép");
+            }
+
+            //string fileExtension = Path.GetExtension(fileName.FileName).ToLowerInvariant();
+            //string[] acceptedImageFormats = { ".jpg", ".jpeg", ".png", ".gif" };
+            //if (!acceptedImageFormats.Contains(fileExtension))
+            //{
+            //    Results.BadRequest("Định dạng tệp không được chấp nhận. Vui lòng tải lên hình ảnh có định dạng .jpg, .png, .gif, v.v.");
+            //}
+
             var create = new Post()
             {
                 Title = postItemModel.Title,
@@ -79,6 +93,7 @@ namespace WebApiTutorialHE.Action
                 imageData = memoryStream.ToArray();
             }
 
+            
             string imageUrl = await uploader.UploadPost(imageData, fileName.FileName);
 
             var postId = create.Id;

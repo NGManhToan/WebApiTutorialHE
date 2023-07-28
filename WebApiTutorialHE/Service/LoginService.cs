@@ -16,9 +16,9 @@ namespace WebApiTutorialHE.Service
         {
             _loginQuery = loginQuery;
         }
-        public async Task<ObjectResponse>Login(LoginModel loginModel)
+        public async Task<ObjectResponse> Login(LoginModel loginModel)
         {
-            loginModel.Password=Encryptor.SHA256Encode(loginModel.Password);
+            loginModel.Password = Encryptor.SHA256Encode(loginModel.Password);
             var login = await _loginQuery.Login(loginModel, loginModel.Password);
 
             if (login == null)
@@ -38,12 +38,12 @@ namespace WebApiTutorialHE.Service
             {
                 result = 1,
                 message = "Đăng nhập thành công",
-                content = new {
+                content = new
+                {
                     login,
                     token
                 }
             };
         }
-        
     }
 }

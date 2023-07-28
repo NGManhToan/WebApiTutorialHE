@@ -28,6 +28,7 @@ namespace WebApiTutorialHE.Database
         public virtual DbSet<Registration> Registrations { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<VerificationCode> VerificationCodes { get; set; } = null!;
         public virtual DbSet<ViolationReport> ViolationReports { get; set; } = null!;
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -374,6 +375,8 @@ namespace WebApiTutorialHE.Database
 
                 entity.HasIndex(e => e.PostId, "PostId");
 
+                entity.Property(e => e.ApprovalDate).HasColumnType("datetime");
+
                 entity.Property(e => e.Content).HasColumnType("text");
 
                 entity.Property(e => e.CreatedDate)
@@ -504,6 +507,23 @@ namespace WebApiTutorialHE.Database
                     .WithMany(p => p.InverseLastModifiedByNavigation)
                     .HasForeignKey(d => d.LastModifiedBy)
                     .HasConstraintName("User_ibfk_3");
+            });
+
+            modelBuilder.Entity<VerificationCode>(entity =>
+            {
+                entity.ToTable("VerificationCode");
+
+                entity.HasIndex(e => e.UserId, "UserId");
+
+                entity.Property(e => e.Code).HasMaxLength(20);
+
+                entity.Property(e => e.ExpirationTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.VerificationCodes)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("VerificationCode_ibfk_1");
             });
 
             modelBuilder.Entity<ViolationReport>(entity =>

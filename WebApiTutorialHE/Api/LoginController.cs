@@ -23,14 +23,14 @@ namespace WebApiTutorialHE.Api
                 return BadRequest(ModelState);
             }
 
-            var login = await _loginService.Login(loginModel);
+            var loginResponse = await _loginService.Login(loginModel);
 
-            if (login == null)
+            if (loginResponse.result == 0)
             {
                 return NotFound();
             }
-
-            return Ok(login);
+            return Ok(loginResponse);
         }
+
     }
 }

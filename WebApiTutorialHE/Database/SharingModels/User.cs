@@ -23,6 +23,7 @@ namespace WebApiTutorialHE.Database.SharingModels
             PostLastModifiedByNavigations = new HashSet<Post>();
             RegistrationCreatedByNavigations = new HashSet<Registration>();
             RegistrationLastModifiedByNavigations = new HashSet<Registration>();
+            VerificationCodes = new HashSet<VerificationCode>();
             ViolationReportCreatedByNavigations = new HashSet<ViolationReport>();
             ViolationReportLastModifiedByNavigations = new HashSet<ViolationReport>();
             ViolationReportViolators = new HashSet<ViolationReport>();
@@ -65,6 +66,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual ICollection<Post> PostLastModifiedByNavigations { get; set; }
         public virtual ICollection<Registration> RegistrationCreatedByNavigations { get; set; }
         public virtual ICollection<Registration> RegistrationLastModifiedByNavigations { get; set; }
+        public virtual ICollection<VerificationCode> VerificationCodes { get; set; }
         public virtual ICollection<ViolationReport> ViolationReportCreatedByNavigations { get; set; }
         public virtual ICollection<ViolationReport> ViolationReportLastModifiedByNavigations { get; set; }
         public virtual ICollection<ViolationReport> ViolationReportViolators { get; set; }

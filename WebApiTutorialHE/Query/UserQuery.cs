@@ -27,8 +27,8 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<UserProfileModel> QueryFrofile(int id)
         {
-            var query = @"select u.Id,u.FullName,u.StudentCode,f.Name Faculty, u.Class,left(u.Class,3) Session, 
-	                        count(p.id) Items, count(r.Id) Shared
+            var query = @"select u.UrlAvatar,u.FullName,u.StudentCode,f.Name Faculty, u.Class,left(u.Class,3) Session, 
+	                        count(p.id) Items, count(r.Id) Shared,u.PhoneNumber,u.Email
                           from User u
 	                        left join Post p on u.Id=p.CreatedBy and p.Type = 1
                             left join Registration r on r.PostId=p.Id and r.Status = 2
@@ -40,14 +40,28 @@ namespace WebApiTutorialHE.Query
                 Id=id,
             });
         }
-        public async Task<UserProfileSharingModel> QueryFrofileSharing(int id)
+        public async Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id)
         {
-            var query = @"select p.id, p.Title,p.DesiredStatus
-                          from Post p
-	                           left join User u on u.Id=p.CreatedBy
-                               left join Registration r on r.PostId=p.Id and r.Status != 2
-                          where p.Type=1 and u.Id=@id";
-            return await _sharingDapper.QuerySingleAsync<UserProfileSharingModel>(query, new
+            var query = @"SELECT 
+                                p.id,
+                                p.Title,
+                                CASE
+                                    WHEN p.Price = 0 THEN 'Free'
+                                    ELSE p.Price
+                                END AS Price,
+                                m.ImageUrl
+                            FROM
+                                Post p
+                                    LEFT JOIN
+                                User u ON u.Id = p.CreatedBy
+                                    LEFT JOIN
+                                Registration r ON r.PostId = p.Id AND r.Status != 2
+		                            LEFT JOIN
+	                            Media m on m.PostId = p.Id
+                            WHERE
+                                p.Type = 1 AND u.Id = @id and p.IsActive = true
+                            GROUP BY p.id , p.Title , p.Price,m.ImageUrl";
+            return await _sharingDapper.QueryAsync<UserProfileSharingModel>(query, new
             {
                 Id = id,
             });

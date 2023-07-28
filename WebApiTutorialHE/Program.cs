@@ -10,6 +10,12 @@ using WebApiTutorialHE.Manager.Token;
 using WebApiTutorialHE.Manager.Token.Interface;
 using WebApiTutorialHE.Models.Mail;
 using WebApiTutorialHE.Models.UtilsProject;
+using WebApiTutorialHE.Module.AdminManager.Action;
+using WebApiTutorialHE.Module.AdminManager.Action.Interface;
+using WebApiTutorialHE.Module.AdminManager.Query;
+using WebApiTutorialHE.Module.AdminManager.Query.Interface;
+using WebApiTutorialHE.Module.AdminManager.Service;
+using WebApiTutorialHE.Module.AdminManager.Service.Interface;
 using WebApiTutorialHE.Query;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service;
@@ -75,6 +81,13 @@ builder.Services.AddScoped<IPostAction, PostAction>();
 
 builder.Services.AddScoped<IShowImageSevice, ShowImageSevice>();
 
+builder.Services.AddScoped<IACategoryAction, ACategoryAction>();
+builder.Services.AddScoped<IACategoryService,ACategorySevice>();
+
+builder.Services.AddScoped<IARegistrationQuery,ARegistrationQuery>();
+builder.Services.AddScoped<IARegistrationService, ARegistrationService>();
+
+builder.Services.AddScoped<IARegistrationAction, ARegistrationAction>();
 
 var app = builder.Build();
 

@@ -21,6 +21,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime CreatedDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public int LastModifiedBy { get; set; }
+        public DateTime? ApprovalDate { get; set; }
 
         public virtual User CreatedByNavigation { get; set; } = null!;
         public virtual User LastModifiedByNavigation { get; set; } = null!;

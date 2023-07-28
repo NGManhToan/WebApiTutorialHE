@@ -64,15 +64,23 @@ namespace WebApiTutorialHE.Action
 
             if (accepted != null)
             {
-                var category = await _sharingContext.Posts.Where(x => x.Id == accepted.PostId).Select(x => x.CategoryId).FirstOrDefaultAsync();
-                var update = _sharingContext.Registrations.Select(x => x).Where(x => x.PostId == accepted.PostId);
+                var category = await _sharingContext.Posts
+                    .Where(x => x.Id == accepted.PostId)
+                    .Select(x => x.CategoryId)
+                    .FirstOrDefaultAsync();
+
+                var update = _sharingContext.Registrations
+                    .Where(x => x.PostId == accepted.PostId)
+                    .ToList();
+
+                var updateIsActive = _sharingContext.Posts
+                    .Where(x => x.IsActive == true)
+                    .ToList();
 
                 if (category == 2)
                 {
-                    {
-                        accepted.Status = "Accepted";
-                        _sharingContext.Registrations.Update(accepted);
-                    }
+                    accepted.Status = "Accepted";
+                    _sharingContext.Registrations.Update(accepted);
                 }
                 else
                 {
@@ -81,6 +89,14 @@ namespace WebApiTutorialHE.Action
                         if (registration.Id == accepted.Id)
                         {
                             registration.Status = "Accepted";
+
+                            // Set IsActive to false for the corresponding Post
+                            var postToUpdate = updateIsActive.FirstOrDefault(x => x.Id == registration.PostId);
+                            if (postToUpdate != null)
+                            {
+                                postToUpdate.IsActive = false;
+                                _sharingContext.Posts.Update(postToUpdate);
+                            }
                         }
                         else
                         {
@@ -92,11 +108,12 @@ namespace WebApiTutorialHE.Action
                 }
 
                 await _sharingContext.SaveChangesAsync();
-                return update.ToList();
+                return update;
             }
 
             return null;
         }
-        
+
+
     }
 }

@@ -22,27 +22,47 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult> GetAll(int pageNumber, int pageSize)
         {
             var homePost = await _postService.HomePost(pageNumber,pageSize);
-            return Ok(homePost);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lay thanh cong",
+                content = homePost
+            });
         }
 
         [HttpGet("{search}")]///Tìm kiếm theo tên vật phẩm
         public async Task<IActionResult> FindPost(string search)
         {
             var findPost = await _postService.FindPost(search);
-            return Ok(findPost);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Tìm thành công",
+                content = findPost
+            });
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetPostFromCategoryId(int id)
+        public async Task<IActionResult> GetPostFromCategoryId(int id, int pageNumber, int pageSize)
         {
-            var getPost = await _postService.GetPostFollowCategoryId(id);
-            return Ok(getPost);
+            var getPost = await _postService.GetPostFollowCategoryId(id,pageNumber,pageSize);
+            return Ok(new ObjectResponse
+            {
+                result=1,
+                message = "Lay thanh cong",
+                content = getPost
+            });
         }
         [HttpGet]
         public async Task<IActionResult> GetWishlish()
         {
             var getWish = await _postService.GetWishList();
-            return Ok(getWish);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công",
+                content = getWish
+            });
         }
         [HttpGet]
         public async Task<IActionResult> AscendPrice(int id)
@@ -66,7 +86,12 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult>DetailItem(int postId)
         {
             var detailItem=await _postService.GetDetailItem(postId);
-            return Ok(detailItem);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy thành công chi tiết",
+                content = detailItem
+            });
         }
 
         [HttpGet]

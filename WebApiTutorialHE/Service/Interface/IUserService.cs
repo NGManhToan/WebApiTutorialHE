@@ -16,7 +16,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<ActionResult<string>>DeleteUser(int id);
         void ExportDataTableToPdf(DataTable dataTable, string filePath);
         Task<UserProfileModel> QueryFrofile(int id);
-        Task<UserProfileSharingModel> QueryFrofileSharing(int id);
+        Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id);
         Task<List<UserProfileFeedback>> QueryItemFeedback(int id);
         Task<User> UpdateProfile(UserUpdateModel userUpdate);
         Task<RecipientInformationModel> RecipientInfor(int id);
