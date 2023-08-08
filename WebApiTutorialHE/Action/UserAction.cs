@@ -18,7 +18,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.Models.Mail;
 using System.Text;
-using DocumentFormat.OpenXml.Vml;
+
 
 namespace WebApiTutorialHE.Action
 {
@@ -155,13 +155,17 @@ namespace WebApiTutorialHE.Action
   
         }
 
-        public async Task<string> UploadAvtarFireBase(string imagePath)
+        public async Task<string> UploadAvtarFireBase(IFormFile imageFile)
         {
             var uploader = new Uploadfirebase();
-            byte[] imageData = File.ReadAllBytes(imagePath);
-            string imageName = Path.GetFileName(imagePath);
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await imageFile.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
 
-            string imageUrl = await uploader.UploadAvatar(imageData, imageName);
+            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
             return imageUrl;
         }
 
