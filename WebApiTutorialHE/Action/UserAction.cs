@@ -193,7 +193,7 @@ namespace WebApiTutorialHE.Action
                     // Save the imageUrl to the user data (assuming there's a property for it)
                     var uploader = new Uploadfirebase();
 
-                   // var image = await uploader.UploadAvatar(imageData, user.UrlAvatar);
+                    var image = await uploader.UploadAvatar(default, user.UrlAvatar);
                     //user.UrlAvatar = image;
 
                     _sharingContext.VerificationCodes.Remove(verificationCode);
