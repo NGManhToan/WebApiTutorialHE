@@ -18,6 +18,7 @@ using DocumentFormat.OpenXml.Bibliography;
 using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.Models.Mail;
 using System.Text;
+using DocumentFormat.OpenXml.Vml;
 
 namespace WebApiTutorialHE.Action
 {
@@ -84,7 +85,7 @@ namespace WebApiTutorialHE.Action
             return await _sharingContext.Users.AnyAsync(u => u.Email.Equals(email) );
         }
 
-        public async Task<bool> IsPhoneDuplicate(string phoneNumber)
+        public async Task<bool> IsPhoneDuplicate(string phoneNumber)    
         {
             return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
         }
@@ -121,13 +122,6 @@ namespace WebApiTutorialHE.Action
                 UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
             };
 
-            byte[] imageData;
-            using (var memoryStream = new MemoryStream())
-            {
-                await imageFile.CopyToAsync(memoryStream);
-                imageData = memoryStream.ToArray();
-            }
-
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
 
@@ -161,6 +155,17 @@ namespace WebApiTutorialHE.Action
   
         }
 
+        public async Task<string> UploadAvtarFireBase(string imagePath)
+        {
+            var uploader = new Uploadfirebase();
+            byte[] imageData = File.ReadAllBytes(imagePath);
+            string imageName = Path.GetFileName(imagePath);
+
+            string imageUrl = await uploader.UploadAvatar(imageData, imageName);
+            return imageUrl;
+        }
+
+
         public async Task<string> IdentifyOTP(int userId, string otpCode)
         {
 
@@ -188,13 +193,9 @@ namespace WebApiTutorialHE.Action
                     var role = await _sharingContext.Roles.FindAsync(3);
                     user.Roles.Add(role);
 
-                    //var imageUrl = await UploadAvtarFireBase(); // Pass the URL directly
+                    //string imageUrl = await UploadAvtarFireBase(imageFile);
+                    //user.UrlAvatar = imageUrl;
 
-                    // Save the imageUrl to the user data (assuming there's a property for it)
-                    var uploader = new Uploadfirebase();
-
-                    var image = await uploader.UploadAvatar(default, user.UrlAvatar);
-                    //user.UrlAvatar = image;
 
                     _sharingContext.VerificationCodes.Remove(verificationCode);
                     await _sharingContext.SaveChangesAsync();
