@@ -13,9 +13,12 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<UserListModel>> QueryListUser()
         {
-            var query =
-                @"SELECT * 
-                FROM User";
+            var query = @"SELECT 
+                                u.Id,f.Name,u.StudentCode,u.FullName,u.Email,u.PhoneNumber,u.UrlAvatar,u.IsOnline,ur.RoleId
+                            FROM
+                                User u
+                                join Faculty f on u.FacultyId = f.Id	
+                                join UserRole ur on u.Id = ur.UserId";
             return await _sharingDapper.QueryAsync<UserListModel>(query);
         }
         public async Task<List<UserRoleModel>> QueryUserRoles()

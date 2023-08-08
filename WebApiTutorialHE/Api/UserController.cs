@@ -136,5 +136,12 @@ namespace WebApiTutorialHE.Api
             var result = await _userService.DeleteUser(id);
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<IActionResult>IdentifyOTP(int userId, string otpCode)
+        {
+            var result = await _userService.IdentifyOTP(userId, otpCode);
+            return Ok(result);
+        }
     }
 }

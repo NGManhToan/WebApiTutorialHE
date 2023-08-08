@@ -15,12 +15,13 @@ namespace WebApiTutorialHE.Action.Interface
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<ActionResult<UserReturnRegister>>Register(UserRegisterModel userRegisterModel,IFormFile fileName);
+        Task<ActionResult<string>>Register(UserRegisterModel userRegisterModel,IFormFile fileName);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
         Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename);
 
         //Task UpdatePassword();
         Task<bool> IsEmailDuplicate(string email);
         Task<bool> IsPhoneDuplicate( string phoneNumber);
+        Task<string> IdentifyOTP(int userId, string otpCode);
     }
 }

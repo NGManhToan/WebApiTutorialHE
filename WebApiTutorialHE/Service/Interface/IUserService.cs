@@ -21,6 +21,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<User> UpdateProfile(UserUpdateModel userUpdate);
         Task<RecipientInformationModel> RecipientInfor(int id);
 
+        Task<string> IdentifyOTP(int userId, string otpCode);
 
     }
 }

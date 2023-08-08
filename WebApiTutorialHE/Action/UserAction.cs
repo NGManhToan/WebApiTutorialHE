@@ -15,7 +15,9 @@ using Google.Cloud.Storage.V1;
 using System.IO;
 using Microsoft.Win32;
 using DocumentFormat.OpenXml.Bibliography;
-
+using WebApiTutorialHE.Service.Interface;
+using WebApiTutorialHE.Models.Mail;
+using System.Text;
 
 namespace WebApiTutorialHE.Action
 {
@@ -26,11 +28,13 @@ namespace WebApiTutorialHE.Action
 
         private readonly SharingContext _sharingContext;
         private readonly ICloudMediaService _cloudMediaService;
+        private readonly IMailService _mailService;
 
-        public UserAction(SharingContext sharingContext,ICloudMediaService cloudMediaService)
+        public UserAction(SharingContext sharingContext,ICloudMediaService cloudMediaService, IMailService mailService)
         {
             _sharingContext = sharingContext;
             _cloudMediaService = cloudMediaService;
+            _mailService = mailService;
         }
 
 
@@ -85,8 +89,26 @@ namespace WebApiTutorialHE.Action
             return await _sharingContext.Users.AnyAsync(u => u.PhoneNumber.Equals(phoneNumber));
         }
 
-        public async Task<ActionResult<UserReturnRegister>> Register(UserRegisterModel userRegisterModel, IFormFile imageFile)
+        public string GenerateOTPCode()
         {
+            int length = 6;
+
+            Random random = new Random();
+            StringBuilder otpCode = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                int digit = random.Next(0, 10);
+                otpCode.Append(digit);
+            }
+
+            return otpCode.ToString();
+        }
+
+
+        public async Task<ActionResult<string>> Register(UserRegisterModel userRegisterModel, IFormFile imageFile)
+        {
+
             var user = new User
             {
                 Email = userRegisterModel.Email,
@@ -99,10 +121,6 @@ namespace WebApiTutorialHE.Action
                 UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
             };
 
-            var role = await _sharingContext.Roles.FindAsync(3);
-            user.Roles.Add(role);
-
-            var uploader = new Uploadfirebase();
             byte[] imageData;
             using (var memoryStream = new MemoryStream())
             {
@@ -110,27 +128,97 @@ namespace WebApiTutorialHE.Action
                 imageData = memoryStream.ToArray();
             }
 
-            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
-
-            // Lưu link của ảnh vào thuộc tính UrlAvatar của user
-            user.UrlAvatar = imageUrl;
-
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
 
-            return new UserReturnRegister
+
+
+            var otpCode = GenerateOTPCode();
+            var mailSetting = new MailSettings();
+            var mailData = new MailDataWithAttachments()
             {
-                Id = user.Id,
-                Email = user.Email,
-                Password = user.Password,
-                FullName = user.FullName,
-                PhoneNumber = user.PhoneNumber,
-                Class = user.Class,
-                StudentCode = user.StudentCode,
-                FacultyId = user.FacultyId,
-                UrlAvatar = user.UrlAvatar,
-                RoleIDs = user.Roles.Select(x => x.Id).ToList()
+                From = mailSetting.UserName,
+                To = new List<string>()
+                {
+                    userRegisterModel.Email
+                },
+                Subject = "Verification",
+                Body = $"Mã xác thực: {otpCode}"
             };
+            var sent = await _mailService.SendMail(mailData, default);
+
+            var verificationCode = new VerificationCode
+            {
+                UserId = user.Id,
+                Code = otpCode,
+                ExpirationTime = DateTime.Now.AddMinutes(60),
+            };
+
+            _sharingContext.VerificationCodes.Add(verificationCode);
+            await _sharingContext.SaveChangesAsync();
+
+            return "Đã gửi mã xác thực đến mail.";
+  
+        }
+
+        public async Task<string> IdentifyOTP(int userId, string otpCode)
+        {
+
+            try
+            {
+                var user = await _sharingContext.Users.FindAsync(userId);
+
+                if (user == null)
+                {
+                    return ("Không tìm thấy người dùng.");
+                }
+
+                // Lấy mã OTP từ cơ sở dữ liệu dựa trên userId và thời gian còn hạn
+                var verificationCode = await _sharingContext.VerificationCodes
+                    .FirstOrDefaultAsync(v => v.UserId == userId && v.Code == otpCode && DateTime.Now <= v.ExpirationTime);
+
+                if (verificationCode == null)
+                {
+                    return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
+                }
+
+                if (otpCode == verificationCode.Code)
+                {
+                    // Save the user data
+                    var role = await _sharingContext.Roles.FindAsync(3);
+                    user.Roles.Add(role);
+
+                    //var imageUrl = await UploadAvtarFireBase(); // Pass the URL directly
+
+                    // Save the imageUrl to the user data (assuming there's a property for it)
+                    var uploader = new Uploadfirebase();
+
+                   // var image = await uploader.UploadAvatar(imageData, user.UrlAvatar);
+                    //user.UrlAvatar = image;
+
+                    _sharingContext.VerificationCodes.Remove(verificationCode);
+                    await _sharingContext.SaveChangesAsync();
+
+                    return "Xác thực thành công.";
+                }
+                else
+                {
+                    _sharingContext.VerificationCodes.Remove(verificationCode);
+                    await _sharingContext.SaveChangesAsync();
+
+                    _sharingContext.Users.Remove(user);
+
+                    await _sharingContext.SaveChangesAsync();
+                    return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+
+
         }
 
         public async Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename)

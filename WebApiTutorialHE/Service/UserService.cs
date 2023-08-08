@@ -207,15 +207,20 @@ namespace WebApiTutorialHE.Service
                 content=register
             };
         }
+
+        public async Task<string> IdentifyOTP(int userId, string otpCode)
+        {
+            return await _userAction.IdentifyOTP(userId, otpCode);
+        }
         public async Task<List<UserListModel>> GetAllUser()
         {
            var accounts = await _userQuery.QueryListUser();
-            var userRoles = await _userQuery.QueryUserRoles();
+            //var userRoles = await _userQuery.QueryUserRoles();
 
-            foreach (var account in accounts)
-            {
-                account.roles = userRoles.Where(x => x.UserID == account.id).ToList();
-            }
+            //foreach (var account in accounts)
+            //{
+            //    account.roles = userRoles.Where(x => x.UserID == account.id).ToList();
+            //}
 
             return accounts;
         }
