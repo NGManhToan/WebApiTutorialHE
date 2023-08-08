@@ -224,7 +224,14 @@ namespace WebApiTutorialHE.Service
 
             return accounts;
         }
-        
+
+
+        public async Task<List<UserListModel>> GetAllAdmin()
+        {
+            var accounts = await _userQuery.QueryListAdmin();
+
+            return accounts;
+        }
         public async Task<ActionResult<string>> DeleteUser(int id)
         {
             return await _userAction.DeleteUser(id);

@@ -12,6 +12,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<ObjectResponse> ChangePassword(UserChangePasswordModel userForgotPassword);
         Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName);
         Task<List<UserListModel>> GetAllUser();
+        Task<List<UserListModel>> GetAllAdmin();
         Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
         Task<ActionResult<string>>DeleteUser(int id);
         void ExportDataTableToPdf(DataTable dataTable, string filePath);

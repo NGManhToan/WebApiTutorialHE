@@ -50,6 +50,22 @@ namespace WebApiTutorialHE.Api
             });
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> GetAdmin()
+        {
+            var accountList = await _userService.GetAllAdmin();
+
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy danh sách thành công",
+                content = new
+                {
+                    account = accountList
+                }
+            });
+        }
         [HttpGet]
         public async Task<IActionResult> GetProfileByUser(int id)
         {
