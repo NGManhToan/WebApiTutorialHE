@@ -162,6 +162,12 @@ namespace WebApiTutorialHE.Service
             };
         }
 
+
+        public async Task<string> ChangePasswordUser(ChangepasswordModel changepassword)
+        {
+
+            return await _userAction.ChangePasswordUser(changepassword);
+        }
         public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName)
         {
             if(await _userAction.IsEmailDuplicate(userRegisterModel.Email))
@@ -180,24 +186,6 @@ namespace WebApiTutorialHE.Service
                     message = "Số điện thoại đã tồn tại"
                 };
             }
-            var mailSetting = new MailSettings();
-            var mailData = new MailDataWithAttachments()
-            {
-                From = mailSetting.UserName,
-                To = new List<string>()
-                {
-                    userRegisterModel.Email
-                },
-                Subject = "Verification",
-                Body = "Email xác thực"
-            };
-
-            var sent = await _mailService.SendMail(mailData, default);
-            if (!sent) return new ObjectResponse
-            {
-                result = 0,
-                message = "Email không tồn tại",
-            };
 
             var register = await _userAction.Register(userRegisterModel,fileName);
             

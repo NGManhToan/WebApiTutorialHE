@@ -1,4 +1,6 @@
-﻿namespace WebApiTutorialHE.Models.User
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebApiTutorialHE.Models.User
 {
     public class UserChangePasswordModel
     {

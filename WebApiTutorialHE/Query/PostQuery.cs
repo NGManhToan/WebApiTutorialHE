@@ -4,8 +4,6 @@ using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.UtilsService.Interface;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Models.Registation;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Math;
 using GrapeCity.Documents.Common;
 
 namespace WebApiTutorialHE.Query

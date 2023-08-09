@@ -1,5 +1,4 @@
-﻿using ClosedXML.Excel;
-using iTextSharp.text.pdf;
+﻿using iTextSharp.text.pdf;
 using iTextSharp.text;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -37,20 +36,20 @@ namespace WebApiTutorialHE.Api
         //    var create= await _categoryService.CreateCategory(categoryListModel);
         //    return Ok(create);
         //}
-        [HttpGet("export-excel")]
-        public ActionResult ExportExcel()
-        {
-            var _empdata = _categoryService.GetDatabase();
-            using (XLWorkbook wb = new XLWorkbook())
-            {
-                wb.AddWorksheet(_empdata, "Emloyee Records");
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    wb.SaveAs(ms);
-                    return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Category.xlsx");
-                }
-            }
-        }
+        //[HttpGet("export-excel")]
+        //public ActionResult ExportExcel()
+        //{
+        //    var _empdata = _categoryService.GetDatabase();
+        //    using (XLWorkbook wb = new XLWorkbook())
+        //    {
+        //        wb.AddWorksheet(_empdata, "Emloyee Records");
+        //        using (MemoryStream ms = new MemoryStream())
+        //        {
+        //            wb.SaveAs(ms);
+        //            return File(ms.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Category.xlsx");
+        //        }
+        //    }
+        //}
         [HttpGet("export-pdf")]
         public ActionResult ExportPDF()
         {

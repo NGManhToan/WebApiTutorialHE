@@ -14,7 +14,6 @@ using System.Linq;
 using Google.Cloud.Storage.V1;
 using System.IO;
 using Microsoft.Win32;
-using DocumentFormat.OpenXml.Bibliography;
 using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.Models.Mail;
 using System.Text;
@@ -70,6 +69,30 @@ namespace WebApiTutorialHE.Action
         }
 
 
+        public async Task<string> ChangePasswordUser(ChangepasswordModel changepassword)
+        {
+            var user = await _sharingContext.Users.FindAsync(changepassword.id);
+            if (user == null)
+            {
+                return null;
+            }
+
+            if (changepassword.NewPassword != changepassword.ConfirmNewPassword)
+            {
+                return "Mật khẩu mới và mật khẩu xác nhận không khớp";
+            }
+
+            if (changepassword.CurrentPassword == user.Password)
+            {
+                return "Mật khẩu hiện tại không chính xác";
+            }
+
+            user.Password = Encryptor.SHA256Encode(changepassword.NewPassword);
+            await _sharingContext.SaveChangesAsync();
+            return "Thay đổi mật khẩu thành công";
+        }
+
+
         public async Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata)
         {
             var cloudOneMediaConfig = new CloudOneMediaConfig
@@ -120,12 +143,22 @@ namespace WebApiTutorialHE.Action
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
                 UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
+                IsActive = userRegisterModel.IsActive,
+
             };
 
+            var uploader = new Uploadfirebase();
+            byte[] imageData;
+            using (var memoryStream = new MemoryStream())
+            {
+                await imageFile.CopyToAsync(memoryStream);
+                imageData = memoryStream.ToArray();
+            }
+            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
+            // Lưu link của ảnh vào thuộc tính UrlAvatar của user
+            user.UrlAvatar = imageUrl;
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
-
-
 
             var otpCode = GenerateOTPCode();
             var mailSetting = new MailSettings();
@@ -155,20 +188,6 @@ namespace WebApiTutorialHE.Action
   
         }
 
-        public async Task<string> UploadAvtarFireBase(IFormFile imageFile)
-        {
-            var uploader = new Uploadfirebase();
-            byte[] imageData;
-            using (var memoryStream = new MemoryStream())
-            {
-                await imageFile.CopyToAsync(memoryStream);
-                imageData = memoryStream.ToArray();
-            }
-
-            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
-            return imageUrl;
-        }
-
 
         public async Task<string> IdentifyOTP(int userId, string otpCode)
         {
@@ -182,47 +201,45 @@ namespace WebApiTutorialHE.Action
                     return ("Không tìm thấy người dùng.");
                 }
 
-                // Lấy mã OTP từ cơ sở dữ liệu dựa trên userId và thời gian còn hạn
-                var verificationCode = await _sharingContext.VerificationCodes
-                    .FirstOrDefaultAsync(v => v.UserId == userId && v.Code == otpCode && DateTime.Now <= v.ExpirationTime);
-
-                if (verificationCode == null)
+                if(user.IsActive == false)
                 {
-                    return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
+
+                    var verificationCode = await _sharingContext.VerificationCodes
+                    .FirstOrDefaultAsync(v => v.UserId == userId && DateTime.Now <= v.ExpirationTime);
+
+                    if (verificationCode == null)
+                    {
+                        return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
+                    }
+
+                    if (otpCode == verificationCode.Code)
+                    {
+                        // Save the user data
+                        var role = await _sharingContext.Roles.FindAsync(3);
+                        user.Roles.Add(role);
+
+                        user.IsActive = true;
+
+                        _sharingContext.VerificationCodes.Remove(verificationCode);
+                        await _sharingContext.SaveChangesAsync();
+
+                        return "Xác thực thành công.";
+                    }
+                    else
+                    {
+                        user.IsActive = false;
+                        return "Xác thực thất bại";
+                    }
                 }
+                
 
-                if (otpCode == verificationCode.Code)
-                {
-                    // Save the user data
-                    var role = await _sharingContext.Roles.FindAsync(3);
-                    user.Roles.Add(role);
-
-                    //string imageUrl = await UploadAvtarFireBase(imageFile);
-                    //user.UrlAvatar = imageUrl;
-
-
-                    _sharingContext.VerificationCodes.Remove(verificationCode);
-                    await _sharingContext.SaveChangesAsync();
-
-                    return "Xác thực thành công.";
-                }
-                else
-                {
-                    _sharingContext.VerificationCodes.Remove(verificationCode);
-                    await _sharingContext.SaveChangesAsync();
-
-                    _sharingContext.Users.Remove(user);
-
-                    await _sharingContext.SaveChangesAsync();
-                    return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
-                }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
                 return null;
             }
-
+            return null;
 
         }
 

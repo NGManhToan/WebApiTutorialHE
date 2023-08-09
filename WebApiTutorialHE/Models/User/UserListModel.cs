@@ -14,5 +14,6 @@ namespace WebApiTutorialHE.Models.User
         public string UrlAvatar { get; set; }
         public string IsOnline { get; set; }
         public int RoleId { get; set; }
+        public string ClassCode { get; set; }
     }
 }

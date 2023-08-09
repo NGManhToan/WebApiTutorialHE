@@ -20,12 +20,21 @@ namespace WebApiTutorialHE.Api
             _userService = userService;
         }
         [HttpPost]
-        public async Task<IActionResult> ChangePassword(UserChangePasswordModel userChangePassword)
+        public async Task<IActionResult> ChangePassword([FromForm]UserChangePasswordModel userChangePassword)
         {
             var objectResponse = await _userService.ChangePassword(userChangePassword);
 
             return Ok(objectResponse);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> ChangePasswordUser([FromForm]ChangepasswordModel userChangePassword)
+        {
+            var objectResponse = await _userService.ChangePasswordUser(userChangePassword);
+
+            return Ok(objectResponse);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] UserRegisterModel userRegisterModel, IFormFile fileName)
         {
