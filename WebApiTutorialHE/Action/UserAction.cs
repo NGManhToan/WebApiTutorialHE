@@ -82,7 +82,7 @@ namespace WebApiTutorialHE.Action
                 return "Mật khẩu mới và mật khẩu xác nhận không khớp";
             }
 
-            if (changepassword.CurrentPassword == user.Password)
+            if (changepassword.CurrentPassword != user.Password)
             {
                 return "Mật khẩu hiện tại không chính xác";
             }
