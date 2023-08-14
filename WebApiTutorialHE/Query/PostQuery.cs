@@ -134,7 +134,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<DetailItemModel>> QueryGetDetailItem(int postId)
         {
-            var query = @"select Title, FullName, p.Status, Content, CASE 
+            var query = @"select p.Id, Title, FullName, p.Status, Content, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
                                 END AS Price, 

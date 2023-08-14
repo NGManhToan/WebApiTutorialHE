@@ -16,43 +16,6 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             _userService = userService;
         }
 
-        [HttpPost]
-        public async Task<IActionResult>GetListAccountUser(OSearchAdminModel oSearchAdmin)
-        {
-
-            ulong userId = Utils.GetUserIdFromToken(Request);
-
-            var userList = await _userService.GetListAccountUser(userId, oSearchAdmin);
-            try
-            {
-                if (userList == null)
-                {
-                    return Ok(new ObjectResponse
-                    {
-                        result = 0,
-                        message = "Lay du lieu that bai"
-                    });
-                }
-
-                return Ok(new ObjectResponse
-                {
-                    result = 1,
-                    message = "Lay du lieu thanh cong",
-                    content = new
-                    {
-                        Users = userList,
-                       
-                    }
-                });
-            }
-            catch (Exception ex)
-            {
-                return Ok(new ObjectResponse
-                {
-                    result = 0,
-                    message = ex.Message.ToString()
-                });
-            }
-        }
+        
     }
 }

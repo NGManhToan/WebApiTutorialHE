@@ -13,6 +13,7 @@ namespace WebApiTutorialHE.Models.User
         public string Class { get; set; }
         public string StudentCode { get; set; }
         public int FacultyId { get; set; }
+
         [DefaultValue(false)]
         public bool IsActive { get; set; }
         

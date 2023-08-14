@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Mail;
@@ -36,7 +37,7 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpPost]
-        public async Task<IActionResult> Register([FromForm] UserRegisterModel userRegisterModel, IFormFile fileName)
+        public async Task<IActionResult> Register([FromForm] UserRegisterModel userRegisterModel, IFormFile? fileName)
         {
 
             var register = await _userService.Register(userRegisterModel, fileName);
@@ -76,9 +77,15 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpGet]
-        public async Task<IActionResult> GetProfileByUser(int id)
+        public async Task<IActionResult> GetProfileByUser()
         {
-            var profile = await _userService.QueryFrofile(id);
+
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var profile = await _userService.QueryFrofile(forceInfo.UserId);
             return Ok(new ObjectResponse
             {
                 result = 1,
@@ -90,9 +97,14 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpGet]
-        public async Task<IActionResult> QueryFrofileSharing(int id)
+        public async Task<IActionResult> QueryFrofileSharing()
         {
-            var profileSharing  = await _userService.QueryFrofileSharing(id);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var profileSharing  = await _userService.QueryFrofileSharing(forceInfo.UserId);
             return Ok(new ObjectResponse
             {
                 result = 1,
@@ -104,9 +116,14 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpGet]
-        public async Task<IActionResult> QueryItemFeedback(int id)
+        public async Task<IActionResult> QueryItemFeedback()
         {
-            var itemFrofile= await _userService.QueryItemFeedback(id);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var itemFrofile= await _userService.QueryItemFeedback(forceInfo.UserId);
             return Ok(new ObjectResponse
             {
                 result = 1,

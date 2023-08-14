@@ -11,7 +11,7 @@ namespace WebApiTutorialHE.Action.Interface
     {
         //Task<User> AccountUpdateModels(AccountUpdateModel model);
 
-        Task<ActionResult<string>> DeleteUser(int id);
+        Task<User> DeleteUser(int id);
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword);
@@ -24,6 +24,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<bool> IsPhoneDuplicate( string phoneNumber);
         Task<string> IdentifyOTP(int userId, string otpCode);
 
-        Task<string>ChangePasswordUser(ChangepasswordModel changepassword);
+        Task ChangePasswordUser(int id, string newPassword);
     }
 }

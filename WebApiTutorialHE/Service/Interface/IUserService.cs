@@ -14,7 +14,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<UserListModel>> GetAllUser();
         Task<List<UserListModel>> GetAllAdmin();
         Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
-        Task<ActionResult<string>>DeleteUser(int id);
+        Task<User>DeleteUser(int id);
         void ExportDataTableToPdf(DataTable dataTable, string filePath);
         Task<UserProfileModel> QueryFrofile(int id);
         Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id);
@@ -24,7 +24,7 @@ namespace WebApiTutorialHE.Service.Interface
 
         Task<string> IdentifyOTP(int userId, string otpCode);
 
-        Task<string>ChangePasswordUser(ChangepasswordModel changepassword);
+        Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword);
 
     }
 }

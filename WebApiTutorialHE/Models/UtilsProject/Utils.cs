@@ -17,9 +17,9 @@ namespace WebApiTutorialHE.Models.UtilsProject
     public class Utils
     {
         public static string KeyToken = "17JjUurO1RvK9mzN3LU0lqVexW6gibCo";
-        
-        
-        public static ulong GetUserIdFromToken(HttpRequest request)
+
+
+        public static int GetUserIdFromToken(HttpRequest request)
         {
             var headers = request.Headers;
 
@@ -36,12 +36,13 @@ namespace WebApiTutorialHE.Models.UtilsProject
                 {
                     IAuthService authService = new JWTService(KeyToken);
                     List<Claim> claims = authService.GetTokenClaims(token).ToList();
-                    return Convert.ToUInt64(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.NameIdentifier)).Value);
+                    return Convert.ToInt32(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.NameIdentifier)).Value);
                 }
             }
 
             return 0;
         }
+
         public static ulong GetRoleFromToken(HttpRequest request)
         {
             var headers = request.Headers;

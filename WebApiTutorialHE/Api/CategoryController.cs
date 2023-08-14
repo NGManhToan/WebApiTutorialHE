@@ -7,6 +7,8 @@ using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Category;
 using WebApiTutorialHE.Service.Interface;
+using System.IdentityModel.Tokens.Jwt;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApiTutorialHE.Api
 {
@@ -50,6 +52,9 @@ namespace WebApiTutorialHE.Api
         //        }
         //    }
         //}
+
+        
+
         [HttpGet("export-pdf")]
         public ActionResult ExportPDF()
         {

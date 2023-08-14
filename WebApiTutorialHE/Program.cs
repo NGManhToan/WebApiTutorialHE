@@ -1,7 +1,13 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using P2N_Pet_API.Models.UtilsProject;
 using System.Configuration;
+using System.Text;
 using WebApiTutorialHE.Action;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
@@ -88,15 +94,64 @@ builder.Services.AddScoped<IARegistrationService, ARegistrationService>();
 
 builder.Services.AddScoped<IARegistrationAction, ARegistrationAction>();
 
-var app = builder.Build();
 
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebApiTutoriaLHE", Version = "v1.0" });
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "AuthorizationSwagger",
+        In = ParameterLocation.Header,
+        Description = "Insert JWT Token",
+        Type = SecuritySchemeType.ApiKey,
+        BearerFormat = "JWT",
+        Scheme = "bearer"
+    });
+    c.AddSecurityRequirement(
+        new OpenApiSecurityRequirement
+        {
+            {
+                new OpenApiSecurityScheme
+                {
+                    Reference = new OpenApiReference
+                    {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "Bearer"
+                    }
+                },
+                new string[]{}
+            }
+        });
+});
+
+
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
+    options.RequireHttpsMetadata = false;
+    options.SaveToken = true;
+    options.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key")))
+    };
+});
+
+var app = builder.Build();
 
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+    });
 }
 
 
@@ -106,7 +161,8 @@ FirebaseApp.Create(new AppOptions()
 });
 
 
-
+app.UseStaticFiles();
+app.UseRouting();
 app.UseStaticFiles();
 
 app.UseHttpsRedirection();
@@ -119,5 +175,4 @@ app.UseCors(x => x
                     .AllowAnyHeader()
                     .SetIsOriginAllowed(origin => true) // allow any origin
                     .AllowCredentials()); // allow credentials
-
 app.Run();

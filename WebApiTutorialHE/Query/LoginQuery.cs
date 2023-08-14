@@ -21,8 +21,8 @@ namespace WebApiTutorialHE.Query
                           GROUP BY Id, UrlAvatar, FullName";
             return await _sharingDapper.QuerySingleAsync<LoginSuccessModel>(query, new
             {
-                email = loginModel.Email,
-                Password = password,
+                email = loginModel.Email.Trim(),
+                Password = password.Trim(),
             });
         }
     }

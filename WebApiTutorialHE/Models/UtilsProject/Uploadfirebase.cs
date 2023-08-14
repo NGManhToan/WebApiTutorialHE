@@ -1,6 +1,7 @@
 ﻿using Firebase.Auth;
 using Firebase.Storage;
 using Google.Apis.Storage.v1.Data;
+using System.Security.Cryptography;
 
 namespace WebApiTutorialHE.Models.UtilsProject
 {
@@ -18,6 +19,22 @@ namespace WebApiTutorialHE.Models.UtilsProject
             // You can use CancellationTokenSource to cancel the upload midway
             var cancellation = new CancellationTokenSource();
 
+            // băm tên ảnh ra
+            var dateTime = DateTime.Now;
+           var fileNameHashed = fileName + "_" +dateTime.ToString("yyyyMMddHHmmssfff") ;
+
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                // If it is, use the băm tên ảnh ra value as the filename
+                fileNameHashed = fileNameHashed;
+            }
+            else
+            {
+                // Otherwise, use the fileName value as the filename, with the băm tên ảnh ra value appended to it
+                
+            }
+
             var task = new FirebaseStorage(
                 Bucket,
                 new FirebaseStorageOptions
@@ -27,7 +44,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
                 })
                 .Child("Upload")
                 .Child("Avatar")
-                .Child(fileName)
+                .Child(fileNameHashed)
                 .PutAsync(new MemoryStream(imageData), cancellation.Token);
 
             try
@@ -42,6 +59,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
                 throw;
             }
         }
+
 
         public async Task<string> UploadPost(byte[] imageData, string fileName)
         {

@@ -4,7 +4,7 @@ namespace WebApiTutorialHE.Models.User
 {
     public class ChangepasswordModel
     {
-        public int  id { get; set; }
+        public int Id { get; set; }
         [Required, Display(Name = "Current password")]
         public string CurrentPassword { get; set; }
         [Required, Display(Name = "New password")]

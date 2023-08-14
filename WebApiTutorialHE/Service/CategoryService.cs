@@ -1,4 +1,5 @@
 ﻿using System.Data;
+using System.IdentityModel.Tokens.Jwt;
 using WebApiTutorialHE.Action.Interface;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
@@ -6,6 +7,7 @@ using WebApiTutorialHE.Models.Category;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.Service.Interface;
+using Microsoft.IdentityModel.Tokens;
 
 namespace WebApiTutorialHE.Service
 {
@@ -33,11 +35,8 @@ namespace WebApiTutorialHE.Service
             };
         }
 
-        //public async Task<Category> CreateCategory(CategoryListModel category)
-        //{
-        //    return await _categoryAction.CreateActionCategory(category);
-        //}
-        public DataTable GetDatabase()
+   
+    public DataTable GetDatabase()
         {
             DataTable dt = new DataTable();
             dt.TableName = "Empdata";

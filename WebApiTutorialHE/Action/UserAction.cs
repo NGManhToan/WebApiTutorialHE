@@ -39,18 +39,18 @@ namespace WebApiTutorialHE.Action
 
 
 
-        public async Task<ActionResult<string>> DeleteUser(int id)
+        public async Task<User> DeleteUser(int id)
         {
             var deleteAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id == id);
-            if (deleteAccount == null)
+            if (deleteAccount == null || deleteAccount.IsDeleted == true)
             {
-                return new NotFoundResult();
+                throw new BadHttpRequestException($"Không có User {id} tồn tại !");
             }
 
             deleteAccount.IsDeleted = true;
             await _sharingContext.SaveChangesAsync();
 
-            return "Đã xóa";
+            return deleteAccount;
         }
 
 
@@ -69,27 +69,16 @@ namespace WebApiTutorialHE.Action
         }
 
 
-        public async Task<string> ChangePasswordUser(ChangepasswordModel changepassword)
+        public async Task ChangePasswordUser(int id, string newPassword)
         {
-            var user = await _sharingContext.Users.FindAsync(changepassword.id);
-            if (user == null)
+            var user = await _sharingContext.Users.FindAsync(id);
+            if (user != null)
             {
-                return null;
+                user.Password = Encryptor.SHA256Encode(newPassword.Trim());
+                _sharingContext.Update(user);
+                await _sharingContext.SaveChangesAsync();
             }
-
-            if (changepassword.NewPassword != changepassword.ConfirmNewPassword)
-            {
-                return "Mật khẩu mới và mật khẩu xác nhận không khớp";
-            }
-
-            if (changepassword.CurrentPassword != user.Password)
-            {
-                return "Mật khẩu hiện tại không chính xác";
-            }
-
-            user.Password = Encryptor.SHA256Encode(changepassword.NewPassword);
-            await _sharingContext.SaveChangesAsync();
-            return "Thay đổi mật khẩu thành công";
+           
         }
 
 
@@ -218,7 +207,12 @@ namespace WebApiTutorialHE.Action
                         var role = await _sharingContext.Roles.FindAsync(3);
                         user.Roles.Add(role);
 
+                        _sharingContext.Roles.Add(role);
+                        await _sharingContext.SaveChangesAsync();
+
                         user.IsActive = true;
+
+                        
 
                         _sharingContext.VerificationCodes.Remove(verificationCode);
                         await _sharingContext.SaveChangesAsync();

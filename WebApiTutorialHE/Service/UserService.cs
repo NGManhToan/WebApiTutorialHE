@@ -13,6 +13,10 @@ using WebApiTutorialHE.Models.Mail;
 using Microsoft.AspNetCore.Identity;
 using System;
 using Microsoft.AspNetCore.Mvc;
+using WebApiTutorialHE.Database;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace WebApiTutorialHE.Service
 {
@@ -21,11 +25,13 @@ namespace WebApiTutorialHE.Service
         private readonly IUserAction _userAction;
         private readonly IUserQuery _userQuery;
         private readonly IMailService _mailService;
-        public UserService(IUserAction userAction,IUserQuery userQuery,IMailService mailService)
+        private readonly SharingContext _sharingContext;
+        public UserService(IUserAction userAction,IUserQuery userQuery,IMailService mailService,SharingContext sharingContext)
         {
             _userAction = userAction;
             _userQuery = userQuery;
             _mailService = mailService;
+            _sharingContext = sharingContext;
         }
 
         public static string RandomPassword(PasswordOptions opts = null)
@@ -163,11 +169,58 @@ namespace WebApiTutorialHE.Service
         }
 
 
-        public async Task<string> ChangePasswordUser(ChangepasswordModel changepassword)
+        public async Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword)
         {
+            try
+            {
+                var oldPass = Encryptor.SHA256Encode(changepassword.CurrentPassword);
+                var user = await _sharingContext.Users
+                    .Where(u => u.Id == changepassword.Id && u.Roles.Any(r => r.Id == 3))
+                    .FirstOrDefaultAsync();
 
-            return await _userAction.ChangePasswordUser(changepassword);
+                if (user != null && user.Password == oldPass && changepassword.NewPassword == changepassword.ConfirmNewPassword)
+                {
+                     await _userAction.ChangePasswordUser(changepassword.Id, changepassword.NewPassword);
+                    var profile = await _userQuery.QueryFrofile(changepassword.Id);
+                    return new ObjectResponse
+                    {
+                        result = 1,
+                        message = "Thay đổi mật khẩu thành công.",
+                        content = profile
+                    };
+                }
+                else
+                {
+                    if(changepassword.NewPassword != changepassword.ConfirmNewPassword)
+                    {
+                        return new ObjectResponse
+                        {
+                            result = 0,
+                            message = "Mật khẩu xác thực không trùng khớp. Vui lòng thử lại."
+                        };
+                    }
+                    else
+                    {
+                        return new ObjectResponse
+                        {
+                            result = 0,
+                            message = "Mật khẩu cũ không chính xác. Vui lòng thử lại."
+                        };
+                    }
+                    
+                }
+            }
+            catch (Exception e)
+            {
+                return new ObjectResponse
+                {
+                    result = 0,
+                    message = "Đã có lỗi xảy ra. Vui lòng thử lại.",
+                    content = e.Message.ToString(),
+                };
+            }
         }
+
         public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName)
         {
             if(await _userAction.IsEmailDuplicate(userRegisterModel.Email))
@@ -220,7 +273,7 @@ namespace WebApiTutorialHE.Service
 
             return accounts;
         }
-        public async Task<ActionResult<string>> DeleteUser(int id)
+        public async Task<User> DeleteUser(int id)
         {
             return await _userAction.DeleteUser(id);
         }
