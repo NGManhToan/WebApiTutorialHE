@@ -41,7 +41,7 @@ namespace WebApiTutorialHE.Action
 
         public async Task<User> DeleteUser(int id)
         {
-            var deleteAccount = await _sharingContext.Users.SingleOrDefaultAsync(x => x.Id == id);
+            var deleteAccount = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Id == id);
             if (deleteAccount == null || deleteAccount.IsDeleted == true)
             {
                 throw new BadHttpRequestException($"Không có User {id} tồn tại !");
@@ -69,9 +69,9 @@ namespace WebApiTutorialHE.Action
         }
 
 
-        public async Task ChangePasswordUser(int id, string newPassword)
+        public async Task ChangePasswordUser(ForceInfo forceInfo, string newPassword)
         {
-            var user = await _sharingContext.Users.FindAsync(id);
+            var user = await _sharingContext.Users.FindAsync(forceInfo.UserId);
             if (user != null)
             {
                 user.Password = Encryptor.SHA256Encode(newPassword.Trim());
@@ -119,7 +119,7 @@ namespace WebApiTutorialHE.Action
         }
 
 
-        public async Task<ActionResult<string>> Register(UserRegisterModel userRegisterModel, IFormFile imageFile)
+        public async Task<string> Register(UserRegisterModel userRegisterModel, IFormFile? imageFile)
         {
 
             var user = new User
@@ -131,21 +131,34 @@ namespace WebApiTutorialHE.Action
                 Class = userRegisterModel.Class,
                 StudentCode = userRegisterModel.StudentCode,
                 FacultyId = userRegisterModel.FacultyId,
-                UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
+                //UrlAvatar = imageFile.FileName, // Sử dụng tên tệp tin gốc của ảnh làm tên UrlAvatar
                 IsActive = userRegisterModel.IsActive,
 
             };
-
-            var uploader = new Uploadfirebase();
-            byte[] imageData;
-            using (var memoryStream = new MemoryStream())
+            if (user.Password.CompareTo(userRegisterModel.RepeatPassword) != 0)
             {
-                await imageFile.CopyToAsync(memoryStream);
-                imageData = memoryStream.ToArray();
+                return "Mật khẩu và Mật khẩu xác nhận không trùng khớp.";
+
             }
-            string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
-            // Lưu link của ảnh vào thuộc tính UrlAvatar của user
-            user.UrlAvatar = imageUrl;
+
+            if (imageFile != null)
+            {
+                var uploader = new Uploadfirebase();
+                byte[] imageData;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await imageFile.CopyToAsync(memoryStream);
+                    imageData = memoryStream.ToArray();
+                }
+                string imageUrl = await uploader.UploadAvatar(imageData, imageFile.FileName);
+                // Lưu link của ảnh vào thuộc tính UrlAvatar của user
+                user.UrlAvatar = imageUrl;
+
+            }
+            else
+            {
+                user.UrlAvatar = null;
+            }
             _sharingContext.Users.Add(user);
             await _sharingContext.SaveChangesAsync();
 

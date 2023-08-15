@@ -23,6 +23,7 @@ namespace WebApiTutorialHE.Api
         [HttpPost]
         public async Task<IActionResult> ChangePassword([FromForm]UserChangePasswordModel userChangePassword)
         {
+
             var objectResponse = await _userService.ChangePassword(userChangePassword);
 
             return Ok(objectResponse);
@@ -31,7 +32,13 @@ namespace WebApiTutorialHE.Api
         [HttpPost]
         public async Task<IActionResult> ChangePasswordUser([FromForm]ChangepasswordModel userChangePassword)
         {
-            var objectResponse = await _userService.ChangePasswordUser(userChangePassword);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+
+            var objectResponse = await _userService.ChangePasswordUser(userChangePassword,forceInfo);
 
             return Ok(objectResponse);
         }

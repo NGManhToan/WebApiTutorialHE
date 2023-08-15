@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Action.Interface
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword);
-        Task<ActionResult<string>>Register(UserRegisterModel userRegisterModel,IFormFile fileName);
+        Task<string>Register(UserRegisterModel userRegisterModel,IFormFile fileName);
         Task<CloudOneMediaModel> SaveOneMediaData(IFormFile avata);
         Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename);
 
@@ -24,6 +24,6 @@ namespace WebApiTutorialHE.Action.Interface
         Task<bool> IsPhoneDuplicate( string phoneNumber);
         Task<string> IdentifyOTP(int userId, string otpCode);
 
-        Task ChangePasswordUser(int id, string newPassword);
+        Task ChangePasswordUser(ForceInfo forceInfo, string newPassword);
     }
 }

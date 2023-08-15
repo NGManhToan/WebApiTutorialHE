@@ -169,19 +169,19 @@ namespace WebApiTutorialHE.Service
         }
 
 
-        public async Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword)
+        public async Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword, ForceInfo forceInfo)
         {
             try
             {
                 var oldPass = Encryptor.SHA256Encode(changepassword.CurrentPassword);
                 var user = await _sharingContext.Users
-                    .Where(u => u.Id == changepassword.Id && u.Roles.Any(r => r.Id == 3))
+                    .Where(u => u.Id == forceInfo.UserId && u.Roles.Any(r => r.Id == 3))
                     .FirstOrDefaultAsync();
 
                 if (user != null && user.Password == oldPass && changepassword.NewPassword == changepassword.ConfirmNewPassword)
                 {
-                     await _userAction.ChangePasswordUser(changepassword.Id, changepassword.NewPassword);
-                    var profile = await _userQuery.QueryFrofile(changepassword.Id);
+                     await _userAction.ChangePasswordUser(forceInfo, changepassword.NewPassword);
+                    var profile = await _userQuery.QueryFrofile(forceInfo.UserId);
                     return new ObjectResponse
                     {
                         result = 1,
@@ -221,34 +221,56 @@ namespace WebApiTutorialHE.Service
             }
         }
 
-        public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel,IFormFile fileName)
+        public async Task<ObjectResponse> Register(UserRegisterModel userRegisterModel, IFormFile fileName)
         {
-            if(await _userAction.IsEmailDuplicate(userRegisterModel.Email))
+            try
             {
-                return new ObjectResponse
+                if (await _userAction.IsEmailDuplicate(userRegisterModel.Email))
                 {
-                    result=0,
-                    message="Mail đã tồn tại"
-                };
+                    return new ObjectResponse
+                    {
+                        result = 0,
+                        message = "Mail đã tồn tại"
+                    };
+                }
+
+                if (await _userAction.IsPhoneDuplicate(userRegisterModel.PhoneNumber))
+                {
+                    return new ObjectResponse
+                    {
+                        result = 0,
+                        message = "Số điện thoại đã tồn tại"
+                    };
+                }
+                
+                var register = await _userAction.Register(userRegisterModel, fileName);
+                if(register == "Mật khẩu và Mật khẩu xác nhận không trùng khớp.")
+                {
+                    return new ObjectResponse
+                    {
+                        result = 0,
+                        message = "Mật khẩu và Mật khẩu xác nhận không trùng khớp."
+                    };
+                }
+                else
+                {
+                    return new ObjectResponse
+                    {
+                        result = 1,
+                        content = register
+                    };
+                }
+                
             }
-            if (await _userAction.IsPhoneDuplicate( userRegisterModel.PhoneNumber))
+            catch (Exception ex)
             {
                 return new ObjectResponse
                 {
                     result = 0,
-                    message = "Số điện thoại đã tồn tại"
+                    message = ex.Message
                 };
             }
-
-            var register = await _userAction.Register(userRegisterModel,fileName);
-            
-            return new ObjectResponse
-            {
-                result=1,
-                content=register
-            };
         }
-
         public async Task<string> IdentifyOTP(int userId, string otpCode)
         {
             return await _userAction.IdentifyOTP(userId, otpCode);
