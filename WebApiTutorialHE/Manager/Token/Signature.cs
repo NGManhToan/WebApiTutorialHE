@@ -23,14 +23,21 @@ namespace WebApiTutorialHE.Manager.Token
 
         public static bool CheckTokenValid(string token)
         {
-            IAuthService authService = new JWTService(Utils.KeyToken);
-
-            if (authService.IsTokenValid(token))
+            try
             {
-                return true;
-            }
+                IAuthService authService = new JWTService(Utils.KeyToken);
 
+                if (authService.IsTokenValid(token))
+                {
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
             return false;
+
         }
 
         public static string Base64Encode(string plainText)

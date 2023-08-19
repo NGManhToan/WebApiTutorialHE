@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Org.BouncyCastle.Asn1.Ocsp;
+using P2N_Pet_API.Module.AdminManager.Models.Admin;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Manager.FilterAttr;
 using WebApiTutorialHE.Models.Mail;
 using WebApiTutorialHE.Models.User;
 using WebApiTutorialHE.Models.UtilsProject;
@@ -51,6 +53,7 @@ namespace WebApiTutorialHE.Api
             return Ok(register);
 
         }
+        [ManagerAccess]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -67,7 +70,7 @@ namespace WebApiTutorialHE.Api
             });
         }
 
-
+        [ManagerAccess]
         [HttpGet]
         public async Task<IActionResult> GetAdmin()
         {
@@ -83,6 +86,7 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
+
         [HttpGet]
         public async Task<IActionResult> GetProfileByUser()
         {
@@ -179,11 +183,55 @@ namespace WebApiTutorialHE.Api
 
             return Ok(result);
         }
+        [ManagerAccess]
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserID(int id)
+        public async Task<IActionResult> DeleteUserID(AdminDeleteModel adminDelete)
         {
-            var result = await _userService.DeleteUser(id);
-            return Ok(result);
+            if(adminDelete.UserId == 0)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 0,
+                    message = "Vui lòng nhập UserId"
+                });
+            }
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+
+            try
+            {
+                var result = await _userService.DeleteUser(forceInfo, adminDelete);
+
+                if (result == null)
+                {
+                    return Ok(new ObjectResponse
+                    {
+                        result = 0,
+                        message = "Delete thất bại. Vui lòng thử lại"
+                    });
+                }
+
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Delete thành công.",
+                    content = new
+                    {
+                        result
+                    }
+                });
+            }
+            catch (Exception e)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 0,
+                    message = e.Message.ToString()
+                });
+            }
         }
 
         [HttpPost]

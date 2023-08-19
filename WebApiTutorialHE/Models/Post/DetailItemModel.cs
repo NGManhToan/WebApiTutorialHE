@@ -7,7 +7,7 @@
         public string FullName { get; set; }
         public string Status { get; set; }
         public string Content { get; set; }
-        public float Price { get; set; }
+        public string Price { get; set; }
         public string ImageUrl { get; set; }
     }
 }

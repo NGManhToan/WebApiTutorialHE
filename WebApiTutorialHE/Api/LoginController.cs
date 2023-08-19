@@ -1,4 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Web.Http.Filters;
+using WebApiTutorialHE.Manager.FilterAttr;
 using WebApiTutorialHE.Models.Login;
 using WebApiTutorialHE.Service.Interface;
 

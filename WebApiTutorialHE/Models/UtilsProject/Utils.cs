@@ -27,10 +27,12 @@ namespace WebApiTutorialHE.Models.UtilsProject
             {
                 string token = headers["Authorization"];
 
-                if (token == null)
+                if (String.IsNullOrEmpty(token))
                 {
                     token = headers["AuthorizationSwagger"];
                 }
+
+                token = (token ?? "").Replace("Bearer ", "");
 
                 if (Signature.CheckTokenValid(token))
                 {
@@ -43,26 +45,41 @@ namespace WebApiTutorialHE.Models.UtilsProject
             return 0;
         }
 
-        public static ulong GetRoleFromToken(HttpRequest request)
+        public static int GetRoleFromToken(HttpRequest request)
         {
             var headers = request.Headers;
+            
 
             if (headers.ContainsKey("Authorization") || headers.ContainsKey("AuthorizationSwagger"))
             {
                 string token = headers["Authorization"];
+
 
                 if (token == null)
                 {
                     token = headers["AuthorizationSwagger"];
                 }
 
-                if (Signature.CheckTokenValid(token))
+                if (!String.IsNullOrEmpty(token) && token.Contains("Bearer "))
                 {
-                    IAuthService authService = new JWTService(KeyToken);
-                    List<Claim> claims = authService.GetTokenClaims(token).ToList();
-                    return Convert.ToUInt64(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
+                    token = token.Replace("Bearer ", "");
+                    if (Signature.CheckTokenValid(token) )
+                    {
+                        IAuthService authService = new JWTService(KeyToken);
+                        List<Claim> claims = authService.GetTokenClaims(token).ToList();
+
+                        var roles = claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value.Split(",");
+
+                        // Get the first role in the array.
+                        int role = int.Parse(roles[0]);
+
+                        return role;
+                        //return Convert.ToInt32(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
+                    }
                 }
+                
             }
+
 
             return 0;
         }

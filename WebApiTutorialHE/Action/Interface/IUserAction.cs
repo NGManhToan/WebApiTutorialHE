@@ -11,7 +11,7 @@ namespace WebApiTutorialHE.Action.Interface
     {
         //Task<User> AccountUpdateModels(AccountUpdateModel model);
 
-        Task<User> DeleteUser(int id);
+        Task<User> DeleteUser(ForceInfo forceInfo, int id);
         //Task<User> ActionFillterAccount(int id/*, string email*/);
 
         Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword);

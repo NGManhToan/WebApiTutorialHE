@@ -7,7 +7,7 @@ namespace WebApiTutorialHE.Database.SharingModels
     {
         public Role()
         {
-            Users = new HashSet<User>();
+            UserRoles = new HashSet<UserRole>();
         }
 
         public int Id { get; set; }
@@ -19,6 +19,6 @@ namespace WebApiTutorialHE.Database.SharingModels
         public DateTime LastModifiedDate { get; set; }
         public int? LastModifiedBy { get; set; }
 
-        public virtual ICollection<User> Users { get; set; }
+        public virtual ICollection<UserRole> UserRoles { get; set; }
     }
 }

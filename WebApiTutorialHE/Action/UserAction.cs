@@ -39,19 +39,63 @@ namespace WebApiTutorialHE.Action
 
 
 
-        public async Task<User> DeleteUser(int id)
+        public async Task<User> DeleteUser(ForceInfo forceInfo, int id)
         {
-            var deleteAccount = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Id == id);
-            if (deleteAccount == null || deleteAccount.IsDeleted == true)
+            var user = await _sharingContext.Users.FindAsync(id);
+
+            if (user == null)
             {
                 throw new BadHttpRequestException($"Không có User {id} tồn tại !");
             }
 
-            deleteAccount.IsDeleted = true;
-            await _sharingContext.SaveChangesAsync();
+            if (user.IsDeleted)
+            {
+                throw new BadHttpRequestException($"User {id} đã bị xóa!");
+            }
 
-            return deleteAccount;
+            var userRole = await _sharingContext.UserRoles
+                .Where(ur => ur.UserId == forceInfo.UserId)
+                .Select(ur => ur.Role)
+                .FirstOrDefaultAsync();
+
+            if (userRole != null)
+            {
+                if (userRole.Id == 1)
+                {
+                    // Xóa user khi role = 1
+                    user.IsDeleted = true;
+                    user.LastModifiedBy = forceInfo.UserId;
+                    await _sharingContext.SaveChangesAsync();
+                }
+                else if (userRole.Id == 2)
+                {
+                    var targetUserRole = await _sharingContext.UserRoles
+                        .Where(ur => ur.UserId == user.Id)
+                        .Select(ur => ur.Role)
+                        .FirstOrDefaultAsync();
+
+                    if (targetUserRole != null && targetUserRole.Id == 1)
+                    {
+                        throw new BadHttpRequestException($"Không có quyền xóa user");
+                    }
+                    else
+                    {
+                        // Xóa user khi role = 2 và user role != 1
+                        user.IsDeleted = true;
+                        user.LastModifiedBy = forceInfo.UserId;
+                        await _sharingContext.SaveChangesAsync();
+                    }
+                }
+                else if (userRole.Id == 3)
+                {
+                    throw new BadHttpRequestException($"Không có quyền xóa user");
+                }
+            }
+
+            return user;
         }
+
+
 
 
 
@@ -121,7 +165,7 @@ namespace WebApiTutorialHE.Action
 
         public async Task<string> Register(UserRegisterModel userRegisterModel, IFormFile? imageFile)
         {
-
+            var repeat = Encryptor.SHA256Encode(userRegisterModel.RepeatPassword.Trim());
             var user = new User
             {
                 Email = userRegisterModel.Email,
@@ -135,7 +179,7 @@ namespace WebApiTutorialHE.Action
                 IsActive = userRegisterModel.IsActive,
 
             };
-            if (user.Password.CompareTo(userRegisterModel.RepeatPassword) != 0)
+            if (user.Password.CompareTo(repeat) != 0)
             {
                 return "Mật khẩu và Mật khẩu xác nhận không trùng khớp.";
 
@@ -214,13 +258,14 @@ namespace WebApiTutorialHE.Action
                         return ("Mã xác thực không hợp lệ hoặc đã hết hạn.");
                     }
 
+                    
                     if (otpCode == verificationCode.Code)
                     {
                         // Save the user data
                         var role = await _sharingContext.Roles.FindAsync(3);
-                        user.Roles.Add(role);
+                        user.UserRoles.Add(new UserRole { UserId = user.Id, RoleId = role.Id });
 
-                        _sharingContext.Roles.Add(role);
+                        //_sharingContext.UserRoles.Add(role);
                         await _sharingContext.SaveChangesAsync();
 
                         user.IsActive = true;
@@ -249,6 +294,47 @@ namespace WebApiTutorialHE.Action
             return null;
 
         }
+
+        public async Task RefreshOTPCode(int userId)
+        {
+            var user = await _sharingContext.Users.FindAsync(userId);
+
+            if (user != null)
+            {
+                // Get the verification code for the user
+                var verificationCodedata = await _sharingContext.VerificationCodes
+                    .FirstOrDefaultAsync(v => v.UserId == userId);
+                if (DateTime.Now > verificationCodedata.ExpirationTime)
+                {
+                    var otpCode = GenerateOTPCode();
+                    var mailSetting = new MailSettings();
+                    var mailData = new MailDataWithAttachments()
+                    {
+                        From = mailSetting.UserName,
+                        To = new List<string>()
+                {
+                       user.Email
+                },
+                        Subject = "Verification",
+                        Body = $"Mã xác thực: {otpCode}"
+                    };
+                    var sent = await _mailService.SendMail(mailData, default);
+
+                    var verificationCode = new VerificationCode
+                    {
+                        UserId = user.Id,
+                        Code = otpCode,
+                        ExpirationTime = DateTime.Now.AddMinutes(60),
+                    };
+
+                    _sharingContext.VerificationCodes.Add(verificationCode);
+                    await _sharingContext.SaveChangesAsync();
+
+                }
+            }
+            
+        }
+
 
         public async Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename)
         {

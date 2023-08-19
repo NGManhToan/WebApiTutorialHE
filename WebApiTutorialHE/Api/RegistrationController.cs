@@ -20,9 +20,14 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByUser(int id)
+        public async Task<IActionResult> GetByUser()
         {
-            var registration=await _registrationService.GetListRegistation(id);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var registration=await _registrationService.GetListRegistation(forceInfo.UserId);
             return Ok(new ObjectResponse
             {
                 result=1,
@@ -40,9 +45,15 @@ namespace WebApiTutorialHE.Api
             return Ok(update);
         }
         [HttpDelete]
-        public async Task<IActionResult> DeleteRegistrationID(int id)
+        public async Task<IActionResult> DeleteRegistrationID()
         {
-            var delete = await _registrationService.DeleteRegistation(id);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+
+            var delete = await _registrationService.DeleteRegistation(forceInfo.UserId);
             return Ok(new ObjectResponse
             {
                 result = 1,

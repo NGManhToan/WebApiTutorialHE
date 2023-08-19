@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using P2N_Pet_API.Module.AdminManager.Models.Admin;
 using System.Data;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Account;
@@ -14,7 +15,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<List<UserListModel>> GetAllUser();
         Task<List<UserListModel>> GetAllAdmin();
         Task<ObjectResponse> ForgotPassword(UserForgotPasswordModel userForgot);
-        Task<User>DeleteUser(int id);
+        Task<User>DeleteUser(ForceInfo forceInfo,AdminDeleteModel adminDelete);
         void ExportDataTableToPdf(DataTable dataTable, string filePath);
         Task<UserProfileModel> QueryFrofile(int id);
         Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id);

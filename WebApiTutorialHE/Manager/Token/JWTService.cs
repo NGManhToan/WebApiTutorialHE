@@ -32,9 +32,15 @@ namespace WebApiTutorialHE.Manager.Token
                                                                                             // và trích xuất dữ liệu
             try
             {
-                ClaimsPrincipal tokenValid = jwtSecurityTokenHandler.ValidateToken(token /*chuổi truyền vào phương thức*/,
-                    tokenValidationParameters /*chứa các thông số cần thiết để xác thực JWT*/,
-                    out SecurityToken validatedToken/* lưu trữ đối tượng được sử dụng trong quá trình xác thực*/);
+                //if (token.StartsWith("Bearer "))
+                //{
+                //    token = token.Substring(7); // Loại bỏ tiền tố "Bearer "
+                //}
+
+                ClaimsPrincipal tokenValid = jwtSecurityTokenHandler.ValidateToken(token,
+                    tokenValidationParameters,
+                    out SecurityToken validatedToken);
+
                 return true;
             }
             catch (Exception)

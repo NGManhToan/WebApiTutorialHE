@@ -28,6 +28,7 @@ namespace WebApiTutorialHE.Database
         public virtual DbSet<Registration> Registrations { get; set; } = null!;
         public virtual DbSet<Role> Roles { get; set; } = null!;
         public virtual DbSet<User> Users { get; set; } = null!;
+        public virtual DbSet<UserRole> UserRoles { get; set; } = null!;
         public virtual DbSet<VerificationCode> VerificationCodes { get; set; } = null!;
         public virtual DbSet<ViolationReport> ViolationReports { get; set; } = null!;
 
@@ -63,6 +64,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name).HasMaxLength(100);
@@ -104,6 +106,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.HasOne(d => d.CreatedByNavigation)
@@ -146,6 +149,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
@@ -173,6 +177,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.HasOne(d => d.CreatedByNavigation)
@@ -244,6 +249,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Type).HasColumnType("enum('Suggest giving','Suggest receiving','Registration','Approve status','Comment','Post the item from wishlist','Reminder','Sharing Succesfully')");
@@ -333,6 +339,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Status).HasColumnType("enum('Used','New')");
@@ -389,6 +396,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Status)
@@ -428,24 +436,10 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Name).HasMaxLength(50);
-
-                entity.HasMany(d => d.Users)
-                    .WithMany(p => p.Roles)
-                    .UsingEntity<Dictionary<string, object>>(
-                        "UserRole",
-                        l => l.HasOne<User>().WithMany().HasForeignKey("UserId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("UserRole_ibfk_2"),
-                        r => r.HasOne<Role>().WithMany().HasForeignKey("RoleId").OnDelete(DeleteBehavior.ClientSetNull).HasConstraintName("UserRole_ibfk_1"),
-                        j =>
-                        {
-                            j.HasKey("RoleId", "UserId").HasName("PRIMARY").HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
-
-                            j.ToTable("UserRole");
-
-                            j.HasIndex(new[] { "UserId" }, "UserId");
-                        });
             });
 
             modelBuilder.Entity<User>(entity =>
@@ -480,6 +474,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.Property(e => e.Password).HasColumnType("text");
@@ -507,6 +502,29 @@ namespace WebApiTutorialHE.Database
                     .WithMany(p => p.InverseLastModifiedByNavigation)
                     .HasForeignKey(d => d.LastModifiedBy)
                     .HasConstraintName("User_ibfk_3");
+            });
+
+            modelBuilder.Entity<UserRole>(entity =>
+            {
+                entity.HasKey(e => new { e.RoleId, e.UserId })
+                    .HasName("PRIMARY")
+                    .HasAnnotation("MySql:IndexPrefixLength", new[] { 0, 0 });
+
+                entity.ToTable("UserRole");
+
+                entity.HasIndex(e => e.UserId, "UserId");
+
+                entity.HasOne(d => d.Role)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.RoleId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UserRole_ibfk_1");
+
+                entity.HasOne(d => d.User)
+                    .WithMany(p => p.UserRoles)
+                    .HasForeignKey(d => d.UserId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("UserRole_ibfk_2");
             });
 
             modelBuilder.Entity<VerificationCode>(entity =>
@@ -552,6 +570,7 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
+                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
 
                 entity.HasOne(d => d.CreatedByNavigation)

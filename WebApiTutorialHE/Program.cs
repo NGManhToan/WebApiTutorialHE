@@ -94,6 +94,7 @@ builder.Services.AddScoped<IARegistrationService, ARegistrationService>();
 
 builder.Services.AddScoped<IARegistrationAction, ARegistrationAction>();
 
+///builder.Services.Configure<JWTSetting>(configuration.GetSection("JWTSetting"));
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -137,9 +138,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? throw new ArgumentNullException("Jwt:Key")))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
     };
 });
+
 
 var app = builder.Build();
 
@@ -167,6 +169,7 @@ app.UseStaticFiles();
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

@@ -16,7 +16,7 @@ using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Database;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
-
+using P2N_Pet_API.Module.AdminManager.Models.Admin;
 
 namespace WebApiTutorialHE.Service
 {
@@ -110,8 +110,8 @@ namespace WebApiTutorialHE.Service
                     };
 
                     var sent = await _mailService.SendMail(mailData, default);
-                    if (sent) return new ObjectResponse { result = 1 };
-                    else return new ObjectResponse { result = 0 };
+                    if (sent) return new ObjectResponse { result = 1,message = "Password đã được thay đổi và gửi thành công qua email." };
+                    else return new ObjectResponse { result = 0, message = "Email không được gửi thành công. Vui lòng thử lại sau." };
                 }
                 return null;
             }
@@ -175,7 +175,7 @@ namespace WebApiTutorialHE.Service
             {
                 var oldPass = Encryptor.SHA256Encode(changepassword.CurrentPassword);
                 var user = await _sharingContext.Users
-                    .Where(u => u.Id == forceInfo.UserId && u.Roles.Any(r => r.Id == 3))
+                    .Where(u => u.Id == forceInfo.UserId && u.UserRoles.Any(r => r.RoleId == 3))
                     .FirstOrDefaultAsync();
 
                 if (user != null && user.Password == oldPass && changepassword.NewPassword == changepassword.ConfirmNewPassword)
@@ -295,9 +295,9 @@ namespace WebApiTutorialHE.Service
 
             return accounts;
         }
-        public async Task<User> DeleteUser(int id)
+        public async Task<User> DeleteUser(ForceInfo forceInfo,AdminDeleteModel adminDelete)
         {
-            return await _userAction.DeleteUser(id);
+            return await _userAction.DeleteUser(forceInfo,adminDelete.UserId);
         }
         
         public async Task<UserProfileModel> QueryFrofile(int id)
