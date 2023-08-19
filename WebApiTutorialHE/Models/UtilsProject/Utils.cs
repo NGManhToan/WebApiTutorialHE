@@ -45,7 +45,7 @@ namespace WebApiTutorialHE.Models.UtilsProject
             return 0;
         }
 
-        public static int GetRoleFromToken(HttpRequest request)
+        public static ulong GetRoleFromToken(HttpRequest request)
         {
             var headers = request.Headers;
             
@@ -67,14 +67,15 @@ namespace WebApiTutorialHE.Models.UtilsProject
                     {
                         IAuthService authService = new JWTService(KeyToken);
                         List<Claim> claims = authService.GetTokenClaims(token).ToList();
+                        return Convert.ToUInt64(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
 
-                        var roles = claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value.Split(",");
+                        //var roles = claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value.Split(",");
 
-                        // Get the first role in the array.
-                        int role = int.Parse(roles[0]);
+                        //// Get the first role in the array.
+                        //int role = int.Parse(roles[0]);
 
-                        return role;
-                        //return Convert.ToInt32(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
+                        //return role;
+                        ////return Convert.ToInt32(claims.FirstOrDefault(e => e.Type.Equals(ClaimTypes.Role)).Value);
                     }
                 }
                 

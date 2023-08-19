@@ -22,7 +22,7 @@ namespace WebApiTutorialHE.Service
             var login = await _loginQuery.Login(loginModel, loginModel.Password);
 
             if (login == null)
-            {
+            { 
                 return new ObjectResponse
                 {
                     result = 0,
