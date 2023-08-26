@@ -91,8 +91,12 @@ builder.Services.AddScoped<IACategoryService,ACategorySevice>();
 
 builder.Services.AddScoped<IARegistrationQuery,ARegistrationQuery>();
 builder.Services.AddScoped<IARegistrationService, ARegistrationService>();
-
 builder.Services.AddScoped<IARegistrationAction, ARegistrationAction>();
+
+builder.Services.AddScoped<IAUserAction, AUserAction>();
+builder.Services.AddScoped<IAUserService, AUserService>();
+builder.Services.AddScoped<IAUserQuey,AUserQuery>();
+
 
 ///builder.Services.Configure<JWTSetting>(configuration.GetSection("JWTSetting"));
 

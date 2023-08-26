@@ -1,4 +1,5 @@
-﻿using System.util;
+﻿using Microsoft.EntityFrameworkCore;
+using System.util;
 using WebApiTutorialHE.Database;
 using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.UtilsProject;
@@ -17,14 +18,14 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
             _sharingContext = sharingContext;
         }
 
-        public async Task<AdminListCategoryModel> AddCategory(ACategoryModel category)
+        public async Task<AdminListCategoryModel>AddCategory(ACategoryModel category,ForceInfo forceInfo)
         {
             
             var addCategory = new Category()
             {
                 Name = category.Name,
-                CreatedBy = category.CreatedBy,
-                LastModifiedBy = category.CreatedBy
+                CreatedBy = forceInfo.UserId,
+                LastModifiedBy = forceInfo.UserId
             };
             
             _sharingContext.Categories.Add(addCategory);
@@ -35,7 +36,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
             };
         }
 
-        public async Task<Category> UpdateCategory(AEditCategoryModel updateCategory)
+        public async Task<Category>UpdateCategory(AEditCategoryModel updateCategory, ForceInfo forceInfo)
         {
             if (updateCategory.Name == null || updateCategory.Name.Length == 0)
             {
@@ -46,8 +47,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
             if (update != null)
             {
                 update.Name = updateCategory.Name;
-                update.CreatedBy = updateCategory.CreatedBy;
-                update.LastModifiedBy = updateCategory.CreatedBy;
+                update.LastModifiedBy = forceInfo.UserId;
                 update.CreatedDate = Utils.DateNow();
             }
 
@@ -59,20 +59,64 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
 
 
 
-        public async Task<string> DeleteCategory(int id)
+        public async Task<Category>DeleteCategory(ForceInfo forceInfo,int id)
         {
             var delete = await _sharingContext.Categories.FindAsync(id);
-            if (delete != null)
+            if (delete.IsDeleted == true)
             {
-                delete.IsDeleted = true;
+                throw new BadHttpRequestException($"User không tồn tại");
             }
-            else
+
+            var userRole = await _sharingContext.UserRoles
+                .Where(ur => ur.UserId == forceInfo.UserId)
+                .Select(ur => ur.Role)
+                .FirstOrDefaultAsync();
+
+            if (userRole != null)
             {
-                return "Không tìm thấy id phù hợp";
+                if (userRole.Id == 1)
+                {
+                    // Xóa user khi role = 1
+                    delete.IsDeleted = true;
+                    delete.LastModifiedBy = forceInfo.UserId;
+                    await _sharingContext.SaveChangesAsync();
+                }
+                else if (userRole.Id == 2)
+                {
+                    var targetUserRole = await _sharingContext.UserRoles
+                        .Where(ur => ur.UserId == delete.Id)
+                        .Select(ur => ur.Role)
+                        .FirstOrDefaultAsync();
+
+                    if (targetUserRole != null && targetUserRole.Id == 1)
+                    {
+                        throw new BadHttpRequestException($"Không có quyền xóa user này");
+                    }
+                    else
+                    {
+                        // Xóa user khi role = 2 và user role != 1
+                        delete.IsDeleted = true;
+                        delete.LastModifiedBy = forceInfo.UserId;
+                        await _sharingContext.SaveChangesAsync();
+                    }
+                }
+                else if (userRole.Id == 3)
+                {
+                    throw new BadHttpRequestException($"Không có quyền xóa user");
+                }
             }
-            _sharingContext.Categories.Update(delete);
-            await _sharingContext.SaveChangesAsync();
-            return "Đã xóa";
+            return delete;
+            //if (delete != null)
+            //{
+            //    delete.IsDeleted = true;
+            //}
+            //else
+            //{
+            //    return "Không tìm thấy id phù hợp";
+            //}
+            //_sharingContext.Categories.Update(delete);
+            //await _sharingContext.SaveChangesAsync();
+            //return "Đã xóa";
 
         }
     }

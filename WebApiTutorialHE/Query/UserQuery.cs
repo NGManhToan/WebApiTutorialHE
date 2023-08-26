@@ -15,7 +15,7 @@ namespace WebApiTutorialHE.Query
         public async Task<List<UserListModel>> QueryListUser()
         {
             var query = @"SELECT 
-                            u.Id,f.Name,u.StudentCode,u.FullName,u.Email,u.PhoneNumber,u.UrlAvatar,u.IsOnline,ur.RoleId,u.Class as ClassCode
+                            u.Id,f.Name,u.StudentCode,u.FullName,u.Email,u.PhoneNumber,u.UrlAvatar,u.IsOnline,u.IsActive,ur.RoleId,u.Class as ClassCode
                         FROM
                             User u
                             join Faculty f on u.FacultyId = f.Id	
@@ -26,7 +26,7 @@ namespace WebApiTutorialHE.Query
         public async Task<List<UserListModel>> QueryListAdmin()
         {
             var query = @"SELECT 
-                                u.Id,f.Name,u.StudentCode,u.FullName,u.Email,u.PhoneNumber,u.UrlAvatar,u.IsOnline,ur.RoleId,u.Class as ClassCode
+                                u.Id,f.Name,u.StudentCode,u.FullName,u.Email,u.PhoneNumber,u.UrlAvatar,u.IsOnline,u.IsActive,ur.RoleId,u.Class as ClassCode
                             FROM
                                 User u
                                 join Faculty f on u.FacultyId = f.Id	

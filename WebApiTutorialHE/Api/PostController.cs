@@ -94,19 +94,37 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> QueryGetShareListByUser(int id)
+        public async Task<IActionResult> QueryGetShareListByUser()
         {
-            var getList=await _postService.QueryGetShareListByUser(id);
-            return Ok(new ObjectResponse
+            var forceInfo = new ForceInfo
             {
-                result=1,
-                message="Lấy thành công danh sách đăng theo người dùng",
-                content = new
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = DateTime.Now,
+            };
+            if(forceInfo.UserId == 0)
+            {
+                return Ok(new ObjectResponse { result = 0, message = "Xác thực không thành công" });
+            }
+            var getList = await _postService.QueryGetShareListByUser(forceInfo.UserId);
+            if(getList != null)
+            {
+                return Ok(new ObjectResponse
                 {
-                    getList= getList
-                }
-            });
+                    result = 1,
+                    message = "Lấy danh sách thành công !",
+                    content = getList
+                });
+            }
+            else
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 0,
+                    message = "Lấy danh sách không thành công !!"
+                });
+            }
         }
+            
         [HttpGet]
         public async Task<IActionResult>DetailWishList(int wishId)
         {

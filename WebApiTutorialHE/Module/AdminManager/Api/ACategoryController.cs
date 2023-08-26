@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using WebApiTutorialHE.Manager.FilterAttr;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Module.AdminManager.Model.Category;
 using WebApiTutorialHE.Module.AdminManager.Service.Interface;
@@ -7,6 +8,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [ManagerAccess]
     public class ACategoryController : ControllerBase
     {
         private readonly IACategoryService _categoryService;
@@ -15,11 +17,16 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
         {
             _categoryService = categoryService;
         }
-
+        [ManagerAccess]
         [HttpPost]
         public async Task<IActionResult>AddCategory(ACategoryModel category)
         {
-            var add = await _categoryService.AddCategoryService(category);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var add = await _categoryService.AddCategoryService(forceInfo,category);
             return Ok(new ObjectResponse
             {
                 result = 1,
@@ -28,6 +35,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             });
         }
 
+        [ManagerAccess]
         [HttpPut]
         public async Task<IActionResult> EditCategory(AEditCategoryModel editCategory)
         {
@@ -39,8 +47,12 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
                     message = "Tên vật phẩm không được để trống!",
                 });
             }
-
-            var update = await _categoryService.UpdateCategory(editCategory);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var update = await _categoryService.UpdateCategory(editCategory, forceInfo);
             if (update == null)
             {
                 return Ok(new ObjectResponse
@@ -67,12 +79,30 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             });
         }
 
-
+        [ManagerAccess]
         [HttpDelete]
         public async Task<IActionResult>DeleteCategory(int id)
         {
-            var delete = await _categoryService.DeleteCategory(id);
-            return Ok(delete);
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var delete = await _categoryService.DeleteCategory(forceInfo,id);
+            if(delete == null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 0,
+                    message = "Xóa không thành công",
+                });
+            }
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Xóa thành công",
+                content = delete
+            });
         }
     }
 }

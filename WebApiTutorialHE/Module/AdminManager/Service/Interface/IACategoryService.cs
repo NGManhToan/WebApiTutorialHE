@@ -6,8 +6,8 @@ namespace WebApiTutorialHE.Module.AdminManager.Service.Interface
 {
     public interface IACategoryService
     {
-        Task<AdminListCategoryModel> AddCategoryService(ACategoryModel category);
-        Task<Category>UpdateCategory(AEditCategoryModel update);
-        Task<string> DeleteCategory(int id);
+        Task<AdminListCategoryModel> AddCategoryService(ForceInfo forceInfo,ACategoryModel category);
+        Task<Category>UpdateCategory(AEditCategoryModel update, ForceInfo forceInfo);
+        Task<Category> DeleteCategory(ForceInfo forceInfo,int id);
     }
 }

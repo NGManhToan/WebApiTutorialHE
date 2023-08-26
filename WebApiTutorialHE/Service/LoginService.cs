@@ -21,7 +21,7 @@ namespace WebApiTutorialHE.Service
             loginModel.Password = Encryptor.SHA256Encode(loginModel.Password);
             var login = await _loginQuery.Login(loginModel, loginModel.Password);
 
-            if (login == null)
+            if (login == null )
             { 
                 return new ObjectResponse
                 {

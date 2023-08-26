@@ -24,6 +24,14 @@ namespace WebApiTutorialHE.Module.AdminManager.Models.Admin
         [DefaultValue("")]
         public string RepeatPassword { get; set; }
 
-        public IFormFile Avatar { get; set; }
+        [DefaultValue("")]
+        public string StudentCode { get; set; }
+
+        [DefaultValue("")]
+        public string Class { get; set; }
+
+        [DefaultValue("")]
+        public int Faculty { get; set; }
+        public IFormFile? Avatar { get; set; }
     }
 }

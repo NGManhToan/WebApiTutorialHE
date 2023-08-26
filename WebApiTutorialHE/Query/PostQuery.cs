@@ -156,9 +156,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<DetailWishListModel>> QueryDetailWishList(int wishId)
         {
-            var query = @"select CONCAT('" + Utils.LinkMedia("") + @"', 'Upload/Avata/',m.ImageUrl) as imageUrl,
-	                    FullName, p.CreatedDate, Content, c.Name, 
-                        m.imageUrl,
+            var query = @"select FullName, p.CreatedDate, Content, c.Name, m.imageUrl,
                         CASE 
 		                    WHEN DesiredStatus = 3 THEN 'Free, Purchase' 
                             ELSE CAST(DesiredStatus AS char(10))                             

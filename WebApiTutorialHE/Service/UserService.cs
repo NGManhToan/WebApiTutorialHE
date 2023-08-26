@@ -175,7 +175,7 @@ namespace WebApiTutorialHE.Service
             {
                 var oldPass = Encryptor.SHA256Encode(changepassword.CurrentPassword);
                 var user = await _sharingContext.Users
-                    .Where(u => u.Id == forceInfo.UserId && u.UserRoles.Any(r => r.RoleId == 3))
+                    .Where(u => u.Id == forceInfo.UserId)
                     .FirstOrDefaultAsync();
 
                 if (user != null && user.Password == oldPass && changepassword.NewPassword == changepassword.ConfirmNewPassword)
@@ -314,17 +314,29 @@ namespace WebApiTutorialHE.Service
         {
             return await _userQuery.QueryItemFeedback(id);
         }
-        public async Task<User> UpdateProfile(UserUpdateModel userUpdate)
+        public async Task<ObjectResponse> UpdateProfile(UserUpdateModel userUpdate, ForceInfo forceInfo)
         {
-            var filename = "";
-
-            if(userUpdate.UrlImage != null)
+           
+            var updateProfile = await _userAction.UpdateProfile(userUpdate,forceInfo);
+            if (updateProfile == null)
             {
-                var image = await _userAction.SaveOneMediaData(userUpdate.UrlImage);
-                filename = image.FileName;
+                return new ObjectResponse
+                {
+                    result = 0,
+                    message = "Xác thực không thành công !!"
+                };
             }
+            return new ObjectResponse
+            {
+                result = 1,
+                message = "Cập nhật hồ sơ thành công."
+            };
 
-            return await _userAction.UpdateProfile(userUpdate, filename);
+        }
+
+        public async Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode)
+        {
+            return await _userAction.IdentifyOTPUpdate(forceInfo,userUpdate,otpCode);
         }
 
         public void ExportDataTableToPdf(DataTable dataTable, string filePath)

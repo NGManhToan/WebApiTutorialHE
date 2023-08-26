@@ -20,10 +20,11 @@ namespace WebApiTutorialHE.Service.Interface
         Task<UserProfileModel> QueryFrofile(int id);
         Task<List<UserProfileSharingModel>> QueryFrofileSharing(int id);
         Task<List<UserProfileFeedback>> QueryItemFeedback(int id);
-        Task<User> UpdateProfile(UserUpdateModel userUpdate);
+        Task<ObjectResponse> UpdateProfile(UserUpdateModel userUpdate, ForceInfo forceInfo);
         Task<RecipientInformationModel> RecipientInfor(int id);
 
         Task<string> IdentifyOTP(int userId, string otpCode);
+        Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode);
 
         Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword, ForceInfo forceInfo);
 

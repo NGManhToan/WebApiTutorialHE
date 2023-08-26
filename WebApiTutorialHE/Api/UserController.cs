@@ -148,17 +148,31 @@ namespace WebApiTutorialHE.Api
         [HttpPut]
         public async Task<IActionResult> UpdateProfile([FromForm] UserUpdateModel userUpdate)
         {
-            var updateUser = await _userService.UpdateProfile(userUpdate);
-            return Ok(new ObjectResponse
+            var forceInfo = new ForceInfo
             {
-                result = 1,
-                message = "Lấy thành công danh sách",
-                content = new
-                {
-                    userUpdate = updateUser
-                }
-            });
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+            var updateUser = await _userService.UpdateProfile(userUpdate, forceInfo);
+            return Ok(updateUser);
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> IdentifyOTPUpdate([FromForm] string otpCode, [FromForm] UserUpdateModel userUpdate)
+        {
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = Utils.DateNow()
+            };
+
+            var result = await _userService.IdentifyOTPUpdate(forceInfo, userUpdate, otpCode);
+            return Ok(result);
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> RecipientInfor(int id)
         {

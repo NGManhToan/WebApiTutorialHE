@@ -19,6 +19,7 @@ using WebApiTutorialHE.Models.Mail;
 using System.Text;
 
 
+
 namespace WebApiTutorialHE.Action
 {
 
@@ -76,7 +77,7 @@ namespace WebApiTutorialHE.Action
 
                     if (targetUserRole != null && targetUserRole.Id == 1)
                     {
-                        throw new BadHttpRequestException($"Không có quyền xóa user");
+                        throw new BadHttpRequestException($"Không có quyền xóa user này");
                     }
                     else
                     {
@@ -98,7 +99,6 @@ namespace WebApiTutorialHE.Action
 
 
 
-
         public async Task<ActionResult<User>> ChangePassword(UserChangePasswordModel userForgotPassword)
         {
             var user = await _sharingContext.Users.FirstOrDefaultAsync(x => x.Email.Equals(userForgotPassword.Email));
@@ -116,7 +116,7 @@ namespace WebApiTutorialHE.Action
         public async Task ChangePasswordUser(ForceInfo forceInfo, string newPassword)
         {
             var user = await _sharingContext.Users.FindAsync(forceInfo.UserId);
-            if (user != null)
+            if (user != null && user.IsActive == true)
             {
                 user.Password = Encryptor.SHA256Encode(newPassword.Trim());
                 _sharingContext.Update(user);
@@ -280,6 +280,10 @@ namespace WebApiTutorialHE.Action
                     else
                     {
                         user.IsActive = false;
+
+                        _sharingContext.VerificationCodes.Remove(verificationCode);
+                        await _sharingContext.SaveChangesAsync();
+
                         return "Xác thực thất bại";
                     }
                 }
@@ -336,69 +340,162 @@ namespace WebApiTutorialHE.Action
         }
 
 
-        public async Task<User> UpdateProfile(UserUpdateModel userUpdate, string filename)
+        public async Task<User> UpdateProfile(UserUpdateModel userUpdate,ForceInfo forceInfo)
         {
-            var update = await _sharingContext.Users.FindAsync(userUpdate.Id);
+            var update = await _sharingContext.Users.FindAsync(forceInfo.UserId);
 
             if (update != null)
             {
-                if (!string.IsNullOrEmpty(userUpdate.FullName))
+                bool isEmailChanged = false;
+
+                if (!string.IsNullOrEmpty(userUpdate.Email) && update.Email != userUpdate.Email.Trim())
                 {
-                    update.FullName = userUpdate.FullName;
+                    isEmailChanged = true;  // Đánh dấu là email đã thay đổi
+                    update.Email = userUpdate.Email.Trim();
                 }
 
-                if (!string.IsNullOrEmpty(userUpdate.Class))
+                //update.LastModifiedDate = Utils.DateNow();
+                //update.LastModifiedBy = forceInfo.UserId;
+
+                if (userUpdate.fileName != null)
                 {
-                    update.Class = userUpdate.Class;
+                    var uploader = new Uploadfirebase();
+                    byte[] imageData;
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        await userUpdate.fileName.CopyToAsync(memoryStream);
+                        imageData = memoryStream.ToArray();
+                    }
+                    string imageUrl = await uploader.UploadAvatar(imageData, userUpdate.fileName.FileName);
+                    // Lưu link của ảnh vào thuộc tính UrlAvatar của user
+                    update.UrlAvatar = imageUrl;
+
+                }
+                else
+                {
+                    update.UrlAvatar = null;
                 }
 
-                if (!string.IsNullOrEmpty(userUpdate.StudentCode))
+                //_sharingContext.Users.Update(update);
+                //await _sharingContext.SaveChangesAsync();
+
+                if (isEmailChanged)
                 {
-                    update.StudentCode = userUpdate.StudentCode;
-                }
-
-                if (userUpdate.FacultyId != null && userUpdate.FacultyId != 0)
+                    var otpCode = GenerateOTPCode();
+                    var mailSetting = new MailSettings();
+                    var mailData = new MailDataWithAttachments()
+                    {
+                        From = mailSetting.UserName,
+                        To = new List<string>()
                 {
-                    update.FacultyId = userUpdate.FacultyId.Value; // Use Value property to get the non-nullable value
+                    userUpdate.Email
+                },
+                        Subject = "Verification",
+                        Body = $"Mã xác thực: {otpCode}"
+                    };
+                    var sent = await _mailService.SendMail(mailData, default);
+
+                    var verificationCode = new VerificationCode
+                    {
+                        UserId = forceInfo.UserId,
+                        Code = otpCode,
+                        ExpirationTime = DateTime.Now.AddMinutes(60),
+                    };
+
+                    _sharingContext.VerificationCodes.Add(verificationCode);
+                    await _sharingContext.SaveChangesAsync();
                 }
-
-
-                // Cập nhật các trường không thay đổi
-
-                update.LastModifiedDate = Utils.DateNow();
-                update.LastModifiedBy = update.Id;
-
-                if (userUpdate.UrlImage != null)
-                {
-                    update.UrlAvatar = filename;
-                }
-
-                _sharingContext.Users.Update(update);
-                await _sharingContext.SaveChangesAsync();
+            }
+            else
+            {
+                return null;
             }
 
             return update;
         }
 
 
-
-        public DataTable GetDataTable()
+        public async Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode)
         {
-            DataTable dt = new DataTable();
-            dt.TableName = "Empdata";
-            dt.Columns.Add("user_id", typeof(int));
-            dt.Columns.Add("email", typeof(string));
-            dt.Columns.Add("password", typeof(string));
-            var _list = this._sharingContext.Users.ToList();
-            if (_list.Count > 0)
+            try
             {
-                _list.ForEach(item =>
+                var user = await _sharingContext.Users.FindAsync(forceInfo.UserId);
+
+                if (user == null)
                 {
-                    dt.Rows.Add(item.Id, item.Email, item.Password);
-                });
+                    return ("Không tìm thấy người dùng.");
+                }
+
+                // ... (xác thực OTP)
+                var verificationCodedata = await _sharingContext.VerificationCodes
+                    .FirstOrDefaultAsync(v => v.UserId == forceInfo.UserId && DateTime.Now <= v.ExpirationTime);
+
+
+                if (otpCode == verificationCodedata.Code)
+                {
+                    var updatedUser = user;
+
+                    if (updatedUser != null)
+                    {
+                        //user.Email = userUpdate.Email;
+                        user.LastModifiedDate = Utils.DateNow();
+                        user.LastModifiedBy = forceInfo.UserId;
+                        // Lưu thông tin người dùng sau khi xác thực OTP thành công
+                        _sharingContext.Users.Update(updatedUser);
+                        await _sharingContext.SaveChangesAsync();
+
+                        _sharingContext.VerificationCodes.Remove(verificationCodedata);
+                        await _sharingContext.SaveChangesAsync();
+
+
+                        return "Xác thực thành công và thông tin đã được cập nhật.";
+                    }
+                    else
+                    {
+                        _sharingContext.VerificationCodes.Remove(verificationCodedata);
+                        await _sharingContext.SaveChangesAsync();
+
+                        return "Xác thực thành công nhưng không tìm thấy thông tin người dùng.";
+                    }
+                }
+                else
+                {
+                    _sharingContext.VerificationCodes.Remove(verificationCodedata);
+                    await _sharingContext.SaveChangesAsync();
+
+                    return "Xác thực thất bại";
+                }
+
             }
-            return dt;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return null;
+            }
+            
         }
+
+
+
+
+
+        //public DataTable GetDataTable()
+        //{
+        //    DataTable dt = new DataTable();
+        //    dt.TableName = "Empdata";
+        //    dt.Columns.Add("user_id", typeof(int));
+        //    dt.Columns.Add("email", typeof(string));
+        //    dt.Columns.Add("password", typeof(string));
+        //    var _list = this._sharingContext.Users.ToList();
+        //    if (_list.Count > 0)
+        //    {
+        //        _list.ForEach(item =>
+        //        {
+        //            dt.Rows.Add(item.Id, item.Email, item.Password);
+        //        });
+        //    }
+        //    return dt;
+        //}
 
 
     }
