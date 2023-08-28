@@ -69,6 +69,21 @@ namespace WebApiTutorialHE.Models.UtilsProject
             // You can use CancellationTokenSource to cancel the upload midway
             var cancellation = new CancellationTokenSource();
 
+            var dateTime = DateTime.Now;
+            var fileNameHashed = fileName + "_" + dateTime.ToString("yyyyMMddHHmmssfff");
+
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                // If it is, use the băm tên ảnh ra value as the filename
+                fileNameHashed = fileNameHashed;
+            }
+            else
+            {
+                // Otherwise, use the fileName value as the filename, with the băm tên ảnh ra value appended to it
+
+            }
+
             var task = new FirebaseStorage(
                 Bucket,
                 new FirebaseStorageOptions
@@ -100,6 +115,21 @@ namespace WebApiTutorialHE.Models.UtilsProject
 
             // You can use CancellationTokenSource to cancel the upload midway
             var cancellation = new CancellationTokenSource();
+
+            var dateTime = DateTime.Now;
+            var fileNameHashed = fileName + "_" + dateTime.ToString("yyyyMMddHHmmssfff");
+
+
+            if (string.IsNullOrEmpty(fileName))
+            {
+                // If it is, use the băm tên ảnh ra value as the filename
+                fileNameHashed = fileNameHashed;
+            }
+            else
+            {
+                // Otherwise, use the fileName value as the filename, with the băm tên ảnh ra value appended to it
+
+            }
 
             var task = new FirebaseStorage(
                 Bucket,

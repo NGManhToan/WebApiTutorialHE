@@ -195,9 +195,14 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
 
             if (update != null)
             {
+                if (!string.IsNullOrEmpty(adminUpdate.FullName))
+                {
+                    update.FullName = adminUpdate.FullName;
+                }
+
                 if (!string.IsNullOrEmpty(adminUpdate.Email))
                 {
-                    update.FullName = adminUpdate.Email;
+                    update.Email = adminUpdate.Email;
                 }
 
                 if (!string.IsNullOrEmpty(adminUpdate.Phone))

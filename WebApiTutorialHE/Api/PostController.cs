@@ -129,7 +129,12 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult>DetailWishList(int wishId)
         {
             var detailWish = await _postService.GetDetailWishList(wishId);
-            return Ok(detailWish);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lấy danh sách thành công !",
+                content = detailWish
+            });
         }
         [HttpGet]
         public async Task<IActionResult> GetListComment(int postId)
