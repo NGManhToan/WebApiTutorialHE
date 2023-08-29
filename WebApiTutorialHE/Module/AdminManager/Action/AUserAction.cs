@@ -224,6 +224,12 @@ namespace WebApiTutorialHE.Module.AdminManager.Action
                 {
                     update.Class = adminUpdate.Class;
                 }
+
+                if (adminUpdate.IsActive.HasValue)
+                {
+                    update.IsActive = adminUpdate.IsActive.Value;
+                }
+
                 // Cập nhật các trường không thay đổi
 
                 update.LastModifiedDate = Utils.DateNow();

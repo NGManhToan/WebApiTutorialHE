@@ -11,6 +11,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Model.User
         public string? StudentCode { get; set; }
         public int? FacultyId { get; set; } // Change to nullable int
         public string? Class { get; set; }
+        public bool? IsActive { get; set; }
 
         public IFormFile? FileName { get; set; }
     }
