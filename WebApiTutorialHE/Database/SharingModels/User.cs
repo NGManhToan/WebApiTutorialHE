@@ -27,7 +27,6 @@ namespace WebApiTutorialHE.Database.SharingModels
             VerificationCodes = new HashSet<VerificationCode>();
             ViolationReportCreatedByNavigations = new HashSet<ViolationReport>();
             ViolationReportLastModifiedByNavigations = new HashSet<ViolationReport>();
-            ViolationReportViolators = new HashSet<ViolationReport>();
         }
 
         public int Id { get; set; }
@@ -70,6 +69,5 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual ICollection<VerificationCode> VerificationCodes { get; set; }
         public virtual ICollection<ViolationReport> ViolationReportCreatedByNavigations { get; set; }
         public virtual ICollection<ViolationReport> ViolationReportLastModifiedByNavigations { get; set; }
-        public virtual ICollection<ViolationReport> ViolationReportViolators { get; set; }
     }
 }

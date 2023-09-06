@@ -2,10 +2,12 @@
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Module.AdminManager.Model.ViolationReport;
 
-namespace WebApiTutorialHE.Module.AdminManager.Action.Interface
+namespace WebApiTutorialHE.Module.AdminManager.Service.Interface
 {
-    public interface IAViolationReportAction
+    public interface IAViolationReportService
     {
+        Task<List<GetListViolationReportModel>> ListReport();
+
         Task<ViolationReport> EditViolationReport(int id, ForceInfo forceInfo);
     }
 }

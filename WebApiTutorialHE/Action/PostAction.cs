@@ -51,7 +51,6 @@ namespace WebApiTutorialHE.Action
             return await _cloudMediaService.SaveOneFileData(cloudOneMediaConfig);
         }
 
-        [Authorize(Roles = "3")]
         public async Task<ReturnPostItemModel> PostItem(PostItemModel postItemModel, IFormFile fileName)
         {
             int maxFileSizeBytes = 5 * 1024 * 1024; // 5 MB

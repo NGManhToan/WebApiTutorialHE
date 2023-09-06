@@ -548,6 +548,8 @@ namespace WebApiTutorialHE.Database
             {
                 entity.ToTable("ViolationReport");
 
+                entity.HasIndex(e => e.CommentId, "CommentId");
+
                 entity.HasIndex(e => e.CreatedBy, "CreatedBy");
 
                 entity.HasIndex(e => e.ItemFeedbackId, "ItemFeedbackId");
@@ -555,8 +557,6 @@ namespace WebApiTutorialHE.Database
                 entity.HasIndex(e => e.LastModifiedBy, "LastModifiedBy");
 
                 entity.HasIndex(e => e.PostId, "PostId");
-
-                entity.HasIndex(e => e.ViolatorId, "ViolatorId");
 
                 entity.Property(e => e.CreatedDate)
                     .HasColumnType("datetime")
@@ -570,8 +570,12 @@ namespace WebApiTutorialHE.Database
 
                 entity.Property(e => e.LastModifiedDate)
                     .HasColumnType("datetime")
-                    .ValueGeneratedOnAddOrUpdate()
                     .HasDefaultValueSql("CURRENT_TIMESTAMP");
+
+                entity.HasOne(d => d.Comment)
+                    .WithMany(p => p.ViolationReports)
+                    .HasForeignKey(d => d.CommentId)
+                    .HasConstraintName("ViolationReport_ibfk_3");
 
                 entity.HasOne(d => d.CreatedByNavigation)
                     .WithMany(p => p.ViolationReportCreatedByNavigations)
@@ -582,7 +586,6 @@ namespace WebApiTutorialHE.Database
                 entity.HasOne(d => d.ItemFeedback)
                     .WithMany(p => p.ViolationReports)
                     .HasForeignKey(d => d.ItemFeedbackId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ViolationReport_ibfk_2");
 
                 entity.HasOne(d => d.LastModifiedByNavigation)
@@ -594,14 +597,7 @@ namespace WebApiTutorialHE.Database
                 entity.HasOne(d => d.Post)
                     .WithMany(p => p.ViolationReports)
                     .HasForeignKey(d => d.PostId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("ViolationReport_ibfk_1");
-
-                entity.HasOne(d => d.Violator)
-                    .WithMany(p => p.ViolationReportViolators)
-                    .HasForeignKey(d => d.ViolatorId)
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("ViolationReport_ibfk_3");
             });
 
             OnModelCreatingPartial(modelBuilder);

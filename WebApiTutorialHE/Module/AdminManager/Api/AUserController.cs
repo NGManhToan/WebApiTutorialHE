@@ -59,5 +59,6 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             var result = await _userService.AdminUpdateProfile(adminUpdate, forceInfo);
             return Ok(result);
         }
+        
     }
 }

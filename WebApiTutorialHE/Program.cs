@@ -97,6 +97,14 @@ builder.Services.AddScoped<IAUserAction, AUserAction>();
 builder.Services.AddScoped<IAUserService, AUserService>();
 builder.Services.AddScoped<IAUserQuey,AUserQuery>();
 
+builder.Services.AddScoped<IAViolationReportAction, AViolationReportAction>();
+builder.Services.AddScoped<IAViolationReportQuery, AViolationReportQuery>();
+builder.Services.AddScoped<IAViolationReportService, AViolationReportService>();
+
+
+//builder.Services.AddScoped<IAViolationReportAction, AViolationReportAction>();
+builder.Services.AddScoped<IAViolationReportService, AViolationReportService>();
+builder.Services.AddScoped<IAViolationReportQuery, AViolationReportQuery>();
 
 ///builder.Services.Configure<JWTSetting>(configuration.GetSection("JWTSetting"));
 

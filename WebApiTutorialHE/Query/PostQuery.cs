@@ -93,7 +93,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomePostModel>> QueryAscendPrice(int id)
         {
-            var query = @"SELECT p.Id,CONCAT('" + Utils.LinkMedia("") + @"', m.ImageUrl) as ImageUrl,
+            var query = @"SELECT p.Id,m.imageUrl,
                     p.Title, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE Price 

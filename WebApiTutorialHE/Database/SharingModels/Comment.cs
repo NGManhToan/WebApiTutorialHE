@@ -8,6 +8,7 @@ namespace WebApiTutorialHE.Database.SharingModels
         public Comment()
         {
             InverseParentComment = new HashSet<Comment>();
+            ViolationReports = new HashSet<ViolationReport>();
         }
 
         public int Id { get; set; }
@@ -26,5 +27,6 @@ namespace WebApiTutorialHE.Database.SharingModels
         public virtual Comment? ParentComment { get; set; }
         public virtual Post Post { get; set; } = null!;
         public virtual ICollection<Comment> InverseParentComment { get; set; }
+        public virtual ICollection<ViolationReport> ViolationReports { get; set; }
     }
 }
