@@ -7,5 +7,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Action.Interface
     public interface IAViolationReportAction
     {
         Task<ViolationReport> EditViolationReport(int id, ForceInfo forceInfo);
+
+        Task<ViolationReport> DeleteViolationReport(int id, ForceInfo forceInfo);
     }
 }

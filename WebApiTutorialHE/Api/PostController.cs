@@ -3,6 +3,7 @@ using WebApiTutorialHE.Database.SharingModels;
 using WebApiTutorialHE.Models.Post;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Service.Interface;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace WebApiTutorialHE.Api
 {
@@ -55,6 +56,7 @@ namespace WebApiTutorialHE.Api
         [HttpGet]
         public async Task<IActionResult> GetWishlish()
         {
+
             var getWish = await _postService.GetWishList();
             return Ok(new ObjectResponse
             {
@@ -67,19 +69,29 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult> AscendPrice(int id)
         {
             var ascendPrice=await _postService.AscendPrice(id);
-            return Ok(ascendPrice);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lọc thành công",
+                content = ascendPrice
+            });
         }
         [HttpGet]
         public async Task<IActionResult> DescendPrice(int id)
         {
             var descendPrice = await _postService.DescendPrice(id);
-            return Ok(descendPrice);
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Lọc thành công",
+                content = descendPrice
+            });
         }
         [HttpGet]
         public async Task<IActionResult> FilterFreeItem(int id)
         {
             var filterFreeItem = await _postService.FilterFreeItem(id);
-            return Ok(filterFreeItem);
+            return Ok(new ObjectResponse { result = 1, message = "Lọc thành công", content = filterFreeItem });
         }
         [HttpGet]
         public async Task<IActionResult>DetailItem(int postId)
@@ -177,9 +189,15 @@ namespace WebApiTutorialHE.Api
             return Ok(postProposal);
         }
         [HttpGet]
-        public async Task<IActionResult> GetWishListByUser(int userId)
+        public async Task<IActionResult> GetWishListByUser()
         {
-            var getList = await _postService.GetWishListByUser(userId);
+			var forceInfo = new ForceInfo
+			{
+				UserId = Utils.GetUserIdFromToken(Request),
+				DateNow = DateTime.Now,
+			};
+			var getList = await _postService.GetWishListByUser(forceInfo.UserId);
+            
             return Ok(new ObjectResponse
             {
                 result = 1,
@@ -208,7 +226,109 @@ namespace WebApiTutorialHE.Api
         public async Task<IActionResult>DeleteWish(int id)
         {
             var delete = await _postService.DeleteWishList(id);
-            return Ok(delete);
+            if(delete == true)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Xóa thành công",
+                    content = new
+                    {
+                        delete = delete
+                    }
+                });
+            }
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Xóa không thành công",
+                content = new
+                {
+                    delete = delete
+                }
+            });
         }
-    }
+        [HttpGet]
+        public async Task<IActionResult> ListItemSharedById()
+        {
+            var forceInfo = new ForceInfo
+            {
+                UserId = Utils.GetUserIdFromToken(Request),
+                DateNow = DateTime.Now,
+            };
+            if (forceInfo.UserId == 0)
+            {
+                return Ok(new ObjectResponse { result = 0, message = "Xác thực không thành công" });
+            }
+            var getList = await _postService.GetListItemPostShared(forceInfo.UserId);
+            if (getList != null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Lấy danh sách thành công !",
+                    content = getList
+                });
+            }
+            else
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 0,
+                    message = "Lấy danh sách không thành công !!"
+                });
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListReceivedItems()
+        {
+			var forceInfo = new ForceInfo
+			{
+				UserId = Utils.GetUserIdFromToken(Request),
+				DateNow = DateTime.Now,
+			};
+			if (forceInfo.UserId == 0)
+			{
+				return Ok(new ObjectResponse { result = 0, message = "Xác thực không thành công" });
+			}
+			var getList = await _postService.ListReceivedItems(forceInfo.UserId);
+			if (getList != null)
+			{
+				return Ok(new ObjectResponse
+				{
+					result = 1,
+					message = "Lấy danh sách thành công !",
+					content = getList
+				});
+			}
+			else
+			{
+				return Ok(new ObjectResponse
+				{
+					result = 0,
+					message = "Lấy danh sách không thành công !!"
+				});
+			}
+		}
+        [HttpGet]
+        public async Task<IActionResult> CountRegistrationItem(int postId)
+        {
+            var count = await _postService.CountRegistrationItem(postId);
+            if (count != null)
+            {
+				return Ok(new ObjectResponse
+				{
+					result = 1,
+					message = "Lấy thành công !!",
+                    content = count
+				});
+			}
+			return Ok(new ObjectResponse
+			{
+				result = 0,
+				message = "Lấy không thành công !!"
+			});
+		}
+	}
 }

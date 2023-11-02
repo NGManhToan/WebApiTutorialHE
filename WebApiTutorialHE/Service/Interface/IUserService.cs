@@ -24,7 +24,7 @@ namespace WebApiTutorialHE.Service.Interface
         Task<RecipientInformationModel> RecipientInfor(int id);
 
         Task<string> IdentifyOTP(int userId, string otpCode);
-        Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode);
+        Task<User> IdentifyOTPUpdate(ForceInfo forceInfo, string otpCode);
 
         Task<ObjectResponse> ChangePasswordUser(ChangepasswordModel changepassword, ForceInfo forceInfo);
 

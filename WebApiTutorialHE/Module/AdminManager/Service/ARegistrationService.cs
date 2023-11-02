@@ -25,5 +25,15 @@ namespace WebApiTutorialHE.Module.AdminManager.Service
         {
             return await _registrationAction.UpdateStatus(aUpdate);
         }
+
+        public async Task<List<CountRegistration>> CountRegistrationByCategory()
+        {
+            return await _registrationQuey.CountRegistrationByCategory();
+        }
+
+        public async Task<List<CountFaculty>> CountRegistrationByFaculty()
+        {
+            return await _registrationQuey.CountRegistrationByFaculty();
+        }
     }
 }

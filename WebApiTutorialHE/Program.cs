@@ -1,11 +1,10 @@
-using FirebaseAdmin;
+﻿using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using P2N_Pet_API.Models.UtilsProject;
 using System.Configuration;
 using System.Text;
 using WebApiTutorialHE.Action;
@@ -68,6 +67,7 @@ builder.Services.AddScoped<IRegistrationService,RegistrationSevice>();
 
 builder.Services.AddScoped<IUserAction, UserAction>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserQuery, UserQuery>();
 
 //builder.Services.AddScoped<IAuthService,JWTService>();
 
@@ -102,11 +102,20 @@ builder.Services.AddScoped<IAViolationReportQuery, AViolationReportQuery>();
 builder.Services.AddScoped<IAViolationReportService, AViolationReportService>();
 
 
-//builder.Services.AddScoped<IAViolationReportAction, AViolationReportAction>();
+builder.Services.AddScoped<IAViolationReportAction, AViolationReportAction>();
 builder.Services.AddScoped<IAViolationReportService, AViolationReportService>();
 builder.Services.AddScoped<IAViolationReportQuery, AViolationReportQuery>();
 
+builder.Services.AddScoped<WebApiTutorialHE.Service.SharingHub>();
+
 ///builder.Services.Configure<JWTSetting>(configuration.GetSection("JWTSetting"));
+///
+
+builder.Services.AddSignalR(); 
+builder.Services.AddCors();
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 
 builder.Services.AddSwaggerGen(c =>
@@ -162,12 +171,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
-    });
+    app.UseSwaggerUI();
 }
-
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+});
 
 FirebaseApp.Create(new AppOptions()
 {
@@ -177,9 +186,8 @@ FirebaseApp.Create(new AppOptions()
 
 app.UseStaticFiles();
 app.UseRouting();
-app.UseStaticFiles();
 
-app.UseHttpsRedirection();
+app.UseSession(); // Di chuyển app.UseSession(); lên sau app.UseRouting();
 
 app.UseAuthentication();
 app.UseAuthorization();
@@ -190,4 +198,12 @@ app.UseCors(x => x
                     .AllowAnyHeader()
                     .SetIsOriginAllowed(origin => true) // allow any origin
                     .AllowCredentials()); // allow credentials
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapHub<SharingHub>("/chat");
+});
+app.UseWebSockets();
+
+
 app.Run();

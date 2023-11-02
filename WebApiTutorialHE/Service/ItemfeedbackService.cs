@@ -37,9 +37,9 @@ namespace WebApiTutorialHE.Service
                 content = updateFeedback
             };
         }
-        public async Task<string> Deleteitemfeedback(int id)
+        public async Task<ItemFeedback> Deleteitemfeedback(int id, string connectionId)
         {  
-             return await _itemfeedbackAction.Deleteitemfeedback(id);
+             return await _itemfeedbackAction.Deleteitemfeedback(id,connectionId);
         }
     }
 }

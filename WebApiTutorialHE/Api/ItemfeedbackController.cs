@@ -44,19 +44,20 @@ namespace WebApiTutorialHE.Api
                 }
             });
         }
-        [HttpDelete]
-        public async Task<IActionResult> Deletefeedback(int id)
-        {
-            var itemFeedback = await _itemfeedbackService.Deleteitemfeedback(id);
-            return Ok(new ObjectResponse
-            {
-                result = 1,
-                message = "Xóa thành công",
-                content = new
-                {
-                    itemFeedback = itemFeedback
-                }
-            });
-        }
-    }
+		[HttpDelete]
+		public async Task<IActionResult> Deletefeedback(int id, string connectionId)
+		{
+			var itemFeedback = await _itemfeedbackService.Deleteitemfeedback(id, connectionId);
+			return Ok(new ObjectResponse
+			{
+				result = 1,
+				message = "Xóa thành công",
+				content = new
+				{
+					itemFeedback = itemFeedback
+				}
+			});
+		}
+
+	}
 }

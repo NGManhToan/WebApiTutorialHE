@@ -329,14 +329,15 @@ namespace WebApiTutorialHE.Service
             return new ObjectResponse
             {
                 result = 1,
-                message = "Cập nhật hồ sơ thành công."
+                message = "Đã gửi OTP!"
             };
 
         }
 
-        public async Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode)
+        public async Task<User> IdentifyOTPUpdate(ForceInfo forceInfo, string otpCode)
         {
-            return await _userAction.IdentifyOTPUpdate(forceInfo,userUpdate,otpCode);
+            return await _userAction.IdentifyOTPUpdate(forceInfo,otpCode);
+            var profile = await _userQuery.QueryFrofile(forceInfo.UserId);
         }
 
         public void ExportDataTableToPdf(DataTable dataTable, string filePath)

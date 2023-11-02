@@ -25,7 +25,11 @@ namespace WebApiTutorialHE.Service.Interface
         Task<Medium> PostImage(PostImgaeModel postImgae);
         Task<Post> UpdateIssuccess(int id);
         Task<bool> DeleteWishList(int id);
+        Task<List<PostItemShared>> GetListItemPostShared(int id);
+
+        Task<List<ReceivedItems>> ListReceivedItems(int id);
+        Task<QualityModel> CountRegistrationItem(int postId);
 
 
-    }
+	}
 }

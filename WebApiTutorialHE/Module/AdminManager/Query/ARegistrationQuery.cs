@@ -30,5 +30,28 @@ namespace WebApiTutorialHE.Module.AdminManager.Query
                                 r.IsDeleted = FALSE";
             return await _sharingDapper.QueryAsync<ARegistrationModel>(query);
         }
+
+        public async Task<List<CountRegistration>>CountRegistrationByCategory()
+        {
+            var query = @"Select c.Name as categoryName, count(r.Id) as quantityShared
+                            from Post p
+                              left join Registration r on p.Id = r.PostId
+                               join Category c on c.Id = p.CategoryId
+                             where r.Status = ""Received""
+                            group by c.Name";
+            return await _sharingDapper.QueryAsync<CountRegistration>(query);
+        }
+
+        public async Task<List<CountFaculty>> CountRegistrationByFaculty()
+        {
+            var query = @"Select f.Name as facultyName,count(r.Id) as quantityShared
+                            from Post p
+                              left join Registration r on p.Id = r.PostId
+                               join User u on u.Id = p.CreatedBy
+                               left join Faculty f on f.Id = u.FacultyId
+                             where r.Status = ""Received""
+                            group by f.Name";
+            return await _sharingDapper.QueryAsync<CountFaculty>(query);
+        }
     }
 }

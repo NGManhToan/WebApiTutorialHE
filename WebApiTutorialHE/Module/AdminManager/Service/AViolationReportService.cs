@@ -23,9 +23,19 @@ namespace WebApiTutorialHE.Module.AdminManager.Service
             return await _aViolationReportQuery.ListReport();
         }
 
+        public async Task<List<GetListViolationReportModel>> ListReportIsFalse()
+        {
+            return await _aViolationReportQuery.ListReporIsActiveFalse();
+        }
+
         public async Task<ViolationReport> EditViolationReport(int id, ForceInfo forceInfo)
         {
             return await _aAction.EditViolationReport(id, forceInfo);
+        }
+
+        public async Task<ViolationReport>RemoveReport(int id, ForceInfo forceInfo)
+        {
+            return await _aAction.DeleteViolationReport(id, forceInfo);
         }
     }
 }

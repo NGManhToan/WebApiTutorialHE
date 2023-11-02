@@ -6,5 +6,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Query.Interface
     public interface IAViolationReportQuery
     {
         Task<List<GetListViolationReportModel>> ListReport();
+
+        Task<List<GetListViolationReportModel>> ListReporIsActiveFalse();
     }
 }

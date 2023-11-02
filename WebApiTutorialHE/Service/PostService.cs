@@ -103,5 +103,21 @@ namespace WebApiTutorialHE.Service
         {
             return await _postAction.DeleteWishList(id);
         }
-    }
+
+        public async Task<List<PostItemShared>> GetListItemPostShared(int id)
+        {
+            return await _postQuery.GetListItemPostShared(id);
+        }
+
+        public async Task<List<ReceivedItems>> ListReceivedItems(int id)
+        {
+            return await _postQuery.ListReceivedItems(id);
+        }
+
+        public async Task<QualityModel> CountRegistrationItem(int postId)
+        {
+            return await _postQuery.CountRegistrationItem(postId);
+        }
+
+	}
 }

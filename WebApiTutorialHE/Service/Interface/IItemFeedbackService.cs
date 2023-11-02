@@ -8,6 +8,6 @@ namespace WebApiTutorialHE.Service.Interface
     {
         Task<ObjectResponse> GetByUser(int id);
         Task<ObjectResponse> Updateitemfeedback(ItemfeedbackUpdateModel updateItem);
-        Task<string> Deleteitemfeedback(int id);
+        Task<ItemFeedback> Deleteitemfeedback(int id, string connectionId);
     }
 }

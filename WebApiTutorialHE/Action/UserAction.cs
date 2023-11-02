@@ -17,8 +17,7 @@ using Microsoft.Win32;
 using WebApiTutorialHE.Service.Interface;
 using WebApiTutorialHE.Models.Mail;
 using System.Text;
-
-
+using WebApiTutorialHE.Query.Interface;
 
 namespace WebApiTutorialHE.Action
 {
@@ -30,12 +29,15 @@ namespace WebApiTutorialHE.Action
         private readonly SharingContext _sharingContext;
         private readonly ICloudMediaService _cloudMediaService;
         private readonly IMailService _mailService;
-
-        public UserAction(SharingContext sharingContext,ICloudMediaService cloudMediaService, IMailService mailService)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IUserQuery _userQuery;
+        public UserAction(SharingContext sharingContext,ICloudMediaService cloudMediaService, IMailService mailService, IHttpContextAccessor httpContextAccessor, IUserQuery userQuery)
         {
             _sharingContext = sharingContext;
             _cloudMediaService = cloudMediaService;
             _mailService = mailService;
+            _httpContextAccessor = httpContextAccessor;
+            _userQuery = userQuery;
         }
 
 
@@ -351,8 +353,20 @@ namespace WebApiTutorialHE.Action
                 if (!string.IsNullOrEmpty(userUpdate.Email) && update.Email != userUpdate.Email.Trim())
                 {
                     isEmailChanged = true;  // Đánh dấu là email đã thay đổi
-                    update.Email = userUpdate.Email.Trim();
+                    _httpContextAccessor.HttpContext.Session.SetString("TempEmail", userUpdate.Email);
                 }
+
+
+                bool isPhoneChanged = false;
+
+                if (!string.IsNullOrEmpty(userUpdate.PhoneNumber) && update.PhoneNumber != userUpdate.PhoneNumber.Trim())
+                {
+                    isPhoneChanged = true;  // Đánh dấu là số điện thoại đã thay đổi
+
+                    _httpContextAccessor.HttpContext.Session.SetString("TempPhone", userUpdate.PhoneNumber);
+
+                }
+
 
                 //update.LastModifiedDate = Utils.DateNow();
                 //update.LastModifiedBy = forceInfo.UserId;
@@ -371,10 +385,7 @@ namespace WebApiTutorialHE.Action
                     update.UrlAvatar = imageUrl;
 
                 }
-                else
-                {
-                    update.UrlAvatar = null;
-                }
+               
 
                 //_sharingContext.Users.Update(update);
                 //await _sharingContext.SaveChangesAsync();
@@ -405,6 +416,34 @@ namespace WebApiTutorialHE.Action
                     _sharingContext.VerificationCodes.Add(verificationCode);
                     await _sharingContext.SaveChangesAsync();
                 }
+
+                if (isPhoneChanged)
+                {
+                    var otpCode = GenerateOTPCode();
+                    var mailSetting = new MailSettings();
+                     var mailData = new MailDataWithAttachments()
+                     {
+                         From = mailSetting.UserName,
+                         To = new List<string>()
+                {
+                    update.Email
+                },
+                         Subject = "Verification",
+                         Body = $"Mã xác thực: {otpCode}"
+                     };
+                    var sent = await _mailService.SendMail(mailData, default);
+
+                    var verificationCode = new VerificationCode
+                    {
+                        UserId = forceInfo.UserId,
+                        Code = otpCode,
+                        ExpirationTime = DateTime.Now.AddMinutes(60),
+                    };
+
+                    _sharingContext.VerificationCodes.Add(verificationCode);
+                    await _sharingContext.SaveChangesAsync();
+                }
+
             }
             else
             {
@@ -415,55 +454,63 @@ namespace WebApiTutorialHE.Action
         }
 
 
-        public async Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode)
+        public async Task<User> IdentifyOTPUpdate(ForceInfo forceInfo, string otpCode)
         {
             try
             {
-                var user = await _sharingContext.Users.FindAsync(forceInfo.UserId);
+                var verificationCodeData = await _sharingContext.VerificationCodes
+                   .Where(v => v.UserId == forceInfo.UserId && v.Code == otpCode)
+                   .OrderByDescending(v => v.ExpirationTime)
+                    .FirstOrDefaultAsync();
 
-                if (user == null)
+                
+
+                if (verificationCodeData != null && DateTime.Now <= verificationCodeData.ExpirationTime)
                 {
-                    return ("Không tìm thấy người dùng.");
-                }
-
-                // ... (xác thực OTP)
-                var verificationCodedata = await _sharingContext.VerificationCodes
-                    .FirstOrDefaultAsync(v => v.UserId == forceInfo.UserId && DateTime.Now <= v.ExpirationTime);
-
-
-                if (otpCode == verificationCodedata.Code)
-                {
-                    var updatedUser = user;
-
-                    if (updatedUser != null)
+                    var user = await _sharingContext.Users.FindAsync(forceInfo.UserId);
+                    
+                    if (user != null)
                     {
-                        //user.Email = userUpdate.Email;
+                        
+                        string newEmail = _httpContextAccessor.HttpContext.Session.GetString("TempEmail");
+                        string newPhone = _httpContextAccessor.HttpContext.Session.GetString("TempPhone");
+                        if(newEmail != null)
+                        {
+                            user.Email = newEmail;
+                        }
+                        if(newPhone != null)
+                        {
+                            user.PhoneNumber = newPhone;
+                        }
+                        
                         user.LastModifiedDate = Utils.DateNow();
                         user.LastModifiedBy = forceInfo.UserId;
-                        // Lưu thông tin người dùng sau khi xác thực OTP thành công
-                        _sharingContext.Users.Update(updatedUser);
+
+                        _sharingContext.Users.Update(user);
                         await _sharingContext.SaveChangesAsync();
 
-                        _sharingContext.VerificationCodes.Remove(verificationCodedata);
+                        _sharingContext.VerificationCodes.Remove(verificationCodeData);
                         await _sharingContext.SaveChangesAsync();
 
-
-                        return "Xác thực thành công và thông tin đã được cập nhật.";
+                        return user;
                     }
                     else
                     {
-                        _sharingContext.VerificationCodes.Remove(verificationCodedata);
+                        _sharingContext.VerificationCodes.Remove(verificationCodeData);
                         await _sharingContext.SaveChangesAsync();
 
-                        return "Xác thực thành công nhưng không tìm thấy thông tin người dùng.";
+                        return null;
                     }
                 }
                 else
                 {
-                    _sharingContext.VerificationCodes.Remove(verificationCodedata);
-                    await _sharingContext.SaveChangesAsync();
+                    if (verificationCodeData != null)
+                    {
+                        _sharingContext.VerificationCodes.Remove(verificationCodeData);
+                        await _sharingContext.SaveChangesAsync();
+                    }
 
-                    return "Xác thực thất bại";
+                    return null;
                 }
 
             }
@@ -472,8 +519,8 @@ namespace WebApiTutorialHE.Action
                 Console.WriteLine(ex.Message);
                 return null;
             }
-            
         }
+
 
 
 

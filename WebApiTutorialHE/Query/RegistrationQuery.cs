@@ -3,6 +3,7 @@ using WebApiTutorialHE.Query.Interface;
 using WebApiTutorialHE.UtilsService;
 using WebApiTutorialHE.UtilsService.Interface;
 using WebApiTutorialHE.Models.UtilsProject;
+using WebApiTutorialHE.Models.Post;
 
 namespace WebApiTutorialHE.Query
 {
@@ -21,7 +22,12 @@ namespace WebApiTutorialHE.Query
                             FullName,
                              m.imageUrl,
                             r.Content,
-                            r.Status
+                            r.Status,
+                            r.CreatedDate,
+							CASE
+									WHEN p.Price = 0 THEN 'Free'
+									ELSE CAST(p.Price AS CHAR (10))
+								END AS DesiredStatus
                           FROM
                             Post p
                                 JOIN
@@ -48,7 +54,7 @@ namespace WebApiTutorialHE.Query
                 createdBy=createdBy
             });
         }
-        public async Task<List<RegistrationProserModel>> GetListRegistrationHaveProposer( int postId, int id)
+        public async Task<List<RegistrationProserModel>> GetListRegistrationHaveProposer(int postId)
         {
             var query = @"select u.FullName,r.Content,u.Id, 
 		                            IF(r.CreatedBy=p1.CreatedBy, 1, 0) IsProposed,
@@ -61,15 +67,15 @@ namespace WebApiTutorialHE.Query
 		                            join User u on u.Id=r.CreatedBy
                                     join Post p on p.Id=r.PostId
                                     left join Post p1 on p1.Id = p.FromWishList
-                            where r.PostId=@PostId and p.CreatedBy = @Id;";
+                            where r.PostId=@PostId;";
             return await _sharingDapper.QueryAsync<RegistrationProserModel>(query, new
             {
                 PostId = postId,
                 Now = Utils.DateNow(),
-                Id=id
             });
         }
 
+        
 
     }
 }

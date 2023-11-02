@@ -20,6 +20,10 @@ namespace WebApiTutorialHE.Service
         }
         public async Task<List<RegistationListModel>> GetListRegistation(int id)
         {
+            if(id == 0)
+            {
+                return null;
+            }
             return await _registrationQuery.QueryGetListRegistation(id);
         }
 
@@ -47,9 +51,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registationAction.DeleteRegistration(id);
         }
-        public async Task<Registration> CreateRegistation(RegistationPostModel registationPost)
+        public async Task<Registration> CreateRegistation(RegistationPostModel registationPost, ForceInfo forceInfo)
         {
-            return await _registationAction.CreateRegistration(registationPost);
+            return await _registationAction.CreateRegistration(registationPost, forceInfo);
         }
         public async Task<List<Registration>> UpdateStatus(UpdateStatus updateStatus)
         {
@@ -59,9 +63,9 @@ namespace WebApiTutorialHE.Service
         {
             return await _registrationQuery.QueryNumRegistation(postId, createdBy);
         }
-        public async Task<List<RegistrationProserModel>> GetListRegistation(int id, int postId)
+        public async Task<List<RegistrationProserModel>> GetListRegistrationHaveProposer(int postId)
         {
-            return await _registrationQuery.GetListRegistrationHaveProposer(postId, id);
+            return await _registrationQuery.GetListRegistrationHaveProposer(postId);
         }
     }
 }

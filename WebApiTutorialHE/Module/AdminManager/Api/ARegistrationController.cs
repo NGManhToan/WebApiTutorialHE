@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApiTutorialHE.Database.SharingModels;
+using WebApiTutorialHE.Manager.FilterAttr;
 using WebApiTutorialHE.Models.UtilsProject;
 using WebApiTutorialHE.Module.AdminManager.Model;
 using WebApiTutorialHE.Module.AdminManager.Model.Registration;
@@ -18,6 +19,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             _registrationService = registrationService;
         }
 
+        [ManagerAccess]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -30,6 +32,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
             });
         }
 
+        [ManagerAccess]
         [HttpPut]
         public async Task<IActionResult>UpdateStatus(AUpdateStatusModel aUpdateStatus)
         {
@@ -41,6 +44,32 @@ namespace WebApiTutorialHE.Module.AdminManager.Api
                 result = 1,
                 message = "Cập nhật thành công",
                 content = statusList,
+            });
+        }
+
+        [ManagerAccess]
+        [HttpGet]
+        public async Task<IActionResult> CountRegistrationByCategory()
+        {
+            var result = await _registrationService.CountRegistrationByCategory();
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Success",
+                content = result
+            });
+        }
+
+        [ManagerAccess]
+        [HttpGet]
+        public async Task<IActionResult> CountRegistrationByFaculty()
+        {
+            var result = await _registrationService.CountRegistrationByFaculty();
+            return Ok(new ObjectResponse
+            {
+                result = 1,
+                message = "Success",
+                content = result
             });
         }
     }

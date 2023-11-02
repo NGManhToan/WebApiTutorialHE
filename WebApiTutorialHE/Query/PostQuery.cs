@@ -69,11 +69,7 @@ namespace WebApiTutorialHE.Query
             var query = @"SELECT 
                             p.Id,
                             u.FullName,
-                            CASE 
-                                WHEN TIMESTAMPDIFF(DAY, p.CreatedDate, CURRENT_TIMESTAMP) > 0 THEN CONCAT(TIMESTAMPDIFF(DAY, p.CreatedDate, CURRENT_TIMESTAMP), ' ngày trước')
-                                WHEN TIMESTAMPDIFF(HOUR, p.CreatedDate, CURRENT_TIMESTAMP) > 0 THEN CONCAT(TIMESTAMPDIFF(HOUR, p.CreatedDate, CURRENT_TIMESTAMP), ' giờ trước')
-                                ELSE CONCAT(TIMESTAMPDIFF(MINUTE, p.CreatedDate, CURRENT_TIMESTAMP), ' phút trước')
-                            END AS TimeDiff,
+                            p.CreatedDate,
                             p.Content,
                             CASE
                                 WHEN p.DesiredStatus = 3 THEN 'Free, Purchase'
@@ -93,7 +89,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomePostModel>> QueryAscendPrice(int id)
         {
-            var query = @"SELECT p.Id,m.imageUrl,
+            var query = @"SELECT p.Id, p.CategoryId ,m.imageUrl,
                     p.Title, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE Price 
@@ -106,7 +102,7 @@ namespace WebApiTutorialHE.Query
         }
         public async Task<List<HomePostModel>> QueryDescendPrice(int id)
         {
-            var query = @"SELECT p.Id,m.imageUrl,
+            var query = @"SELECT p.Id, p.CategoryId,m.imageUrl,
                     p.Title, CASE 
                                     WHEN Price = 0 THEN 'Free' 
                                     ELSE CAST(Price AS char(10)) 
@@ -115,11 +111,11 @@ namespace WebApiTutorialHE.Query
 							LEFT JOIN Category c ON c.Id=p.CategoryId
                   WHERE type=1 AND CategoryId LIKE @id  ORDER BY 
 											p.Price DESC;";
-            return await _sharingDapper.QueryAsync<HomePostModel>(query, new { id = id });
+            return await _sharingDapper.QueryAsync<HomePostModel>(query, new { id = id });   
         }
         public async Task<List<HomePostModel>> QueryFilterFreeItem(int id)
         {
-            var query = @"SELECT pId,m.imageUrl,
+            var query = @"SELECT p.Id,p.CategoryId,m.imageUrl,
                                 Title, 
                                 CASE 
                                     WHEN Price = 0 THEN 'Free' 
@@ -202,5 +198,46 @@ namespace WebApiTutorialHE.Query
                                 left JOIN Media m ON p.Id=m.PostId WHERE type=2 and p.CreatedBy=@userId";
             return await _sharingDapper.QueryAsync<HomeWishModel>(query, new { userId = userId });
         }
-    }
+
+        public async Task<List<PostItemShared>> GetListItemPostShared(int id)
+        {
+            var query = @"Select p.Id,p.Title, m.ImageUrl
+                            From Post p
+	                            join Registration r on p.Id = r.PostId
+                                left join Media m on m.PostId = p.Id
+                                join User u on u.Id = p.CreatedBy
+                            where r.Status = 2 and u.Id = @id";
+            return await _sharingDapper.QueryAsync<PostItemShared>(query, new
+            {
+                id = id
+            });
+        }
+
+        public async Task<List<ReceivedItems>>ListReceivedItems(int id)
+        {
+            var query = @"Select m.ImageUrl,p.Title,u.FullName
+                            from Post p
+                             join Registration r on r.PostId = p.Id
+                             join User u on u.Id = p.CreatedBy
+                             left join Media m on m.PostId = p.Id
+                             where r.Status=4 and u.Id =@id";
+			return await _sharingDapper.QueryAsync<ReceivedItems>(query, new
+			{
+				id = id
+			});
+		}
+
+		public async Task<QualityModel> CountRegistrationItem(int postId)
+        {
+            var query = @"Select count(*) as Quality
+                            from Post p
+                            join Registration r on r.PostId = p.Id
+                            where r.PostId =@postId";
+			return await _sharingDapper.QuerySingleAsync<QualityModel>(query, new
+			{
+				postId = postId
+			});
+		}
+
+	}
 }

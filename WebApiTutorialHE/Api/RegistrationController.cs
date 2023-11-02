@@ -20,7 +20,7 @@ namespace WebApiTutorialHE.Api
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetByUser()
+        public async Task<IActionResult> GetRegisterByIdUser()
         {
             var forceInfo = new ForceInfo
             {
@@ -28,14 +28,22 @@ namespace WebApiTutorialHE.Api
                 DateNow = Utils.DateNow()
             };
             var registration=await _registrationService.GetListRegistation(forceInfo.UserId);
+            if (registration != null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Lấy danh sách thành công",
+                    content = new
+                    {
+                        registration = registration
+                    }
+                });
+            }
             return Ok(new ObjectResponse
             {
-                result=1,
-                message="Lấy danh sách thành công",
-                content = new
-                {
-                    registration= registration
-                }
+                result=0,
+                message="Lấy danh sách không công",
             });
         }
         [HttpPut]
@@ -67,29 +75,54 @@ namespace WebApiTutorialHE.Api
         [HttpPost]
         public async Task<IActionResult> CreateRegistration(RegistationPostModel registationPost)
         {
-            var create = await _registrationService.CreateRegistation(registationPost);
+            var forceInfo = new ForceInfo
+            {
+                DateNow = Utils.DateNow(),
+                UserId = Utils.GetUserIdFromToken(Request),
+            };
+            var create = await _registrationService.CreateRegistation(registationPost, forceInfo);
+            if(create != null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Thêm thành công",
+                    content = new
+                    {
+                        registrationCreate = create
+                    }
+                });
+            }
             return Ok(new ObjectResponse
             {
-                result = 1,
-                message = "Thêm thành công",
-                content = new
-                {
-                    registrationCreate = create
-                }
+                result = 0,
+                message = "Thêm không thành công",
+                
             });
+
         }
         [HttpPut]
         public async Task<IActionResult> UpdateStatus(UpdateStatus updateStatus)
         {
             var update = await _registrationService.UpdateStatus(updateStatus);
+
+            if(update != null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Đổi thành công",
+                    content = new
+                    {
+                        update = update
+                    }
+                });
+            }
             return Ok(new ObjectResponse
             {
-                result = 1,
-                message = "Đổi thành công",
-                content = new
-                {
-                    update = update
-                }
+                result = 0,
+                message = "Đổi không thành công",
+                
             });
         }
         [HttpGet]
@@ -107,9 +140,9 @@ namespace WebApiTutorialHE.Api
             });
         }
         [HttpGet]
-        public async Task<IActionResult> GetListRegistration(int id, int postId)
+        public async Task<IActionResult> GetListRegistrationHaveProposer(int postId)
         {
-            var getList = await _registrationService.GetListRegistation(id, postId);
+			var getList = await _registrationService.GetListRegistrationHaveProposer(postId);
             return Ok(new ObjectResponse
             {
                 result = 1,

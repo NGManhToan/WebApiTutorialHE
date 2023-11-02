@@ -43,20 +43,30 @@ namespace WebApiTutorialHE.Action
             
         }
 
-        public async Task<Registration>CreateRegistration(RegistationPostModel registationPost)
+        public async Task<Registration>CreateRegistration(RegistationPostModel registationPost,ForceInfo forceInfo)
         {
-            //var update = await _sharingContext.Registrations.FindAsync(registation);
-            var registration = new Registration()
+            var checkItem = await _sharingContext.Registrations.FindAsync(registationPost.PostId);
+
+            if (checkItem == null)
             {
-                Content = registationPost.Content,
-                PostId= registationPost.PostId,
-                LastModifiedDate = Utils.DateNow(),
-                CreatedBy=registationPost.CreatedBy,
-                LastModifiedBy = registationPost.CreatedBy
-            };
-            _sharingContext.Add(registration);
-                await _sharingContext.SaveChangesAsync(); 
-            return registration;       
+                Console.WriteLine("Lỗi: Không tìm thấy mục với PostId = " + registationPost.PostId);
+            }
+            else
+            {
+                var registration = new Registration()
+                {
+                    Content = registationPost.Content,
+                    PostId = registationPost.PostId,
+                    LastModifiedDate = Utils.DateNow(),
+                    CreatedBy = forceInfo.UserId,
+                    LastModifiedBy = forceInfo.UserId,
+                };
+                _sharingContext.Add(registration);
+                await _sharingContext.SaveChangesAsync();
+                return registration;
+            }
+            return null;
+                   
         }
         public async Task<List<Registration>> UpdateRegistrationStatus(UpdateStatus updateStatus)
         {

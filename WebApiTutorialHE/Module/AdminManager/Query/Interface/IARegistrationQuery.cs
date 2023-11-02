@@ -6,5 +6,8 @@ namespace WebApiTutorialHE.Module.AdminManager.Query.Interface
     public interface IARegistrationQuery
     {
         Task<List<ARegistrationModel>> GetAllRegistration();
+        Task<List<CountRegistration>> CountRegistrationByCategory();
+        Task<List<CountFaculty>> CountRegistrationByFaculty();
     }
 }
+    

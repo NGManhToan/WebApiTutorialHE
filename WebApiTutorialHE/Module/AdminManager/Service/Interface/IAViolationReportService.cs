@@ -8,6 +8,10 @@ namespace WebApiTutorialHE.Module.AdminManager.Service.Interface
     {
         Task<List<GetListViolationReportModel>> ListReport();
 
+        Task<List<GetListViolationReportModel>> ListReportIsFalse();
+
         Task<ViolationReport> EditViolationReport(int id, ForceInfo forceInfo);
+
+        Task<ViolationReport> RemoveReport(int id, ForceInfo forceInfo);
     }
 }

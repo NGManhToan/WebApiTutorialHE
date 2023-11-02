@@ -159,7 +159,7 @@ namespace WebApiTutorialHE.Api
 
 
         [HttpPost]
-        public async Task<IActionResult> IdentifyOTPUpdate([FromForm] string otpCode, [FromForm] UserUpdateModel userUpdate)
+        public async Task<IActionResult> IdentifyOTPUpdate( string otpCode)
         {
             var forceInfo = new ForceInfo
             {
@@ -167,16 +167,35 @@ namespace WebApiTutorialHE.Api
                 DateNow = Utils.DateNow()
             };
 
-            var result = await _userService.IdentifyOTPUpdate(forceInfo, userUpdate, otpCode);
-            return Ok(result);
+            var result = await _userService.IdentifyOTPUpdate(forceInfo, otpCode);
+            var profile = await _userService.QueryFrofile(forceInfo.UserId);
+            if(result != null)
+            {
+                return Ok(new ObjectResponse
+                {
+                    result = 1,
+                    message = "Thanh cong",
+                    content=profile
+                });
+            }
+            return Ok(new ObjectResponse
+            {
+                result = 0,
+                message = "That bai",
+            });
         }
 
 
 
         [HttpGet]
-        public async Task<IActionResult> RecipientInfor(int id)
+        public async Task<IActionResult> RecipientInfor()
         {
-            var account = await _userService.RecipientInfor(id);
+			var forceInfo = new ForceInfo
+			{
+				UserId = Utils.GetUserIdFromToken(Request),
+				DateNow = Utils.DateNow()
+			};
+			var account = await _userService.RecipientInfor(forceInfo.UserId);
 
             return Ok(new ObjectResponse
             {

@@ -23,7 +23,7 @@ namespace WebApiTutorialHE.Action.Interface
         Task<bool> IsEmailDuplicate(string email);
         Task<bool> IsPhoneDuplicate( string phoneNumber);
         Task<string> IdentifyOTP(int userId, string otpCode);
-        Task<string> IdentifyOTPUpdate(ForceInfo forceInfo, UserUpdateModel userUpdate, string otpCode);
+        Task<User> IdentifyOTPUpdate(ForceInfo forceInfo, string otpCode);
         Task ChangePasswordUser(ForceInfo forceInfo, string newPassword);
     }
 }

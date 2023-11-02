@@ -7,5 +7,7 @@ namespace WebApiTutorialHE.Module.AdminManager.Service.Interface
     {
         Task<List<ARegistrationModel>> GetAll();
         Task<List<string>>AUpdateStatus(AUpdateStatusModel aUpdate);
+        Task<List<CountRegistration>> CountRegistrationByCategory();
+        Task<List<CountFaculty>> CountRegistrationByFaculty();
     }
 }
